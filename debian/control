@@ -1,0 +1,37 @@
+Source: libutf8
+Priority: extra
+Maintainer: R. Douglas Barbieri <doug@dooglio.net>
+Build-Depends: cmake,
+    debhelper,
+    doxygen,
+    graphviz,
+    libexcept-dev (>= 1.1.0.0~xenial),
+    snapcmakemodules (>= 1.0.35.3~xenial)
+Standards-Version: 3.9.4
+Section: libs
+Homepage: https://snapwebsites.org/
+Vcs-Git: https://github.com/m2osw/snapcpp.git
+Vcs-Browser: https://github.com/m2osw/advgetopt
+
+Package: libutf8-dev
+Section: libdevel
+Architecture: any
+Depends: libutf8 (= ${binary:Version}), ${misc:Depends}
+Description: Development package for the C++ libutf8 library.
+ This library provides functions to convert between UTF-8 and UTF-32 characters.
+
+Package: libutf8-doc
+Section: doc
+Architecture: all
+Depends: ${misc:Depends}
+Description: Documentation for the C++ libutf8 library.
+ This library provides functions to convert between UTF-8 and UTF-32 characters.
+
+Package: libutf8
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: C++ library for UTF-8/UTF-32 handling.
+ This library provides functions to convert between UTF-8 and UTF-32 characters.
+
+# vim: ts=4 sw=4 et

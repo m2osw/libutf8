@@ -1,0 +1,5 @@
+libutf8 (1.0.0.0~xenial) xenial; urgency=high
+
+  * Added my wpkg libutf8 library as a Snap! C++ project.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Mon, 20 May 2019 01:23:11 -0800
