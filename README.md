@@ -1,7 +1,7 @@
 
 <p align="center">
 <img alt="advgetopt" title="Advance getopt, a C++ library to handle your command line options and configuration files seamlessly."
-src="https://snapwebsites.org/sites/snapwebsites.org/files/images/advgetopt-277x277.png" width="277" height="277"/>
+src="https://snapwebsites.org/sites/snapwebsites.org/files/images/libutf8.png" width="277" height="277"/>
 </p>
 
 # Introduction
