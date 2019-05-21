@@ -38,6 +38,7 @@
  * call C functions.
  */
 #include "libutf8/libutf8.h"
+#include "libutf8/libutf8base.h"
 
 namespace libutf8
 {
@@ -50,28 +51,28 @@ utf8_iterator::utf8_iterator(std::string const & str)
 }
 
 
-utf8_iterator & utf8_iterator::operator ++ () const
+utf8_iterator & utf8_iterator::operator ++ ()
 {
     increment();
     return *this;
 }
 
 
-char32_t utf8_iterator::operator ++ (int) const // post-increment
+utf8_iterator utf8_iterator::operator ++ (int) // post-increment
 {
     increment();
     return *this;
 }
 
 
-char32_t utf8_iterator::operator -- () const
+utf8_iterator & utf8_iterator::operator -- ()
 {
     decrement();
     return *this;
 }
 
 
-char32_t utf8_iterator::operator -- (int) const // post-decrement
+utf8_iterator utf8_iterator::operator -- (int) // post-decrement
 {
     decrement();
     return *this;
@@ -94,13 +95,13 @@ char32_t utf8_iterator::operator * () const
 
 bool utf8_iterator::operator == (std::string::iterator it) const
 {
-    return it - f_str.begin() == f_pos;
+    return static_cast<std::string::size_type>(it - f_str.begin()) == f_pos;
 }
 
 
 bool utf8_iterator::operator == (std::string::const_iterator it) const
 {
-    return it - f_str.cbegin() == f_pos;
+    return static_cast<std::string::size_type>(it - f_str.cbegin()) == f_pos;
 }
 
 
@@ -114,7 +115,7 @@ void utf8_iterator::increment()
     // increment is easy we can just get the current character and we know
     // the size of the character in UTF-8
     //
-    char c(f_str[f_pos]);
+    unsigned char c(static_cast<unsigned char>(f_str[f_pos]));
 
     if(c < 0x80)
     {
@@ -125,7 +126,7 @@ void utf8_iterator::increment()
         // ?! invalid UTF-8 ?!
         //
         ++f_pos;
-        f_fail = true;
+        f_good = false;
     }
     else if(c >= 0xFC)
     {
@@ -154,7 +155,7 @@ void utf8_iterator::increment()
     if(f_pos > f_str.length())
     {
         f_pos = f_str.length();
-        f_fail = true;
+        f_good = false;
     }
 }
 
@@ -172,7 +173,7 @@ void utf8_iterator::decrement()
     while(f_pos > 0)
     {
         --f_pos;
-        c = f_str[f_pos];
+        unsigned char c(static_cast<unsigned char>(f_str[f_pos]));
         if(c < 0x80
         || c >= 0xC0)
         {

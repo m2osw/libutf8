@@ -27,44 +27,37 @@
  * functions used to convert a string from one format to another.
  */
 
-#include <cstdint>
-#include <string>
-#include <stdexcept>
+#include <libexcept/exception.h>
+
+//#include <cstdint>
+//#include <string>
+//#include <stdexcept>
 
 namespace libutf8
 {
 
 
 
-std::string         to_u8string(std::u32string const & str);
-std::u32string      to_u32string(std::string const & str);
-size_t              u8length(std::string const & str);
-int                 u8casecmp(std::string const & lhs, std::string const & rhs);
-
-
-class utf8_iterator
+class libutf8_logic_exception : public libexcept::logic_exception_t
 {
 public:
-                                utf8_iterator(std::string const & str);
+    libutf8_logic_exception(std::string const & msg) : logic_exception_t(msg) {}
+};
 
-    utf8_iterator &             operator ++ ();
-    utf8_iterator               operator ++ (int);
-    utf8_iterator &             operator -- ();
-    utf8_iterator               operator -- (int);
-    char32_t                    operator * () const;
-    bool                        operator == (std::string::iterator it) const;
-    bool                        operator == (std::string::const_iterator it) const;
 
-    bool                        good() const;
-    bool                        bad() const;
 
-private:
-    void                        increment();
-    void                        decrement();
+class libutf8_exception : public libexcept::exception_t
+{
+public:
+    libutf8_exception(std::string const & msg) : exception_t(msg) {}
+};
 
-    std::string                 f_str = std::string();
-    std::string::size_type      f_pos = 0;
-    bool                        f_good = true;
+
+
+class libutf8_exception_decoding : public libutf8_exception
+{
+public:
+    libutf8_exception_decoding(std::string const & msg) : libutf8_exception(msg) {}
 };
 
 

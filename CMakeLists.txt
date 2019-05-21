@@ -41,9 +41,10 @@ cmake_minimum_required(VERSION 2.8.4)
 project(utf8_library)
 
 find_package( SnapCMakeModules REQUIRED )
+find_package( LibExcept        REQUIRED )
 find_package( SnapDoxygen               )
 
-SnapGetVersion( LIBADVGETOPT ${CMAKE_CURRENT_SOURCE_DIR} )
+SnapGetVersion( LIBUTF8 ${CMAKE_CURRENT_SOURCE_DIR} )
 
 include_directories(
     ${PROJECT_SOURCE_DIR}
@@ -51,5 +52,6 @@ include_directories(
 )
 
 add_subdirectory(libutf8)
+add_subdirectory(doc    )
 
 # vim: ts=4 sw=4 et

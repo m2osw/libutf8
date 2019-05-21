@@ -48,14 +48,20 @@ configure_file(
 
 add_library( ${PROJECT_NAME} SHARED
     libutf8.cpp
+    libutf8base.cpp
+    libutf8_iterator.cpp
     version.cpp
+)
+
+include_directories(
+    ${LIBEXCEPT_INCLUDE_DIRS}
 )
 
 set_target_properties( ${PROJECT_NAME} PROPERTIES
     VERSION
-        ${WPKG_VERSION_MAJOR}.${WPKG_VERSION_MINOR}
+        ${LIBUTF8_VERSION_MAJOR}.${LIBUTF8_VERSION_MINOR}
     SOVERSION
-        ${WPKG_VERSION_MAJOR}
+        ${LIBUTF8_VERSION_MAJOR}
 )
 
 install(
@@ -70,17 +76,15 @@ install(
 )
 
 install(
-    FILES_MATCHING PATTERN
+    FILES
+        exception.h
         libutf8.h
+        libutf8base.h
         ${CMAKE_CURRENT_BINARY_DIR}/version.h
+
     DESTINATION
         include/libutf8
 )
-
-set_property( GLOBAL APPEND PROPERTY ALL_LIBRARY_TARGETS utf8 utf8_static )
-
-add_custom_target( utf8_target DEPENDS utf8_static utf8 )
-set_property( TARGET utf8_target PROPERTY FOLDER ${UTF8_FOLDER} )
 
 
 # vim: ts=4 sw=4 et
