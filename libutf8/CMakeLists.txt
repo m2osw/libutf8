@@ -57,6 +57,10 @@ include_directories(
     ${LIBEXCEPT_INCLUDE_DIRS}
 )
 
+target_link_libraries(${PROJECT_NAME}
+    ${LIBEXCEPT_LIBRARIES}
+)
+
 set_target_properties( ${PROJECT_NAME} PROPERTIES
     VERSION
         ${LIBUTF8_VERSION_MAJOR}.${LIBUTF8_VERSION_MINOR}

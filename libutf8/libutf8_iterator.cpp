@@ -40,6 +40,12 @@
 #include "libutf8/libutf8.h"
 #include "libutf8/libutf8base.h"
 
+// C++ lib
+//
+#include <iostream>
+
+
+
 namespace libutf8
 {
 
@@ -60,8 +66,9 @@ utf8_iterator & utf8_iterator::operator ++ ()
 
 utf8_iterator utf8_iterator::operator ++ (int) // post-increment
 {
+    utf8_iterator it(*this);
     increment();
-    return *this;
+    return it;
 }
 
 
@@ -74,8 +81,9 @@ utf8_iterator & utf8_iterator::operator -- ()
 
 utf8_iterator utf8_iterator::operator -- (int) // post-decrement
 {
+    utf8_iterator it(*this);
     decrement();
-    return *this;
+    return it;
 }
 
 

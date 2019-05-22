@@ -52,6 +52,7 @@ include_directories(
 )
 
 add_subdirectory(libutf8)
+add_subdirectory(tests  )
 add_subdirectory(doc    )
 
 # vim: ts=4 sw=4 et

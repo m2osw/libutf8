@@ -1,5 +1,5 @@
 /*    libutf8.cpp -- convert between wchar_t and UTF-8 encodings
- *    Copyright (C) 2000-2015  Made to Order Software Corporation
+ *    Copyright (C) 2000-2019  Made to Order Software Corporation
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -57,11 +57,15 @@ namespace libutf8
  * UTF-8 encoded series of bytes (called a multi-byte encoded
  * character.) The resulting string is null (`'\0'`) terminated.
  *
- * The \p mb buffer should be at least 5 bytes.
+ * The \p mb buffer should be at least MBS_MIN_BUFFER_LENGTH bytes.
+ * If less space is required, the function does not report a problem,
+ * though. This allows to get the total size of a conversion and then
+ * do the full conversion to that one buffer without the need to
+ * add unnecessary bytes at the end of your destination buffer.
  *
  * \code
  * ...
- * char mb[5];
+ * char mb[MBS_MIN_BUFFER_LENGTH];
  *
  * wctombs(mb, big_char, sizeof(mb));
  * ...

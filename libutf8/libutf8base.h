@@ -31,16 +31,19 @@
  * much safer and what is expected of you.
  */
 
-//#include <cstdint>
-//#include <string>
-//#include <stdexcept>
+#include <cstddef>
+
+
 
 namespace libutf8
 {
 
 
-int                 mbstowc(char32_t & wc, char const * & mb, size_t & len);
-int                 wctombs(char * mb, char32_t wc, size_t len);
+
+constexpr std::size_t   MBS_MIN_BUFFER_LENGTH = 5;
+
+int                     mbstowc(char32_t & wc, char const * & mb, size_t & len);
+int                     wctombs(char * mb, char32_t wc, size_t len);
 
 
 
