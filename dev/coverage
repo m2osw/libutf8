@@ -114,8 +114,8 @@ echo "<h3>Statistics of the libutf8 $VERSION library</h3><pre>" >>html/statistic
 cloc $SOURCE/libutf8/ >>html/statistics.html
 echo "</pre><h3>Statistics of the libutf8 $VERSION tests</h3><pre>" >>html/statistics.html
 cloc $SOURCE/tests/ >>html/statistics.html
-echo "</pre><h3>Statistics of libutf8 tools $VERSION</h3><pre>" >>html/statistics.html
-cloc $SOURCE/tools/ >>html/statistics.html
+#echo "</pre><h3>Statistics of libutf8 tools $VERSION</h3><pre>" >>html/statistics.html
+#cloc $SOURCE/tools/ >>html/statistics.html
 echo "</pre></body></html>" >>html/statistics.html
 
 # Test output (Logs)

@@ -36,7 +36,6 @@
 
 CATCH_TEST_CASE("libutf8 iterator", "iterator")
 {
-std::cerr << "-------------- START...\n";
     char32_t p(rand() % 0x11 * 0x10000);
     for(char32_t plan(0); plan < 0x110000; plan += 0x10000)
     {
@@ -65,7 +64,7 @@ std::cerr << "-------------- START...\n";
                 str += buf;
             }
         }
-std::cerr << "-------------- Plan " << static_cast<int>(plan) << " String ready " << str.length() << " ...\n";
+//std::cerr << "-------------- Plan " << static_cast<int>(plan) << " String ready " << str.length() << " ...\n";
 
         {
             libutf8::utf8_iterator it(str);

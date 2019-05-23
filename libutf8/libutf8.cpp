@@ -37,11 +37,18 @@
  * standard strings (std::string and std::wstring) instead of having to
  * call C functions.
  */
+
+// libutf8 lib
+//
 #include "libutf8/exception.h"
 #include "libutf8/libutf8.h"
 #include "libutf8/libutf8base.h"
 
+// C++ lib
+//
 #include <cwctype>
+
+
 
 /** \brief Name space of the UTF-8 library.
  *
@@ -221,17 +228,17 @@ int u8casecmp(std::string const & lhs, std::string const & rhs)
             throw libutf8_exception_decoding("u8casecmp(): the rhs string includes invalid UTF-8 bytes");
         }
 
-        // if equal as is, avoid the uppercase test
+        // if equal as is, avoid the lowercase test
         //
         if(lwc != rwc)
         {
-            char32_t const lu = std::towupper(lwc);
-            char32_t const ru = std::towupper(rwc);
-            if(lu != ru)
+            char32_t const ll = std::towlower(lwc);
+            char32_t const rl = std::towlower(rwc);
+            if(ll != rl)
             {
-                // not equal, we return comparing uppercase characters!
+                // not equal, we return comparing lowercase characters!
                 //
-                return lu < ru ? -1 : 1;
+                return ll < rl ? -1 : 1;
             }
         }
     }

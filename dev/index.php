@@ -26,7 +26,7 @@
 # THE SOFTWARE.
 #
 
-$dir = glob("advgetopt*");
+$dir = glob("libutf8*");
 
 echo "<html><head><title>advgetopt coverage</title></head>";
 echo "<body><h1>advgetopt coverage</h1><table border=\"1\" cellpadding=\"10\" cellspacing=\"0\"><tbody><tr><th>Coverage</th></tr>";

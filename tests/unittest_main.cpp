@@ -51,9 +51,9 @@ namespace unittest
 
 namespace
 {
-    struct UnitTestCLData
+    struct UnitTestCLData : Catch::ConfigData
     {
-        bool        help = false;
+        //bool        help = false;
         int         seed = 0;
         std::string tmp = std::string();
         bool        verbose = false;
@@ -67,9 +67,10 @@ int unittest_main(int argc, char * argv[])
 {
     UnitTestCLData configData;
 
-    auto cli = Catch::clara::Help(configData.help)//, "help")
-                //["-?"]["-h"]["--help"]
-                //("display usage information")
+    auto cli = Catch::makeCommandLineParser(configData)
+             //| Catch::clara::Help(configData.help)//, "help")
+             //   //["-?"]["-h"]["--help"]
+             //   //("display usage information")
              | Catch::clara::Opt(configData.seed, "seed")
                 ["-S"]["--seed"]
                 ("value to seed the randomizer, if not specified, randomize")
@@ -86,7 +87,7 @@ int unittest_main(int argc, char * argv[])
         exit(1);
     }
 
-    if( configData.help )
+    if( configData.showHelp )
     {
         std::cout << cli << std::endl;
         exit(1);

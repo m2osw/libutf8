@@ -41,6 +41,7 @@
 #include "libutf8/libutf8.h"
 
 #include <cctype>
+#include <iostream>
 
 /** \brief Name space of the UTF-8 library.
  *
@@ -160,7 +161,7 @@ int wctombs(char * mb, char32_t wc, size_t len)
 
     /* an invalid wide character */
     mb[0] = '\0';
-    return 0;
+    return -1;
 }
 
 
@@ -218,7 +219,7 @@ int mbstowc(char32_t & wc, char const * & mb, size_t & len)
     auto skip = [](char const * & skip_mb, size_t & skip_len)
     {
         for(unsigned char b(0)
-            ; skip_len > 0 && (b = *skip_mb, (b >= 0x80 && b < 0xBF) || b >= 0xF8)
+            ; skip_len > 0 && (b = *skip_mb, (b >= 0x80 && b <= 0xBF) || b >= 0xF8)
             ; ++skip_mb , --skip_len);
     };
 
@@ -236,7 +237,7 @@ int mbstowc(char32_t & wc, char const * & mb, size_t & len)
     // we eat one character from the source minimum
     //
     unsigned char c(*mb++);
-    len--;
+    --len;
 
     if(c < 0x80)
     {

@@ -30,6 +30,8 @@
 // C++ lib
 //
 #include <cctype>
+#include <iostream>
+#include <iomanip>
 
 
 CATCH_TEST_CASE("LibUtf8UnitTests::conversions","LibUtf8UnitTests")
@@ -88,7 +90,7 @@ char32_t rand_char()
     {
         wc = rand() & 0x0FFFF;
     }
-    while(wc == 0);
+    while(wc == 0 || (wc >= 0xD800 && wc <= 0xDFFF));
     return wc;
 }
 
@@ -96,7 +98,7 @@ CATCH_TEST_CASE("LibUtf8UnitTests::compare","LibUtf8UnitTests")
 {
     for(int i(1); i < 0x10000; ++i)
     {
-        // as is
+        // as is against itself
         std::u32string in;
         in += static_cast<char32_t>(i);
         std::string mb(libutf8::to_u8string(in));
@@ -104,23 +106,23 @@ CATCH_TEST_CASE("LibUtf8UnitTests::compare","LibUtf8UnitTests")
 
         // as is against uppercase
         std::u32string uin;
-        uin += std::toupper(static_cast<char32_t>(i));
+        uin += std::towupper(static_cast<char32_t>(i));
         std::string umb(libutf8::to_u8string(uin));
         CATCH_REQUIRE(libutf8::u8casecmp(mb, umb) == 0);
 
         // as is against lowercase
         std::u32string lin;
-        lin += std::tolower(static_cast<char32_t>(i));
+        lin += std::towlower(static_cast<char32_t>(i));
         std::string lmb(libutf8::to_u8string(lin));
         CATCH_REQUIRE(libutf8::u8casecmp(mb, lmb) == 0);
 
         // random
-        for(int j(0); j < 3; ++j)
+        for(int j(0); j < 30; ++j)
         {
             char32_t rwc(rand_char() & 0x0FFFF);
             in += rwc;
-            uin += std::toupper(rwc);
-            lin += std::tolower(rwc);
+            uin += std::towupper(rwc);
+            lin += std::towlower(rwc);
 
             std::string rmb(libutf8::to_u8string(in));
             CATCH_REQUIRE(libutf8::u8casecmp(rmb, rmb) == 0);
@@ -136,47 +138,59 @@ CATCH_TEST_CASE("LibUtf8UnitTests::compare","LibUtf8UnitTests")
         CATCH_REQUIRE(libutf8::u8casecmp(emb, emb) == 0);
         CATCH_REQUIRE(libutf8::u8casecmp(emb, umb) == 1);
         CATCH_REQUIRE(libutf8::u8casecmp(emb, lmb) == 1);
+        CATCH_REQUIRE(libutf8::u8casecmp(umb, emb) == -1);
+        CATCH_REQUIRE(libutf8::u8casecmp(lmb, emb) == -1);
 
         {
-            wchar_t uwc(rand_char() & 0x0FFFF);
-            uin += std::toupper(uwc);
-            std::string eumb(libutf8::to_u8string(uin));
-//printf("UPPER compare U+%04X/%04X with U+%04X/%04X\n", wc, std::toupper(wc), uwc, std::toupper(uwc));
-//printf(" result: [%d]\n", libutf8::u8casecmp(emb, eumb));
-            if(std::toupper(wc) == std::toupper(uwc))
-            {
-                CATCH_REQUIRE(libutf8::u8casecmp(emb, eumb) == 0);
-            }
-            else if(std::toupper(wc) < std::toupper(uwc))
-            {
-                CATCH_REQUIRE(libutf8::u8casecmp(emb, eumb) == -1);
-            }
-            else
-            {
-                CATCH_REQUIRE(libutf8::u8casecmp(emb, eumb) == 1);
-            }
-            CATCH_REQUIRE(libutf8::u8casecmp(lmb, eumb) == -1);
-        }
-
-        // here we check with a lowercase character, but notice that the
-        // compare uses uppercase!
-        {
-            char32_t lwc(rand_char() & 0x0FFFF);
-            lin += std::tolower(lwc);
-            std::string const elmb(libutf8::to_u8string(lin));
-//printf("LOWER compare U+%04X/%04X with U+%04X/%04X\n", wc, std::toupper(wc), lwc, std::toupper(lwc));
-//printf(" result: [%d]\n", libutf8::u8casecmp(emb, elmb));
-            if(std::toupper(wc) == std::toupper(lwc))
+            wchar_t lwc(rand_char() & 0x0FFFF);
+            lin += std::towlower(lwc);
+            std::string elmb(libutf8::to_u8string(lin));
+//std::cerr << "LOWER compare U+" << std::hex << std::setw(4) << static_cast<int>(wc)
+//                         << "/" << std::setw(4) << std::towlower(wc)
+//                         << " with U+" << std::setw(4) << static_cast<int>(lwc)
+//                         << "/" << std::setw(4) << std::towlower(lwc)
+//                         << " wc < lwc -> " << std::setw(4) << (std::towlower(wc) < std::towlower(lwc))
+//                         << "\n" << std::dec;
+//std::cerr << " result: [" << libutf8::u8casecmp(emb, elmb) << "]\n";
+            if(std::towlower(wc) == std::towlower(lwc))
             {
                 CATCH_REQUIRE(libutf8::u8casecmp(emb, elmb) == 0);
             }
-            else if(std::toupper(wc) < std::toupper(lwc))
+            else if(std::towlower(wc) < std::towlower(lwc))
             {
                 CATCH_REQUIRE(libutf8::u8casecmp(emb, elmb) == -1);
             }
             else
             {
                 CATCH_REQUIRE(libutf8::u8casecmp(emb, elmb) == 1);
+            }
+            CATCH_REQUIRE(libutf8::u8casecmp(lmb, elmb) == -1);
+        }
+
+        // here we check with an uppercase character, but notice that the
+        // compare uses lowercase!
+        {
+            char32_t uwc(rand_char() & 0x0FFFF);
+            uin += std::towupper(uwc);
+            std::string const eumb(libutf8::to_u8string(uin));
+//std::cerr << "UPPER compare U+" << std::hex << std::setw(4) << static_cast<int>(wc)
+//                         << "/" << std::setw(4) << std::towlower(wc)
+//                         << " with U+" << std::setw(4) << static_cast<int>(uwc)
+//                         << "/" << std::setw(4) << std::towlower(uwc)
+//                         << " wc < uwc -> " << std::setw(4) << (std::towlower(wc) < std::towlower(uwc))
+//                         << "\n" << std::dec;
+//std::cerr << " result: [" << libutf8::u8casecmp(emb, eumb) << "]\n";
+            if(std::towlower(wc) == std::towlower(uwc))
+            {
+                CATCH_REQUIRE(libutf8::u8casecmp(emb, eumb) == 0);
+            }
+            else if(std::towlower(wc) < std::towlower(uwc))
+            {
+                CATCH_REQUIRE(libutf8::u8casecmp(emb, eumb) == -1);
+            }
+            else
+            {
+                CATCH_REQUIRE(libutf8::u8casecmp(emb, eumb) == 1);
             }
         }
     }
