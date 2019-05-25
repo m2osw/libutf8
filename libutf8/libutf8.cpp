@@ -38,11 +38,14 @@
  * call C functions.
  */
 
+// self
+//
+#include "libutf8/libutf8.h"
+
 // libutf8 lib
 //
+#include "libutf8/base.h"
 #include "libutf8/exception.h"
-#include "libutf8/libutf8.h"
-#include "libutf8/libutf8base.h"
 
 // C++ lib
 //

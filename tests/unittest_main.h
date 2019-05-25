@@ -55,7 +55,6 @@
 namespace unittest
 {
 
-extern std::string      g_tmp_dir;
 extern bool             g_verbose;
 
 class obj_setenv
@@ -82,7 +81,35 @@ private:
 };
 
 
+inline char32_t rand_char(bool full_range = false)
+{
+    char32_t const max((full_range ? 0x0110000 : 0x0010000) - (0xE000 - 0xD800));
+
+    char32_t wc;
+    do
+    {
+        wc = ((rand() << 16) ^ rand()) % max;
+    }
+    while(wc == 0);
+    if(wc >= 0xD800)
+    {
+        // skip the surrogates
+        //
+        wc += 0xE000 - 0xD800;
+    }
+
+    return wc;
+}
+
+
+#define CATCH_START_SECTION(name) \
+    CATCH_SECTION(name) { if(unittest::g_verbose) { std::cout << name << std::endl; }
+
+#define CATCH_END_SECTION() }
+
+
 
 }
+// unittest namespace
 #endif
 // vim: ts=4 sw=4 et

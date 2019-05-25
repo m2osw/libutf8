@@ -35,6 +35,9 @@
  * The functions allow you to retrieve the version of a dynamically linked
  * library.
  */
+
+// self
+//
 #include    "libutf8/version.h"
 
 
@@ -46,7 +49,7 @@ namespace libutf8
 
 /** \brief Get the major version of the library
  *
- * This function returns the version of the running library (the
+ * This function returns the major version of the running library (the
  * one you are linked against at runtime).
  *
  * \return The major version.
@@ -57,9 +60,9 @@ int get_major_version()
 }
 
 
-/** \brief Get the release version of the library.
+/** \brief Get the minor version of the library.
  *
- * This function returns the release version of the running library
+ * This function returns the minor version of the running library
  * (the one you are linked against at runtime).
  *
  * \return The release version.
@@ -85,11 +88,14 @@ int get_patch_version()
 
 /** \brief Get the full version of the library as a string.
  *
- * This function returns the major, release, and patch versions of the
+ * This function returns the major, minor, and patch versions of the
  * running library (the one you are linked against at runtime) in the
  * form of a string.
  *
- * The build version is not made available.
+ * The build version is not made available. In most cases we change
+ * the build version only to run a new build, so not code will have
+ * changed (some documentation and non-code files may changed between
+ * build versions; but the code will work exactly the same way.)
  *
  * \return The library version.
  */

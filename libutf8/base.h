@@ -31,8 +31,9 @@
  * much safer and what is expected of you.
  */
 
+// C++ lib
+//
 #include <cstddef>
-
 
 
 namespace libutf8
@@ -43,6 +44,7 @@ namespace libutf8
 constexpr std::size_t   MBS_MIN_BUFFER_LENGTH = 5;
 
 int                     mbstowc(char32_t & wc, char const * & mb, size_t & len);
+int                     mbstowc(char32_t & wc, char * & mb, size_t & len);
 int                     wctombs(char * mb, char32_t wc, size_t len);
 
 

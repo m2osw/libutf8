@@ -81,7 +81,7 @@ fi
 # We test the pipe status on exit to detect whether the test failed
 echo "Start running the tests on `date`" >test_log.txt
 echo >>test_log.txt
-BUILD/tests/unittest "${TEST_NAME}" 2>&1 | tee -a test_log.txt; test ${PIPESTATUS[0]} -eq 0
+BUILD/tests/unittest "${TEST_NAME}" --progress 2>&1 | tee -a test_log.txt; test ${PIPESTATUS[0]} -eq 0
 echo >>test_log.txt
 echo "Finished running the tests on `date`" >>test_log.txt
 echo

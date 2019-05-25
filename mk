@@ -17,7 +17,7 @@ case $1 in
 	(
 		if make -C ../../../BUILD/contrib/libutf8
 		then
-			../../../BUILD/contrib/libutf8/tests/unittest
+			../../../BUILD/contrib/libutf8/tests/unittest --progress
 		fi
 	) 2>&1 | less -SR
 	;;

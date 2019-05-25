@@ -51,12 +51,11 @@ namespace unittest
 
 namespace
 {
-    struct UnitTestCLData : Catch::ConfigData
+    struct UnitTestCLData
+        //: public Catch::ConfigData
     {
-        //bool        help = false;
         int         seed = 0;
-        std::string tmp = std::string();
-        bool        verbose = false;
+        bool        progress = false;
         bool        version = false;
     };
 }
@@ -67,31 +66,34 @@ int unittest_main(int argc, char * argv[])
 {
     UnitTestCLData configData;
 
-    auto cli = Catch::makeCommandLineParser(configData)
-             //| Catch::clara::Help(configData.help)//, "help")
-             //   //["-?"]["-h"]["--help"]
-             //   //("display usage information")
+    Catch::Session session;
+
+    auto cli = session.cli()
              | Catch::clara::Opt(configData.seed, "seed")
                 ["-S"]["--seed"]
                 ("value to seed the randomizer, if not specified, randomize")
-             | Catch::clara::Opt(configData.verbose)
-                ["-v"]["--verbose"]
-                ("make the test more verbose")
+             | Catch::clara::Opt(configData.progress)
+                ["-p"]["--progress"]
+                ("print name of test section being run")
              | Catch::clara::Opt(configData.version)
                 ["-V"]["--version"]
                 ("print out the libutf8 library version these unit tests pertain to");
 
-    auto result(cli.parse(Catch::clara::Args(argc, argv)));
-    if(!result) {
-        std::cerr << "Error in command line: " << result.errorMessage() << std::endl;
+    session.cli(cli);
+
+    auto result(session.applyCommandLine(argc, argv));
+    if(result != 0)
+    {
+        std::cerr << "Error in command line." << std::endl;
         exit(1);
     }
 
-    if( configData.showHelp )
-    {
-        std::cout << cli << std::endl;
-        exit(1);
-    }
+    //if( configData.showHelp )
+    //{
+    //    session.showHelp();
+    //    //std::cout << cli << std::endl;
+    //    exit(1);
+    //}
 
     if( configData.version )
     {
@@ -99,33 +101,20 @@ int unittest_main(int argc, char * argv[])
         exit(0);
     }
 
-    std::vector<std::string> arg_list;
-    for( int i = 0; i < argc; ++i )
-    {
-        arg_list.push_back( argv[i] );
-    }
+    unittest::g_verbose = configData.progress;
 
     // by default we get a different seed each time; that really helps
     // in detecting errors! (I know, I wrote loads of tests before)
+    //
     unsigned int seed(static_cast<unsigned int>(time(NULL)));
     if( configData.seed != 0 )
     {
         seed = static_cast<unsigned int>(configData.seed);
     }
     srand(seed);
-    std::cout << "libutf8[" << getpid() << "]:unittest: seed is " << seed << std::endl;
+    std::cout << "libutf8 v" << LIBUTF8_VERSION_STRING << " [" << getpid() << "]:unittest: seed is " << seed << std::endl;
 
-    // we can only have one of those for ALL the tests that directly
-    // access the library...
-    // (because the result is cached and thus cannot change)
-
-    std::vector<char *> new_argv;
-    std::for_each( arg_list.begin(), arg_list.end(), [&new_argv]( const std::string& arg )
-    {
-        new_argv.push_back( const_cast<char *>(arg.c_str()) );
-    });
-
-    return Catch::Session().run( static_cast<int>(new_argv.size()), &new_argv[0] );
+    return session.run();
 }
 
 

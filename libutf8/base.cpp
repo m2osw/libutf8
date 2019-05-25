@@ -37,19 +37,46 @@
  * standard strings (std::string and std::wstring) instead of having to
  * call C functions.
  */
-#include "libutf8/exception.h"
-#include "libutf8/libutf8.h"
 
+// self
+//
+#include "libutf8/base.h"
+
+// libutf8 lib
+//
+#include "libutf8/exception.h"
+
+// C++ lib
+//
 #include <cctype>
 #include <iostream>
 
+
+
 /** \brief Name space of the UTF-8 library.
  *
- * The library to convert UTF-8 strings to UCS-4 (Unices) or UTF-16 strings
- * (MS-Windows) and vice versa.
+ * The libutf8 library is used to seamlessly handle UTF-8 strings. It also
+ * is used to convert betwee UTF-8, UTF-16, and UTF-32 strings.
+ *
+ * \todo
+ * Implement the UTF-16 functions.
  */
 namespace libutf8
 {
+
+
+/** \var constexpr std::size_t MBS_MIN_BUFFER_LENGTH
+ * \brief Minimum buffer length to support any UTF-8 characters.
+ *
+ * When converting a UTF-32 character to UTF-8, it makes use of an output
+ * buffer. The size of that output buffer should be at least
+ * MBS_MIN_BUFFER_LENGTH to accomodate any UTF-32 character.
+ *
+ * Note that the size includes space for a null terminator (`'\0'`).
+ *
+ * The size of your buffer can be smaller as long as the UTF-32 character
+ * fits into it, the wctombs() function will not fail.
+ */
 
 
 /** \brief Compute the UTF-8 encoded representation of wc.
@@ -219,7 +246,7 @@ int mbstowc(char32_t & wc, char const * & mb, size_t & len)
     auto skip = [](char const * & skip_mb, size_t & skip_len)
     {
         for(unsigned char b(0)
-            ; skip_len > 0 && (b = *skip_mb, (b >= 0x80 && b <= 0xBF) || b >= 0xF8)
+            ; skip_len > 0 && (b = *skip_mb, (b >= 0x80 && b <= 0xBF) || b >= 0xF5)
             ; ++skip_mb , --skip_len);
     };
 
@@ -247,7 +274,7 @@ int mbstowc(char32_t & wc, char const * & mb, size_t & len)
 
     // invalid stream?
     //
-    if((c >= 0x80 && c <= 0xBF) || c >= 0xF8)
+    if((c >= 0x80 && c <= 0xBF) || c >= 0xF5)
     {
         // this is bad UTF-8, skip all the invalid bytes
         //
@@ -309,6 +336,25 @@ int mbstowc(char32_t & wc, char const * & mb, size_t & len)
     wc = w;
 
     return static_cast<int>(cnt + 1);
+}
+
+
+/** \brief An overload with a non-const string.
+ *
+ * Since we are passing a reference to the \p mb string, whether it is
+ * const or non-const matter to the call. So here we offer a non-const
+ * version even though the string doesn't get modified.
+ *
+ * \param[out] wc  The output wide character variable.
+ * \param[in,out] mb  The multi-byte input string pointer, returned at the
+ *                    following byte.
+ * \param[in,out] len  The number of characters left in mb.
+ *
+ * \return The number of bytes read or -1 if invalid bytes were found.
+ */
+int mbstowc(char32_t & wc, char * & mb, size_t & len)
+{
+    return mbstowc(wc, const_cast<char const * &>(mb), len);
 }
 
 

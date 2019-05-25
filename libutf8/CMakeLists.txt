@@ -47,9 +47,9 @@ configure_file(
 )
 
 add_library( ${PROJECT_NAME} SHARED
+    base.cpp
+    iterator.cpp
     libutf8.cpp
-    libutf8base.cpp
-    libutf8_iterator.cpp
     version.cpp
 )
 
@@ -81,9 +81,10 @@ install(
 
 install(
     FILES
+        base.h
         exception.h
+        iterator.h
         libutf8.h
-        libutf8base.h
         ${CMAKE_CURRENT_BINARY_DIR}/version.h
 
     DESTINATION
