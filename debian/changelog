@@ -1,10 +1,9 @@
 libutf8 (1.0.0.1~xenial) xenial; urgency=high
 
-  * Fixed dependencies (especially, compiled the newer version.)
-  * Enahcned the README.md
+  * Enhanced the README.md
   * Bumped snapcatch2 dependency version to 2.7.2.10.
 
- -- Alexis Wilke <alexis@m2osw.com>  Mon, 20 May 2019 01:23:11 -0800libutf8 (1.0.0.0~xenial) xenial; urgency=high
+ -- Alexis Wilke <alexis@m2osw.com>  Mon, 20 May 2019 01:23:11 -0800
 
 libutf8 (1.0.0.0~xenial) xenial; urgency=high
 
