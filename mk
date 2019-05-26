@@ -13,6 +13,10 @@ case $1 in
 	make -C ../../../BUILD/contrib/libutf8
 	;;
 
+"-i")
+	make -C ../../../BUILD/contrib/libutf8 install
+	;;
+
 "-t")
 	(
 		if make -C ../../../BUILD/contrib/libutf8

@@ -38,6 +38,10 @@
 #include "libutf8/libutf8.h"
 #include "libutf8/version.h"
 
+// libexcept lib
+//
+#include "libexcept/exception.h"
+
 // C++ lib
 //
 #include <sstream>
@@ -124,6 +128,7 @@ int main(int argc, char * argv[])
 
     try
     {
+        libexcept::set_collect_stack(false);
         r = unittest_main(argc, argv);
     }
     catch(std::logic_error const & e)

@@ -1,3 +1,13 @@
+libutf8 (1.0.0.3~xenial) xenial; urgency=high
+
+  * Added the cmake folder and files.
+  * Added the README.md and TODO.txt files to the debian/docs.
+  * Removed the "debian/tmp/..." from the `debian/libutf8-doc.install`.
+  * Added a `-i` command line option to mk to install the library.
+  * Added a call to prevent collection of stack trace in our tests.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Sat, 25 May 2019 20:54:23 -0800
+
 libutf8 (1.0.0.2~xenial) xenial; urgency=high
 
   * Try fixing dependencies, the version may need to include ~xenial.

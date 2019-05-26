@@ -54,5 +54,6 @@ include_directories(
 add_subdirectory(libutf8)
 add_subdirectory(tests  )
 add_subdirectory(doc    )
+add_subdirectory(cmake  )
 
 # vim: ts=4 sw=4 et
