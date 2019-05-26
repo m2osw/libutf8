@@ -39,19 +39,122 @@ The library offers to conversion functions as follow:
 As time passes, we will add other conversions so as to support all formats
 although at this point these two are the only two we need in Snap! Websites.
 
+Here is an example of usage:
+
+    std::string u8;
+
+    u8 = u8"This is a UTF-8 string";
+
+    std::w32string u32;
+    u32 = libutf8::to_u32string(u8);
+
+    std::string back;
+    back = libutfi::to_u8string(u32);
+
+Note that u8 string could be _more_ UTF-8 by including characters outside
+of the ASCII range and it would still work as you would expect.
+
+### String Length in Characters
+
+The library offers the `u8length()` function which computes the length of
+a UTF-8 string. Note that this does not verify whether the UTF-8 data is
+valid. It very quickly counts the number of non-continuation bytes (i.e.
+bytes between 0x80 and 0xBF inclusive.)
+
+    std::string u8("Your UTF-8 string");
+    size_t length = libutf8::u8length(u8);
+
+### Case Insensitive Compare
+
+In most cases, you can compare two UTF-8 strings with the normal `==`
+operator. Once in a while, though, you may want to compare them case
+insensitively.
+
+Like with the iterator below, we wanted to offer a function that allows
+you to compare two UTF-8 strings properly and as quickly as possible.
+This meant to not have to convert the entire strings before doing the
+compare because having to do so means allocating memory for both
+strings just to do the compare and the conversion would convert the
+entire strings instead of just what's necessary.
+
+Out of these constraints we created  the `u8casecmp()` function. It
+takes two UTF-8 strings and compares the characters one at a time.
+Unless the strings are equal, only the number of characters up to
+the first non-equal one, will be converted.
+
+    std::string a("First String");
+    std::string b("First Test");
+
+    int r(libutf8::u8casecmp(a, b));
+    if(r == 0)
+    {
+    	std::cout << "a and b are equal" << std::endl;
+    }
+    else if(r < 0)
+    {
+    	std::cout << "a comes before b" << std::endl;
+    }
+    else //if(r > 0)
+    {
+    	std::cout << "a comes after b" << std::endl;
+    }
+
+WARNING: the function does no collation, so it is not going to take the
+language in account. It uses lowercase characters, as suggested by the
+Unicode standard, but outside of that, the compare is binary.
+
 ## UTF-8 Iterator
 
-It is often that we have an `std::string` and we want to iterate the content
-as UTF-8 characters. Although we could convert the string to an
-`std::u32string` and then iterate the `std::u32string`, that (1) requires a
-copy and (2) uses four times the amount of memory (five times if you include
-the `std::string`.)
+It is often that we have an `std::string` representing UTF-8 and we want
+to iterate the content as UTF-32 characters. Although we could convert
+the string to a full `std::u32string` and then iterate through the
+`std::u32string`, that (1) requires a copy and (2) uses four times
+the amount of memory (five times if you include the `std::string` size...)
+Note also that the copy requires a `malloc()` and later a `free()` once
+done with it.
 
-The iterator solves this problem by allowing us to iterate through the
+The iterator solves these problems by allowing us to iterate through the
 `std::string` and getting the next or previous Unicode character without
-having to use more memory. It is slightly slower than converting a string
-all at once, but doing a `malloc()` to get the `std::u32string` is definitely
-going to be way slower than our iterator.
+having to use any more memory. The conversion itself is slightly slower
+than converting a string all at once, but doing a `malloc()` to get the
+`std::u32string` is definitely going to be way slower than our iterator
+in nearly all circumstances.
+
+The following example shows the code point of each character, one per line:
+
+    std::string u8("This is your UTF-8 string");
+
+    for(libutf8::utf8_iterator it(u8);
+    	it != u8.end();
+	++it)
+    {
+    	std::cout << static_cast<int>(*it) << std::endl;
+    }
+
+You can compare standard `std::string` iterators with `==` and `!=`. The
+`++` and `--` operators work as expected. If you do a `++` when already
+at the end, nothing happens. If you do a `--` when already at the beginning,
+nothing happens.
+
+Once you are at the end, getting the character (`*it`) returns `EOF`. So
+you can loop through until you get `EOF` instead of checking against the
+end iterator:
+
+    std::string u8("This is your UTF-8 string");
+
+    libutf8::utf8_iterator it(u8);
+    while(*it != EOF)
+    {
+    	std::cout << static_cast<int>(*it++) << std::endl;
+    }
+
+Remember that a good optimization is to avoid the post increment. It will
+be faster to do:
+
+    char32_t c = *it;
+    ++it;
+
+because you avoid a copy of the iterator (even though it's only 16 bytes...)
 
 ## Low Level Functions
 
