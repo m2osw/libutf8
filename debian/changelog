@@ -9,6 +9,7 @@ libutf8 (1.0.1.0~xenial) xenial; urgency=high
     copied as is.
   * Fixed the '\0' conversion, it would not get added to the output string.
   * Added a to_u8string() from a char32_t so we get an std::string as output.
+  * Generate errors when the mbstowc() or wctombs() functions fail.
 
  -- Alexis Wilke <alexis@m2osw.com>  Tue, 28 May 2019 01:04:30 -0800
 
