@@ -64,14 +64,17 @@ namespace libutf8
 
 
 
-/** \brief Converts a wide string to a UTF-8 string.
+/** \brief Converts a UTF-32 string to a UTF-8 string.
  *
- * This function converts a wide character string (wchar_t) to a
- * UTF-8 string. Note that the wchar_t is 16 bits under
- * MS-Windows and represents UTF-16. This function takes that
- * in account.
+ * This function converts a UTF-32 character string (char32_t) to a
+ * UTF-8 string.
  *
- * The resulting UTF-8 string is always 100% exact.
+ * \note
+ * The input string may include '\0' characters.
+ *
+ * \exception libutf8_exception_encoding
+ * The input character must be a valid UTF-32 character or this exception
+ * gets raised.
  *
  * \param[in] str  The wide character string to convert to UTF-8.
  *
@@ -83,26 +86,172 @@ std::string to_u8string(std::u32string const & str)
     //
     std::string result;
 
-    char mb[8];
-    for(char32_t const *s(str.c_str()); *s != L'\0'; ++s)
+    char mb[MBS_MIN_BUFFER_LENGTH];
+    std::u32string::size_type const max(str.length());
+    std::u32string::value_type const * s(str.c_str());
+    for(std::u32string::size_type idx(0); idx < max; ++idx)
     {
-//#ifdef MO_WINDOWS
-//        // newer versions of MS-Windows actually support UTF-16
-//        char32_t wc(static_cast<unsigned short>(*s));
-//        if((wc & 0xF800) == 0xD800)
-//        {
-//            // UTF-16 encoded, verify that the two surrogates are correct
-//            if((wc & 0x0400) != 0 || s[1] == L'\0' || (s[1] & 0xFC00) != 0xDC00)
-//            {
-//                // invalid surrogate character, skip at this point
-//                continue;
-//            }
-//            ++s;
-//            wc = ((wc << 10) + static_cast<unsigned short>(*s)) + (0x10000 - (0xD800 << 10) - 0xDC00);
-//        }
-//        wctombs(mb, wc);
-//#else
-        wctombs(mb, *s, sizeof(mb));
+        std::u32string::value_type const wc(s[idx]);
+        if(wc < 0x80)
+        {
+            // using the `mb` string below would not work for '\0'
+            // (i.e. mb would look like an empty string)
+            //
+            // and since all code bytes below 0x80 can be copied as
+            // is we do that here (much faster 99% of the time!)
+            //
+            result += static_cast<std::string::value_type>(wc);
+        }
+        else
+        {
+            if(wctombs(mb, wc, sizeof(mb)) < 0)
+            {
+                throw libutf8_exception_encoding(
+                          "to_u8string(u32string): the input wide character with code "
+                        + std::to_string(static_cast<std::uint32_t>(wc))
+                        + " is not a valid UTF-32 character.");
+            }
+            result += mb;
+        }
+    }
+
+    return result;
+}
+
+
+/** \brief Converts a UTF-16 string to a UTF-8 string.
+ *
+ * This function converts a UTF-16 string (char16_t) to a
+ * UTF-8 string.
+ *
+ * \note
+ * The input string may include '\0' characters.
+ *
+ * \exception libutf8_exception_decoding
+ * The input string must be a valid UTF-16 string or this exception
+ * gets raised.
+ *
+ * \exception libutf8_exception_encoding
+ * This exception should not occur since all UTF-16 characters are supported
+ * in UTF-8.
+ *
+ * \param[in] str  The wide character string to convert to UTF-8.
+ *
+ * \return The converted string.
+ */
+std::string to_u8string(std::u16string const & str)
+{
+    // TODO: calculate resulting string size and preallocate buffer (reserve)
+    //
+    std::string result;
+
+    char mb[MBS_MIN_BUFFER_LENGTH];
+    std::u16string::size_type const max(str.length());
+    std::u16string::value_type const * s(str.c_str());
+    for(std::u32string::size_type idx(0); idx < max; ++idx)
+    {
+        char32_t wc(static_cast<char32_t>(s[idx]));
+        if(wc < 0x80)
+        {
+            // using the `mb` string below would not work for '\0'
+            // (i.e. mb would look like an empty string)
+            //
+            // and since all code bytes below 0x80 can be copied as
+            // is we do that here (much faster 99% of the time!)
+            //
+            result += static_cast<std::string::value_type>(wc);
+        }
+        else
+        {
+            // convert the UTF-16 character in a UTF-32 character
+            //
+            if((wc & 0xFFFFF800) == 0xD800)
+            {
+                // large character, verify that the two surrogates are correct
+                //
+                if((wc & 0x0400) != 0)
+                {
+                    // 0xDC00 to 0xDFFF; introducer missing
+                    //
+                    throw libutf8_exception_decoding("to_u8string(): found a high UTF-16 surrogate without the low surrogate.");
+                }
+                if(idx + 1 >= max)
+                {
+                    // must be followed by a code between 0xDC00 and 0xDFFF
+                    //
+                    throw libutf8_exception_decoding("to_u8string(): the high UTF-16 surrogate is not followed by the low surrogate.");
+                }
+                if((s[idx + 1] & 0xFC00) != 0xDC00)
+                {
+                    if((s[idx + 1] & 0xFC00) != 0xD800)
+                    {
+                        throw libutf8_exception_decoding("to_u8string(): found two high UTF-16 surrogates in a row.");
+                    }
+                    else
+                    {
+                        throw libutf8_exception_decoding("to_u8string(): found a high UTF-16 surrogate without a low surrogate afterward.");
+                    }
+                }
+
+                ++idx;
+                wc = ((wc << 10)
+                   + static_cast<char32_t>(s[idx]))
+                   + (static_cast<char32_t>(0x10000)
+                   - (static_cast<char32_t>(0xD800) << 10)
+                   - static_cast<char32_t>(0xDC00));
+            }
+
+            if(wctombs(mb, wc, sizeof(mb)) < 0)
+            {
+                // this should not happen since all UTF-16 characters are
+                // considered valid when surrogates are valid
+                //
+                throw libutf8_exception_encoding("to_u8string(u16string): the input wide character is not a valid UTF-32 character.");
+            }
+            result += mb;
+        }
+    }
+
+    return result;
+}
+
+
+/** \brief Converts a wide character to a UTF-8 string.
+ *
+ * This function converts a wide character (char32_t) to a
+ * UTF-8 std::string.
+ *
+ * \warning
+ * The character L'\0' does not get added to the result. In that
+ * situation the function returns an empty string.
+ *
+ * \exception libutf8_exception_encoding
+ * The input character must be a valid UTF-32 character or this exception
+ * gets raised.
+ *
+ * \param[in] wc  The wide character to convert to UTF-8.
+ *
+ * \return The converted string.
+ */
+std::string to_u8string(char32_t wc)
+{
+    // TODO: calculate resulting string size and preallocate buffer (reserve)
+    //
+    std::string result;
+
+    if(wc == L'\0')
+    {
+        // using the `mb` string would not work for '\0'
+        //
+        result += '\0';
+    }
+    else
+    {
+        char mb[MBS_MIN_BUFFER_LENGTH];
+        if(wctombs(mb, wc, sizeof(mb)) < 0)
+        {
+            throw libutf8_exception_encoding("to_u8string(char32_t): the input wide character is not a valid UTF-32 character.");
+        }
         result += mb;
     }
 
@@ -131,27 +280,52 @@ std::u32string to_u32string(std::string const & str)
     result.reserve(u8length(str));  // avoid realloc(), in some cases this ends up being a little slower, with larger strings, much faster
 
     size_t len(str.length());
-    for(char const * mb(str.c_str()); len > 0; )
+    for(std::string::value_type const * mb(str.c_str()); len > 0; )
     {
         char32_t wc;
-        if(mbstowc(wc, mb, len) > 0)
+        if(mbstowc(wc, mb, len) < 0)
         {
-//#ifdef MO_WINDOWS
-//            // newer versions of MS-Windows actually support UTF-16
-//            if(wc < 0x00110000) // characters that are too large (over 21 bits limit) are ignored
-//            {
-//                if(wc >= 0x10000)
-//                {
-//                    result += static_cast<wchar_t>((wc >> 10) + (0xD800 - (0x10000 >> 10)));
-//                    result += static_cast<wchar_t>(((wc & 0x03FF) + 0xDC00));
-//                }
-//                else
-//                {
-//                    result += static_cast<wchar_t>(wc);
-//                }
-//            }
-//#else
-            result += wc;
+            throw libutf8_exception_decoding("to_u16string(): a UTF-8 character could not be extracted.");
+        }
+
+        result += wc;
+    }
+
+    return result;
+}
+
+
+/** \brief Transform a UTF-8 string to a UTF-16 character string.
+ *
+ * This function transforms the specified string, \p str, from the
+ * UTF-8 encoding to the UTF-16 encoding.
+ *
+ * \param[in] str  The string to convert to a UTF-16 string.
+ *
+ * \return A wide string which is a representation of the UTF-8 input string.
+ */
+std::u16string to_u16string(std::string const & str)
+{
+    std::u16string result;
+    result.reserve(u8length(str));  // avoid realloc(), works in most cases, but really we need a u8length() if converted to u16 characters
+
+    std::string::size_type len(str.length());
+    for(std::string::value_type const * mb(str.c_str()); len > 0; )
+    {
+        char32_t wc;
+        if(mbstowc(wc, mb, len) < 0)
+        {
+            throw libutf8_exception_decoding("to_u16string(): a UTF-8 character could not be extracted.");
+        }
+
+        if(wc >= 0x10000)
+        {
+            result += static_cast<std::u16string::value_type>((wc >> 10) + (0xD800 - (0x10000 >> 10)));
+            result += static_cast<std::u16string::value_type>(((wc & 0x03FF) + 0xDC00));
+        }
+        else
+        {
+            result += static_cast<std::u16string::value_type>(wc);
         }
     }
 
@@ -177,7 +351,7 @@ std::u32string to_u32string(std::string const & str)
 size_t u8length(std::string const & str)
 {
     size_t result(0);
-    for(const char *s(str.c_str()); *s != '\0'; ++s)
+    for(std::string::value_type const *s(str.c_str()); *s != '\0'; ++s)
     {
         unsigned char c(*s);
         if((c < 0x80 || c > 0xBF) && c < 0xF8)
@@ -211,11 +385,11 @@ size_t u8length(std::string const & str)
  */
 int u8casecmp(std::string const & lhs, std::string const & rhs)
 {
-    size_t llen(lhs.length());
-    char const * lmb(lhs.c_str());
+    std::string::size_type llen(lhs.length());
+    std::string::value_type const * lmb(lhs.c_str());
 
-    size_t rlen(rhs.length());
-    char const * rmb(rhs.c_str());
+    std::string::size_type rlen(rhs.length());
+    std::string::value_type const * rmb(rhs.c_str());
 
     while(llen > 0 && rlen > 0)
     {
@@ -252,6 +426,8 @@ int u8casecmp(std::string const & lhs, std::string const & rhs)
                 ? 0
                 : (llen == 0 ? -1 : 1);
 }
+
+
 
 } // libutf8 namespace
 // vim: ts=4 sw=4 et

@@ -1,3 +1,17 @@
+libutf8 (1.0.1.0~xenial) xenial; urgency=high
+
+  * Implemented the to and from UTF-8 and UTF-16 encoding.
+  * Fixed the u8casecmp() test function which would test 0xD800 to 0xDFFF
+    as valid characters.
+  * Added a new exception so we can distinguish whether an encoding or a
+    decoding went wrong.
+  * Optimized the UTF-32 to UTF-8 conversion, i.e. code bytes under 0x80 get
+    copied as is.
+  * Fixed the '\0' conversion, it would not get added to the output string.
+  * Added a to_u8string() from a char32_t so we get an std::string as output.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Tue, 28 May 2019 01:04:30 -0800
+
 libutf8 (1.0.0.3~xenial) xenial; urgency=high
 
   * Added the cmake folder and files.

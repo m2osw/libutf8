@@ -95,6 +95,12 @@ CATCH_TEST_CASE("compare strings", "strings")
     CATCH_START_SECTION("compare UTF-8 strings")
         for(int i(1); i < 0x10000; ++i)
         {
+            if(i >= 0xD800 && i <= 0xDFFF)
+            {
+                i = 0xDFFF;
+                continue;
+            }
+
             // as is against itself
             std::u32string in;
             in += static_cast<char32_t>(i);

@@ -133,7 +133,7 @@ int wctombs(char * mb, char32_t wc, size_t len)
     {
         if(len < required_len)
         {
-            throw libutf8_logic_exception("wctombs() called with a buffer which is too small.");
+            throw libutf8_logic_exception("wctombs() called with an output buffer which is too small.");
         }
     };
 

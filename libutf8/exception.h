@@ -60,6 +60,14 @@ public:
 
 
 
+class libutf8_exception_encoding : public libutf8_exception
+{
+public:
+    libutf8_exception_encoding(std::string const & msg) : libutf8_exception(msg) {}
+};
+
+
+
 
 
 } // libutf8 namespace
