@@ -1,3 +1,12 @@
+libutf8 (1.0.2.0~xenial) xenial; urgency=high
+
+  * Got the test coverage back to 100%.
+  * Renamed tge tests without the "unittest_" introducer.
+  * Added the `start_with_bom()` function and corresponding tests.
+  * Fixed standalone characters, the introducer is U for char32_t characters.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Tue, 28 May 2019 18:09:01 -0800
+
 libutf8 (1.0.1.0~xenial) xenial; urgency=high
 
   * Implemented the to and from UTF-8 and UTF-16 encoding.
