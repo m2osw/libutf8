@@ -1,4 +1,4 @@
 
 * `utf8lint` verify that a file is valid UTF-8.
-* `showutf8` show a UTF-8 character in bytes, UTF-32 and as a chracter, can use the UTF-32 or a range.
+* `showutf8` show a UTF-8 character in bytes, UTF-16, UTF-32 and as a character, can use the UTF-32 or a range.
 

@@ -1,4 +1,4 @@
-/*    unittest_character.cpp
+/*    tests/character.cpp
  *    Copyright (C) 2013-2019  Made to Order Software Corporation
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 
 // unit test
 //
-#include "unittest_main.h"
+#include "main.h"
 
 // libutf8 lib
 //
@@ -218,7 +218,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "characters,invalid")
             size_t len(3);
             char32_t cwc(rand());
             CATCH_REQUIRE(libutf8::mbstowc(cwc, s, len) == -1);
-            CATCH_REQUIRE(cwc == L'\0');
+            CATCH_REQUIRE(cwc == U'\0');
             char const c1(static_cast<char>((wc >> 12) | 0xE0));
             CATCH_REQUIRE(buf[0] == c1);
             char const c2(static_cast<char>(((wc >> 6) & 0x3F) | 0x80));
@@ -280,7 +280,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "characters,invalid")
             buf[1] = static_cast<char>(c);
             len = 2;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == L'\0');
+            CATCH_REQUIRE(back == U'\0');
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 1) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 1);
             buf[1] = second_byte;
@@ -292,7 +292,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "characters,invalid")
             buf[0] = rand() % 64 + 0x80;
             len = 2;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == L'\0');
+            CATCH_REQUIRE(back == U'\0');
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 2) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 0);
 
@@ -349,7 +349,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "characters,invalid")
             buf[1] = static_cast<char>(c);
             len = 3;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == L'\0');
+            CATCH_REQUIRE(back == U'\0');
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 1) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 2);
             buf[1] = second_byte;
@@ -365,7 +365,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "characters,invalid")
             buf[2] = static_cast<char>(c);
             len = 3;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == L'\0');
+            CATCH_REQUIRE(back == U'\0');
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 2) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 1);
             buf[2] = third_byte;
@@ -377,7 +377,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "characters,invalid")
             buf[0] = rand() % 64 + 0x80;
             len = 3;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == L'\0');
+            CATCH_REQUIRE(back == U'\0');
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 3) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 0);
 
@@ -428,7 +428,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "characters,invalid")
             buf[1] = static_cast<char>(c);
             len = 4;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == L'\0');
+            CATCH_REQUIRE(back == U'\0');
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 1) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 3);
             buf[1] = second_byte;
@@ -444,7 +444,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "characters,invalid")
             buf[2] = static_cast<char>(c);
             len = 4;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == L'\0');
+            CATCH_REQUIRE(back == U'\0');
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 2) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 2);
             buf[2] = third_byte;
@@ -460,7 +460,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "characters,invalid")
             buf[3] = static_cast<char>(c);
             len = 4;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == L'\0');
+            CATCH_REQUIRE(back == U'\0');
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 3) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 1);
             buf[3] = forth_byte;
@@ -472,7 +472,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "characters,invalid")
             buf[0] = rand() % 64 + 0x80;
             len = 3;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == L'\0');
+            CATCH_REQUIRE(back == U'\0');
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 3) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 0);
 
@@ -483,7 +483,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "characters,invalid")
             s = buf;
             len = 4;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == L'\0');
+            CATCH_REQUIRE(back == U'\0');
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 4) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 0);
 
@@ -527,7 +527,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "characters,invalid")
             CATCH_REQUIRE(back == wc[0]);
 
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == L'\0');
+            CATCH_REQUIRE(back == U'\0');
 
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) != -1);
             CATCH_REQUIRE(back == wc[2]);

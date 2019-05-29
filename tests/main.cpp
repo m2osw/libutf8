@@ -1,6 +1,6 @@
 /*
  * File:
- *    tests/unittest_main.cpp
+ *    tests/main.cpp
  *
  * License:
  *    Copyright (c) 2006-2019  Made to Order Software Corp.  All Rights Reserved
@@ -31,7 +31,7 @@
 
 // self
 //
-#include "unittest_main.h"
+#include "main.h"
 
 // advgetopt lib
 //

@@ -1,4 +1,4 @@
-/*    unittest_iterator.cpp
+/*    tests/iterator.cpp
  *    Copyright (C) 2013-2019  Made to Order Software Corporation
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 
 // unit test
 //
-#include "unittest_main.h"
+#include "main.h"
 
 // libutf8 lib
 //
@@ -282,7 +282,7 @@ CATCH_TEST_CASE("libutf8 iterator invalid string", "iterator,invalid")
                 str[pos[1]] = rand() % 0x40 + 0x80;
 
                 CATCH_REQUIRE(*it++ == wstr[0]);
-                CATCH_REQUIRE(*it++ == L'\0');       // we broke this one
+                CATCH_REQUIRE(*it++ == U'\0');       // we broke this one
                 CATCH_REQUIRE(*it++ == wstr[2]);
                 CATCH_REQUIRE(*it++ == wstr[3]);
                 CATCH_REQUIRE(*it++ == EOF);
@@ -295,9 +295,9 @@ CATCH_TEST_CASE("libutf8 iterator invalid string", "iterator,invalid")
                 str[pos[1]] = rand() % 0x40 + 0x80;
 
                 CATCH_REQUIRE(*it++ == wstr[0]);
-                CATCH_REQUIRE(*it++ == L'\0');
+                CATCH_REQUIRE(*it++ == U'\0');
                 CATCH_REQUIRE(*it++ == wstr[2]);
-                CATCH_REQUIRE(*it++ == L'\0');
+                CATCH_REQUIRE(*it++ == U'\0');
             }
         }
     CATCH_END_SECTION()

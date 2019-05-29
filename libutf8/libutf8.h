@@ -37,7 +37,21 @@ namespace libutf8
 {
 
 
+enum class bom_t
+{
+    BOM_NONE,
+    BOM_UTF8,
+    BOM_UTF16_LE,
+    BOM_UTF16_BE,
+    BOM_UTF32_LE,
+    BOM_UTF32_BE,
+};
 
+
+constexpr char32_t  BOM_CHAR = U'\U0000FEFF';
+
+
+bom_t               start_with_bom(char const * str, size_t len);
 std::string         to_u8string(std::u32string const & str);
 std::string         to_u8string(std::u16string const & str);
 std::string         to_u8string(char32_t wc);

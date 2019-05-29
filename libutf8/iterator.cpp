@@ -100,7 +100,7 @@ char32_t utf8_iterator::operator * () const
         return EOF;
     }
     char const * s(f_str.c_str() + f_pos);
-    char32_t wc(L'\0');
+    char32_t wc(U'\0');
     size_t len(f_str.length() - f_pos);
     if(mbstowc(wc, s, len) < 0)
     {

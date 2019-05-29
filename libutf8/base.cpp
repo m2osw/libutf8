@@ -221,12 +221,12 @@ int wctombs(char * mb, char32_t wc, size_t len)
  * These represent low and high surrogates in UTF-16 (2 are
  * necessary to encode one character of 17 or more bits.)
  *
- * The function returns 0 and sets \p wc to the NUL character (`L'\0'`)
+ * The function returns 0 and sets \p wc to the NUL character (`U'\0'`)
  * if the \p len parameter is zero (i.e. empty string.)
  *
  * \note
  * The function converts a NUL character (`'\0'`) in the
- * input string as a NUL wide character (`L'\0'`) and returns 1. It
+ * input string as a NUL wide character (`U'\0'`) and returns 1. It
  * does not see the NUL character as the end of the string.
  *
  * \warning
@@ -252,7 +252,7 @@ int mbstowc(char32_t & wc, char const * & mb, size_t & len)
 
     // default output character is NUL
     //
-    wc = L'\0';
+    wc = U'\0';
 
     // already done?
     //
@@ -282,7 +282,7 @@ int mbstowc(char32_t & wc, char const * & mb, size_t & len)
         return -1;
     }
 
-    char32_t w(L'\0');
+    char32_t w(U'\0');
     size_t cnt(0);
 
     if(c >= 0xF0)

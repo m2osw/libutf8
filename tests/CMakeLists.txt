@@ -62,11 +62,13 @@ if( Catch2_FOUND )
     )
 
     add_executable( ${PROJECT_NAME}
-        unittest_main.cpp
-        unittest_character.cpp
-        unittest_iterator.cpp
-        unittest_string.cpp
-        unittest_version.cpp
+        main.cpp
+
+        bom.cpp
+        character.cpp
+        iterator.cpp
+        string.cpp
+        version.cpp
     )
 
     target_link_libraries( ${PROJECT_NAME}

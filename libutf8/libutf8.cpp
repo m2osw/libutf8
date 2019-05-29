@@ -64,6 +64,94 @@ namespace libutf8
 
 
 
+/** \brief Check whether \p str starts with a BOM or not.
+ *
+ * This function checks the first few bytes of the buffer pointed by \p str
+ * to see whether it starts with a BOM.
+ *
+ * We support 5 different types:
+ *
+ * * UTF-8
+ * * UTF-16 in Little Endian or Big Endian
+ * * UTF-32 in Little Endian or Big Endian
+ *
+ * If none match, then the function returns bom_t::BOM_NONE.
+ *
+ * \param[in] str  The buffer to check.
+ * \param[in] len  The length of the buffer.
+ *
+ * \return One of the bom_t enumeration types.
+ */
+bom_t start_with_bom(char const * str, size_t len)
+{
+    if(len < 2)
+    {
+        // buffer too small for any BOM
+        //
+        return bom_t::BOM_NONE;
+    }
+
+    unsigned char const * s(reinterpret_cast<unsigned char const *>(str));
+
+    if(s[0] == 0xFF
+    && s[1] == 0xFE)
+    {
+        if(len < 4
+        || s[2] != 0x00
+        || s[3] != 0x00)
+        {
+            return bom_t::BOM_UTF16_LE;
+        }
+    }
+
+    if(s[0] == 0xFE
+    && s[1] == 0xFF)
+    {
+        if(len < 4
+        || s[2] != 0x00
+        || s[3] != 0x00)
+        {
+            return bom_t::BOM_UTF16_BE;
+        }
+    }
+
+    if(len < 3)
+    {
+        return bom_t::BOM_NONE;
+    }
+
+    if(s[0] == 0xEF
+    && s[1] == 0xBB
+    && s[2] == 0xBF)
+    {
+        return bom_t::BOM_UTF8;
+    }
+
+    if(len < 4)
+    {
+        return bom_t::BOM_NONE;
+    }
+
+    if(s[0] == 0xFF
+    && s[1] == 0xFE
+    && s[2] == 0x00
+    && s[3] == 0x00)
+    {
+        return bom_t::BOM_UTF32_LE;
+    }
+
+    if(s[0] == 0x00
+    && s[1] == 0x00
+    && s[2] == 0xFE
+    && s[3] == 0xFF)
+    {
+        return bom_t::BOM_UTF32_BE;
+    }
+
+    return bom_t::BOM_NONE;
+}
+
+
 /** \brief Converts a UTF-32 string to a UTF-8 string.
  *
  * This function converts a UTF-32 character string (char32_t) to a
@@ -206,7 +294,7 @@ std::string to_u8string(std::u16string const & str)
                 // this should not happen since all UTF-16 characters are
                 // considered valid when surrogates are valid
                 //
-                throw libutf8_exception_encoding("to_u8string(u16string): the input wide character is not a valid UTF-32 character.");
+                throw libutf8_exception_encoding("to_u8string(u16string): the input wide character is not a valid UTF-32 character."); // LCOV_EXCL_LINE
             }
             result += mb;
         }
@@ -222,7 +310,7 @@ std::string to_u8string(std::u16string const & str)
  * UTF-8 std::string.
  *
  * \warning
- * The character L'\0' does not get added to the result. In that
+ * The character U'\0' does not get added to the result. In that
  * situation the function returns an empty string.
  *
  * \exception libutf8_exception_encoding
@@ -239,7 +327,7 @@ std::string to_u8string(char32_t wc)
     //
     std::string result;
 
-    if(wc == L'\0')
+    if(wc == U'\0')
     {
         // using the `mb` string would not work for '\0'
         //

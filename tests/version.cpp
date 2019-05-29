@@ -1,6 +1,6 @@
 /*
  * Files:
- *    tests/unittest_version.cpp
+ *    tests/version.cpp
  *
  * License:
  *    Copyright (c) 2006-2019  Made to Order Software Corp.  All Rights Reserved
@@ -28,7 +28,7 @@
 
 // self
 //
-#include "unittest_main.h"
+#include "main.h"
 
 // libutf8 lib
 //
