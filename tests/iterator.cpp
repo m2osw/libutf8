@@ -29,10 +29,6 @@
 #include "libutf8/iterator.h"
 #include "libutf8/libutf8.h"
 
-// catch lib
-//
-#include <catch2/catch.hpp>
-
 // C++ lib
 //
 #include <cctype>

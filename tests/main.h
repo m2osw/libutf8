@@ -1,6 +1,6 @@
 /*
  * File:
- *    tests/unittest_main.h
+ *    tests/main.h
  *
  * License:
  *    Copyright (c) 2006-2019  Made to Order Software Corp.  All Rights Reserved
@@ -27,58 +27,24 @@
  */
 #ifndef UNIT_TEST_MAIN_H
 #define UNIT_TEST_MAIN_H
+
+// catch2 lib
+//
+#include <catch2/snapcatch2.hpp>
+
+// C++ lib
+//
 #include <string>
 #include <cstring>
 #include <cstdlib>
 #include <iostream>
 
-#include <boost/preprocessor/stringize.hpp>
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wctor-dtor-privacy"
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#pragma GCC diagnostic ignored "-Woverloaded-virtual"
-#include <catch2/catch.hpp>
 
-// The message() can be used to verify that version
-//
-//#pragma message("Building unit tests with Catch2 version " BOOST_PP_STRINGIZE(CATCH_VERSION_MAJOR) "." BOOST_PP_STRINGIZE(CATCH_VERSION_MINOR) "." BOOST_PP_STRINGIZE(CATCH_VERSION_PATCH))
-
-#pragma GCC diagnostic pop
-
-#ifdef _MSC_VER
-// The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: ... See online help for details.
-// This is because of the putenv() and strdup() used in the class below
-#pragma warning(disable: 4996)
-#endif
-
-namespace unittest
+namespace SNAP_CATCH2_NAMESPACE
 {
 
-extern bool             g_verbose;
 
-class obj_setenv
-{
-public:
-    obj_setenv(const std::string& var)
-        : f_copy(strdup(var.c_str()))
-    {
-        putenv(f_copy);
-        std::string::size_type p(var.find_first_of('='));
-        f_name = var.substr(0, p);
-    }
-    obj_setenv(obj_setenv const & rhs) = delete;
-    obj_setenv & operator = (obj_setenv const & rhs) = delete;
-    ~obj_setenv()
-    {
-        putenv(strdup((f_name + "=").c_str()));
-        free(f_copy);
-    }
-
-private:
-    char *          f_copy = nullptr;
-    std::string     f_name = std::string();
-};
 
 
 inline char32_t rand_char(bool full_range = false)
@@ -100,12 +66,6 @@ inline char32_t rand_char(bool full_range = false)
 
     return wc;
 }
-
-
-#define CATCH_START_SECTION(name) \
-    CATCH_SECTION(name) { if(unittest::g_verbose) { std::cout << name << std::endl; }
-
-#define CATCH_END_SECTION() }
 
 
 

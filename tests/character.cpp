@@ -28,10 +28,6 @@
 #include "libutf8/base.h"
 #include "libutf8/exception.h"
 
-// Catch2 lib
-//
-#include <catch2/catch.hpp>
-
 // C++ lib
 //
 #include <cctype>

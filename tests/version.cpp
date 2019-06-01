@@ -36,12 +36,6 @@
 
 
 
-namespace
-{
-
-
-} // no name namespace
-
 
 CATCH_TEST_CASE( "Version", "version" )
 {

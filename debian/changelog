@@ -1,3 +1,12 @@
+libutf8 (1.0.3.0~xenial) xenial; urgency=high
+
+  * Moved the catch2 implementation to our `snapcatch2.hpp` header instead.
+  * Updated the tests accordingly.
+  * Cleaned up various declarations in each file.
+  * Moved our `obj_setenv()` to `snapdev`.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Sat,  1 Jun 2019 00:24:36 -0800
+
 libutf8 (1.0.2.0~xenial) xenial; urgency=high
 
   * Got the test coverage back to 100%.

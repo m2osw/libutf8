@@ -27,10 +27,6 @@
 //
 #include "libutf8/libutf8.h"
 
-// Catch2 lib
-//
-#include <catch2/catch.hpp>
-
 // C++ lib
 //
 #include <cctype>
