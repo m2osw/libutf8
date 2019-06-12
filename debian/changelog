@@ -1,3 +1,11 @@
+libutf8 (1.0.4.0~xenial) xenial; urgency=high
+
+  * Added a PROJECT_BRIEF description.
+  * Added in=C++ to the MAPPING_EXTENSION.
+  * Updated the doxy file to 1.8.11.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Tue, 11 Jun 2019 23:55:25 -0800
+
 libutf8 (1.0.3.0~xenial) xenial; urgency=high
 
   * Moved the catch2 implementation to our `snapcatch2.hpp` header instead.
