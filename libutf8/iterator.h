@@ -41,13 +41,15 @@ namespace libutf8
 class utf8_iterator
 {
 public:
-                                utf8_iterator(std::string const & str);
+                                utf8_iterator(std::string const & str, bool end = false);
 
     utf8_iterator &             operator ++ ();
     utf8_iterator               operator ++ (int);
     utf8_iterator &             operator -- ();
     utf8_iterator               operator -- (int);
     char32_t                    operator * () const;
+    bool                        operator == (utf8_iterator const & rhs) const;
+    bool                        operator != (utf8_iterator const & rhs) const;
     bool                        operator == (std::string::iterator it) const;
     bool                        operator != (std::string::iterator it) const;
     bool                        operator == (std::string::const_iterator it) const;

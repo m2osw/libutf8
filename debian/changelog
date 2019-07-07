@@ -1,3 +1,10 @@
+libutf8 (1.0.5.0~xenial) xenial; urgency=high
+
+  * Added a way to create an iterator at the end.
+  * Added == and != with another utf8_iterator.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Sat, 29 Jun 2019 05:05:11 -0800
+
 libutf8 (1.0.4.0~xenial) xenial; urgency=high
 
   * Added a PROJECT_BRIEF description.

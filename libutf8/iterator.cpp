@@ -36,6 +36,11 @@
  * converter that is sure not to use a locale and this way we can use
  * standard strings (std::string and std::wstring) instead of having to
  * call C functions.
+ *
+ * \todo
+ * At this time this iterator is not properly derived from an STL
+ * iterator. It should be a BidirectionalIterator. That way we can
+ * use it in algorithms, etc.
  */
 
 // self
@@ -57,8 +62,9 @@ namespace libutf8
 
 
 
-utf8_iterator::utf8_iterator(std::string const & str)
+utf8_iterator::utf8_iterator(std::string const & str, bool end)
     : f_str(str)
+    , f_pos(end ? str.length() : 0)
 {
 }
 
@@ -107,6 +113,18 @@ char32_t utf8_iterator::operator * () const
         f_good = false;
     }
     return wc;
+}
+
+
+bool utf8_iterator::operator == (utf8_iterator const & rhs) const
+{
+    return f_pos == rhs.f_pos;
+}
+
+
+bool utf8_iterator::operator != (utf8_iterator const & rhs) const
+{
+    return f_pos != rhs.f_pos;
 }
 
 
