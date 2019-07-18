@@ -1,3 +1,9 @@
+libutf8 (1.0.5.1~xenial) xenial; urgency=high
+
+  * Bumped version to force a rebuild, just in case.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Wed, 17 Jul 2019 19:58:43 -0800
+
 libutf8 (1.0.5.0~xenial) xenial; urgency=high
 
   * Added a way to create an iterator at the end.
