@@ -35,7 +35,7 @@
 #include <iostream>
 
 
-CATCH_TEST_CASE("libutf8 iterator", "iterator")
+CATCH_TEST_CASE("libutf8 iterator", "[iterator]")
 {
     CATCH_START_SECTION("valid iterators tests")
         char32_t p(0);
@@ -76,11 +76,18 @@ CATCH_TEST_CASE("libutf8 iterator", "iterator")
 
             {
                 libutf8::utf8_iterator it(str);
+                libutf8::utf8_iterator it_end(str, true);
+                libutf8::utf8_iterator it_next(str);
+                ++it_next;
 
                 CATCH_REQUIRE(it == str.begin());
                 CATCH_REQUIRE(it == str.cbegin());
                 CATCH_REQUIRE(it != str.end());
                 CATCH_REQUIRE(it != str.cend());
+
+                CATCH_REQUIRE(it == it);
+                CATCH_REQUIRE(it != it_end);
+                CATCH_REQUIRE(it != it_next);
 
                 CATCH_REQUIRE(str.begin() == it);
                 CATCH_REQUIRE(str.cbegin() == it);
@@ -202,7 +209,7 @@ CATCH_TEST_CASE("libutf8 iterator", "iterator")
 }
 
 
-CATCH_TEST_CASE("libutf8 iterator invalid string", "iterator,invalid")
+CATCH_TEST_CASE("libutf8 iterator invalid string", "[iterator],[invalid]")
 {
     CATCH_START_SECTION("iterators with invalid characters (bad UTF-8)")
         for(int repeat(0); repeat < 100; ++repeat)

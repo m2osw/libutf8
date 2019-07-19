@@ -82,6 +82,7 @@ install(
 install(
     FILES
         base.h
+        caseinsensitivestring.h
         exception.h
         iterator.h
         libutf8.h

@@ -1,3 +1,12 @@
+libutf8 (1.0.6.0~xenial) xenial; urgency=high
+
+  * Added the snap::case_insensitive_string type.
+  * Fixed the mk so it generates an error on an unknown command line option.
+  * Added a test so we can make sure that the case_insensitive_string works.
+  * Fixed the existing test tag names, we have to have the square brackets.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Wed, 17 Jul 2019 19:58:43 -0800
+
 libutf8 (1.0.5.1~xenial) xenial; urgency=high
 
   * Bumped version to force a rebuild, just in case.

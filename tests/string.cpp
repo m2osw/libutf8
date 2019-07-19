@@ -35,7 +35,7 @@
 #include <iomanip>
 
 
-CATCH_TEST_CASE("string_conversions", "strings,valid,u8,u32")
+CATCH_TEST_CASE("string_conversions", "[strings],[valid],[u8],[u32]")
 {
     CATCH_START_SECTION("test conversion strings (0x0001 to 0xFFFD)")
         std::string str;
@@ -154,7 +154,7 @@ CATCH_TEST_CASE("string_conversions", "strings,valid,u8,u32")
 
 
 
-CATCH_TEST_CASE("invalid_string_conversions", "strings,invalid,u8,u32")
+CATCH_TEST_CASE("invalid_string_conversions", "[strings],[invalid],[u8],[u32]")
 {
     CATCH_START_SECTION("test surrogate string conversion (u8)")
         // create a string with all the characters defined in plane 1
@@ -236,7 +236,7 @@ CATCH_TEST_CASE("invalid_string_conversions", "strings,invalid,u8,u32")
 
 
 
-CATCH_TEST_CASE("wc_to_string", "wc,strings,valid,u8")
+CATCH_TEST_CASE("wc_to_string", "[wc],[strings],[valid],[u8]")
 {
     CATCH_START_SECTION("test wc to u8string conversions between 0 and 0x80")
         for(char32_t wc(0); wc < 0x80; ++wc)
@@ -290,7 +290,7 @@ CATCH_TEST_CASE("wc_to_string", "wc,strings,valid,u8")
 }
 
 
-CATCH_TEST_CASE("invalid_wc_to_string", "wc,strings,invalid,u8")
+CATCH_TEST_CASE("invalid_wc_to_string", "[wc],[strings],[invalid],[u8]")
 {
     CATCH_START_SECTION("test wc to u8string conversions between 0x800 and 0x10000")
         for(char32_t wc(0xD800); wc < 0xDFFF; ++wc)
@@ -316,7 +316,7 @@ CATCH_TEST_CASE("invalid_wc_to_string", "wc,strings,invalid,u8")
 
 
 
-CATCH_TEST_CASE("compare_strings", "compare,strings,valid,invalid,u8")
+CATCH_TEST_CASE("compare_strings", "[compare],[strings],[valid],[invalid],[u8]")
 {
     CATCH_START_SECTION("compare UTF-8 strings")
         for(int i(1); i < 0x10000; ++i)

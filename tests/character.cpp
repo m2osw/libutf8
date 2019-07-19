@@ -34,7 +34,7 @@
 #include <iostream>
 
 
-CATCH_TEST_CASE("Character Conversions", "characters")
+CATCH_TEST_CASE("Character Conversions", "[characters]")
 {
     CATCH_START_SECTION("Verify minimum buffer length for MBS conversions")
         CATCH_REQUIRE(libutf8::MBS_MIN_BUFFER_LENGTH >= 5);
@@ -165,7 +165,7 @@ CATCH_TEST_CASE("Character Conversions", "characters")
 }
 
 
-CATCH_TEST_CASE("Invalid UTF-32 Character to UTF-8", "characters,invalid")
+CATCH_TEST_CASE("Invalid UTF-32 Character to UTF-8", "[characters],[invalid]")
 {
     CATCH_START_SECTION("Verify that surrogates do not work in UTF-8")
         for(char32_t wc(0x00D800); wc < 0x00E000; ++wc)
@@ -199,7 +199,7 @@ CATCH_TEST_CASE("Invalid UTF-32 Character to UTF-8", "characters,invalid")
 }
 
 
-CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "characters,invalid")
+CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "[characters],[invalid]")
 {
     CATCH_START_SECTION("Verify that surrogates do not work in UTF-8")
         for(char32_t wc(0x00D800); wc < 0x00E000; ++wc)

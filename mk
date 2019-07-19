@@ -3,6 +3,8 @@
 # Sample script to run make without having to retype the long path each time
 # This will work if you built the environment using our ~/bin/build-snap script
 
+PROCESSORS=4
+
 case $1 in
 "-l")
 	make -C ../../../BUILD/contrib/libutf8 2>&1 | less -SR
@@ -14,20 +16,24 @@ case $1 in
 	;;
 
 "-i")
-	make -C ../../../BUILD/contrib/libutf8 install
+	make -j${PROCESSORS} -C ../../../BUILD/contrib/libutf8 install
 	;;
 
 "-t")
 	(
-		if make -C ../../../BUILD/contrib/libutf8
+		if make -j${PROCESSORS} -C ../../../BUILD/contrib/libutf8
 		then
 			../../../BUILD/contrib/libutf8/tests/unittest --progress
 		fi
 	) 2>&1 | less -SR
 	;;
 
+"")
+	make -j${PROCESSORS} -C ../../../BUILD/contrib/libutf8
+	;;
+
 *)
-	make -C ../../../BUILD/contrib/libutf8
+	echo "error: unknown command line option \"$1\""
 	;;
 
 esac

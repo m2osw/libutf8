@@ -65,6 +65,7 @@ if( Catch2_FOUND )
         main.cpp
 
         bom.cpp
+        caseinsensitive.cpp
         character.cpp
         iterator.cpp
         string.cpp

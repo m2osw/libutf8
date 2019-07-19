@@ -33,7 +33,7 @@
 #include <iostream>
 
 
-CATCH_TEST_CASE("bom", "characters,bom")
+CATCH_TEST_CASE("bom", "[characters],[bom]")
 {
     CATCH_START_SECTION("Verify the BOM character")
         CATCH_REQUIRE(libutf8::BOM_CHAR == 0xFEFF);
