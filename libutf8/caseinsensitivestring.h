@@ -1,4 +1,4 @@
-// Snap Websites Servers -- a string extension with all compare made case insensitive
+// Snap Websites Servers -- a string extension with all compare functions made case insensitive
 // Copyright (c) 2013-2019  Made to Order Software Corp.  All Rights Reserved
 //
 // This program is free software; you can redistribute it and/or modify
@@ -27,7 +27,7 @@
 
 
 
-namespace snap
+namespace libutf8
 {
 
 
@@ -307,5 +307,5 @@ typedef case_insensitive_basic_string<char>         case_insensitive_string;
 
 
 }
-// snap namespace
+// libutf8 namespace
 // vim: ts=4 sw=4 et

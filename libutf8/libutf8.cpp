@@ -462,6 +462,11 @@ size_t u8length(std::string const & str)
  * convert the strings to `std::u32string` and then use a collate function
  * that works against UTF-32 characters.
  *
+ * \note
+ * You may want to consider using the case_insensitive_basic_string class
+ * instead if you are to compare a given string case insensitively over
+ * and over again.
+ *
  * \exception libutf8_exception_decoding
  * This function raises the decoding exception if one of the input strings
  * includes an invalid UTF-8 sequence of characters.
@@ -470,6 +475,8 @@ size_t u8length(std::string const & str)
  * \param[in] rhs  The right handside string to compare.
  *
  * \return -1 if lhs < rhs, 0 if lhs == rhs, and 1 if lhs > rhs
+ *
+ * \sa case_insensitive_basic_string
  */
 int u8casecmp(std::string const & lhs, std::string const & rhs)
 {
