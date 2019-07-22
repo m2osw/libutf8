@@ -35,7 +35,309 @@
 #include <iomanip>
 
 
-CATCH_TEST_CASE("string_conversions", "[strings],[valid],[u8],[u32]")
+CATCH_TEST_CASE("string_validations", "[strings][valid][u8][u32]")
+{
+    CATCH_START_SECTION("Valid ASCII including controls")
+    {
+        CATCH_REQUIRE(libutf8::is_valid_ascii('\0'));
+        CATCH_REQUIRE(libutf8::is_valid_ascii('\0', true));
+
+        CATCH_REQUIRE(libutf8::is_valid_ascii(nullptr));
+        CATCH_REQUIRE(libutf8::is_valid_ascii(nullptr, true));
+        CATCH_REQUIRE(libutf8::is_valid_ascii(nullptr, false));
+        CATCH_REQUIRE(libutf8::is_valid_ascii(""));
+        CATCH_REQUIRE(libutf8::is_valid_ascii("", true));
+        CATCH_REQUIRE(libutf8::is_valid_ascii("", false));
+
+        char buffer[128];
+        for(int idx(0); idx < 127; ++idx)
+        {
+            CATCH_REQUIRE(libutf8::is_valid_ascii(static_cast<char>(idx)));
+            CATCH_REQUIRE(libutf8::is_valid_ascii(static_cast<char>(idx, true)));
+
+            buffer[idx] = idx + 1;
+        }
+        buffer[127] = '\0';
+        CATCH_REQUIRE(libutf8::is_valid_ascii(buffer));
+        CATCH_REQUIRE(libutf8::is_valid_ascii(buffer, true));
+
+        std::string const s(buffer);
+        CATCH_REQUIRE(libutf8::is_valid_ascii(s));
+        CATCH_REQUIRE(libutf8::is_valid_ascii(s, true));
+    }
+    CATCH_END_SECTION()
+
+    CATCH_START_SECTION("Valid ASCII excluding controls")
+    {
+        char buffer[128];
+
+        for(int idx(0); idx < 126 - 0x20; ++idx)
+        {
+            CATCH_REQUIRE(libutf8::is_valid_ascii(static_cast<char>(idx + 0x20), false));
+
+            buffer[idx] = idx + 0x20;
+        }
+        buffer[126 - 0x20] = '\0';
+        CATCH_REQUIRE(libutf8::is_valid_ascii(buffer, false));
+
+        std::string const s(buffer);
+        CATCH_REQUIRE(libutf8::is_valid_ascii(s, false));
+    }
+    CATCH_END_SECTION()
+
+    CATCH_START_SECTION("Invalid ASCII (extended characters)")
+    {
+        for(int idx(128); idx < 256; ++idx)
+        {
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_ascii(static_cast<char>(idx)));
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_ascii(static_cast<char>(idx), true));
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_ascii(static_cast<char>(idx), false));
+
+            char buffer[2];
+            buffer[0] = idx;
+            buffer[1] = '\0';
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_ascii(buffer));
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_ascii(buffer, true));
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_ascii(buffer, false));
+
+            std::string const s(buffer);
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_ascii(s));
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_ascii(s, true));
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_ascii(s, false));
+        }
+    }
+    CATCH_END_SECTION()
+
+    CATCH_START_SECTION("Invalid ASCII (controls)")
+    {
+        for(int idx(1); idx < 0x20; ++idx)
+        {
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_ascii(static_cast<char>(idx), false));
+
+            char buffer[2];
+            buffer[0] = idx;
+            buffer[1] = '\0';
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_ascii(buffer, false));
+
+            std::string const s(buffer);
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_ascii(s, false));
+        }
+
+        for(int idx(127); idx < 256; ++idx)
+        {
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_ascii(static_cast<char>(idx), false));
+
+            char buffer[2];
+            buffer[0] = idx;
+            buffer[1] = '\0';
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_ascii(buffer, false));
+
+            std::string const s(buffer);
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_ascii(s, false));
+        }
+    }
+    CATCH_END_SECTION()
+
+    CATCH_START_SECTION("Valid UTF-8")
+    {
+        // nullptr is considered to be an empty string
+        //
+        CATCH_REQUIRE(libutf8::is_valid_utf8(nullptr));
+        CATCH_REQUIRE(libutf8::is_valid_utf8(""));
+
+        for(char32_t wc(1); wc < 0x110000; ++wc)
+        {
+            if(wc >= 0xD800 && wc <= 0xDFFF)
+            {
+                continue;
+            }
+
+            std::string const ws(libutf8::to_u8string(wc));
+            CATCH_REQUIRE(libutf8::is_valid_utf8(ws.c_str()));
+
+            CATCH_REQUIRE(libutf8::is_valid_utf8(ws));
+        }
+    }
+    CATCH_END_SECTION()
+
+    CATCH_START_SECTION("Invalid UTF-8 (UTF-16 surrogates)")
+    {
+        for(char32_t wc(0xD800); wc < 0xDFFF; ++wc)
+        {
+            char mb[4];
+            mb[0] = static_cast<char>((wc >> 12) | 0xE0);
+            mb[1] = ((wc >> 6) & 0x3F) | 0x80;
+            mb[2] = (wc & 0x3F) | 0x80;
+            mb[3] = '\0';
+
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_utf8(mb));
+
+            std::string const ws(mb);
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_utf8(ws));
+        }
+    }
+    CATCH_END_SECTION()
+
+    CATCH_START_SECTION("Invalid UTF-8 (invalid code points)")
+    {
+        for(int count(0); count < 1000; ++count)
+        {
+            uint32_t wc(0);
+            wc = rand() ^ (rand() << 16);
+            if(wc < 0x110000)
+            {
+                wc += 0x110000;
+            }
+
+            char mb[8];
+            if(wc < (1UL << 21))
+            {
+                mb[0] = static_cast<char>((wc >> 18) | 0xF0);
+                mb[1] = ((wc >> 12) & 0x3F) | 0x80;
+                mb[2] = ((wc >> 6) & 0x3F) | 0x80;
+                mb[3] = (wc & 0x3F) | 0x80;
+                mb[4] = '\0';
+            }
+            else if(wc < (1UL << 26))
+            {
+                mb[0] = static_cast<char>((wc >> 24) | 0xF8);
+                mb[1] = ((wc >> 18) & 0x3F) | 0x80;
+                mb[2] = ((wc >> 12) & 0x3F) | 0x80;
+                mb[3] = ((wc >> 6) & 0x3F) | 0x80;
+                mb[4] = (wc & 0x3F) | 0x80;
+                mb[5] = '\0';
+            }
+            else if(wc < (1UL << 31))
+            {
+                mb[0] = static_cast<char>((wc >> 30) | 0xFC);
+                mb[1] = ((wc >> 24) & 0x3F) | 0x80;
+                mb[2] = ((wc >> 18) & 0x3F) | 0x80;
+                mb[3] = ((wc >> 12) & 0x3F) | 0x80;
+                mb[4] = ((wc >> 6) & 0x3F) | 0x80;
+                mb[5] = (wc & 0x3F) | 0x80;
+                mb[6] = '\0';
+            }
+            else
+            {
+                // this is really extreme (negative numbers)
+                //
+                mb[0] = static_cast<char>(0xFE);
+                mb[1] = ((wc >> 30) & 0x3F) | 0x80;
+                mb[2] = ((wc >> 24) & 0x3F) | 0x80;
+                mb[3] = ((wc >> 18) & 0x3F) | 0x80;
+                mb[4] = ((wc >> 12) & 0x3F) | 0x80;
+                mb[5] = ((wc >> 6) & 0x3F) | 0x80;
+                mb[6] = (wc & 0x3F) | 0x80;
+                mb[7] = '\0';
+            }
+
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_utf8(mb));
+
+            std::string const ws(mb);
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_utf8(ws));
+        }
+    }
+    CATCH_END_SECTION()
+
+    CATCH_START_SECTION("Valid UTF-32")
+    {
+        CATCH_REQUIRE(libutf8::is_valid_unicode(U'\0'));
+        CATCH_REQUIRE(libutf8::is_valid_unicode(U'\0', true));
+        CATCH_REQUIRE_FALSE(libutf8::is_valid_unicode(U'\0', false));
+
+        for(char32_t wc(1); wc < 0x110000; ++wc)
+        {
+            if(wc >= 0xD800 && wc <= 0xDFFF)
+            {
+                continue;
+            }
+
+            CATCH_REQUIRE(libutf8::is_valid_unicode(wc));
+            CATCH_REQUIRE(libutf8::is_valid_unicode(wc, true));
+
+            char32_t buf[2];
+            buf[0] = wc;
+            buf[1] = U'\0';
+            CATCH_REQUIRE(libutf8::is_valid_unicode(buf));
+            CATCH_REQUIRE(libutf8::is_valid_unicode(buf, true));
+
+            std::u32string const ws(buf);
+            CATCH_REQUIRE(libutf8::is_valid_unicode(ws));
+            CATCH_REQUIRE(libutf8::is_valid_unicode(ws, true));
+
+            if(wc >= 0x01 && wc <= 0x1F
+            || wc >= 0x7F && wc <= 0x9F)
+            {
+                CATCH_REQUIRE_FALSE(libutf8::is_valid_unicode(wc, false));
+                CATCH_REQUIRE_FALSE(libutf8::is_valid_unicode(buf, false));
+                CATCH_REQUIRE_FALSE(libutf8::is_valid_unicode(ws, false));
+            }
+        }
+    }
+    CATCH_END_SECTION()
+
+    CATCH_START_SECTION("Invalid UTF-32 (UTF-16 surrogates)")
+    {
+        CATCH_REQUIRE(libutf8::is_valid_unicode(nullptr));
+        CATCH_REQUIRE(libutf8::is_valid_unicode(nullptr, true));
+        CATCH_REQUIRE(libutf8::is_valid_unicode(nullptr, false));
+        CATCH_REQUIRE(libutf8::is_valid_unicode(U""));
+        CATCH_REQUIRE(libutf8::is_valid_unicode(U"", true));
+        CATCH_REQUIRE(libutf8::is_valid_unicode(U"", false));
+
+        for(char32_t wc(0xD800); wc < 0xDFFF; ++wc)
+        {
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_unicode(wc));
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_unicode(wc, true));
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_unicode(wc, false));
+
+            char32_t buf[2];
+            buf[0] = wc;
+            buf[1] = U'\0';
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_unicode(buf));
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_unicode(buf, true));
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_unicode(buf, false));
+
+            std::u32string const ws(buf);
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_unicode(ws));
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_unicode(ws, true));
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_unicode(ws, false));
+        }
+    }
+    CATCH_END_SECTION()
+
+    CATCH_START_SECTION("Invalid UTF-32 (invalid code points)")
+    {
+        for(int count(0); count < 1000; ++count)
+        {
+            uint32_t wc(0);
+            wc = rand() ^ (rand() << 16);
+            if(wc < 0x110000)
+            {
+                wc += 0x110000;
+            }
+
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_unicode(wc));
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_unicode(wc, true));
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_unicode(wc, false));
+
+            char32_t buf[2];
+            buf[0] = wc;
+            buf[1] = U'\0';
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_unicode(buf));
+
+            std::u32string const ws(buf);
+            CATCH_REQUIRE_FALSE(libutf8::is_valid_unicode(ws));
+        }
+    }
+    CATCH_END_SECTION()
+}
+
+
+
+
+
+CATCH_TEST_CASE("string_conversions", "[strings][valid][u8][u32]")
 {
     CATCH_START_SECTION("test conversion strings (0x0001 to 0xFFFD)")
         std::string str;

@@ -4,6 +4,12 @@ libutf8 (1.0.6.0~xenial) xenial; urgency=high
   * Fixed the mk so it generates an error on an unknown command line option.
   * Added a test so we can make sure that the case_insensitive_string works.
   * Fixed the existing test tag names, we have to have the square brackets.
+  * Moved a couple of validation functions from the libsnapwebsites to here.
+  * Broke up the tests in a character and a string so we can just validate a
+    standalone character too.
+  * Added another validation for UTF-32 strings and characters.
+  * Allow for a specific test to be run with `mk -t <name>`.
+  * Allow for a nullptr when calling start_with_bom().
 
  -- Alexis Wilke <alexis@m2osw.com>  Wed, 17 Jul 2019 19:58:43 -0800
 

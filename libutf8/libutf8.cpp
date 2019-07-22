@@ -64,6 +64,304 @@ namespace libutf8
 
 
 
+/** \brief Validate an ASCII characters.
+ *
+ * This function checks whether a character is considered an ASCII character
+ * or not.
+ *
+ * \param[in] c  The string to be validated.
+ * \param[in] ctrl  Set to true to also accept controls.
+ *
+ * \return true if the string is empty, nullptr, or only includes ASCII
+ *         characters.
+ */
+bool is_valid_ascii(char c, bool ctrl)
+{
+    if(ctrl)
+    {
+        return static_cast<unsigned char>(c) < 0x80;
+    }
+
+    return static_cast<unsigned char>(c) > 0x1F
+        && static_cast<unsigned char>(c) < 0x7F;
+}
+
+
+/** \brief Validate a string as ASCII characters.
+ *
+ * This function checks that all the characters in a string are comprised
+ * only of ACSII characters (code bytes 0x01 to 0x7F, since 0x00 is viewed
+ * as the end of the string).
+ *
+ * When the ctrl parameter is set to true, controls are accepted.
+ *
+ * \note
+ * This function is used to validate headers from a POST because those
+ * just cannot include characters other than ASCII. Actually, most
+ * controls are also forbidden.
+ *
+ * \param[in] str  The string to be validated.
+ * \param[in] ctrl  Set to true to also accept controls.
+ *
+ * \return true if the string is empty, nullptr, or only includes ASCII
+ *         characters.
+ */
+bool is_valid_ascii(char const *str, bool ctrl)
+{
+    if(str != nullptr)
+    {
+        for(; *str != '\0'; ++str)
+        {
+            if(!is_valid_ascii(*str, ctrl))
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+
+/** \brief Validate a string as ASCII characters.
+ *
+ * This function is an overload which accepts an std::string as input.
+ *
+ * \param[in] str  The string to be validated.
+ * \param[in] ctrl  Set to true to also accept controls.
+ *
+ * \return true if the string is empty, nullptr, or only includes ASCII
+ *         characters.
+ */
+bool is_valid_ascii(std::string const & str, bool ctrl)
+{
+    return is_valid_ascii(str.c_str(), ctrl);
+}
+
+
+/** \brief Check whether a string is valid UTF-8 or not.
+ *
+ * This function is used to verify that an input string is valid
+ * UTF-8. The function checks each byte and if all the bytes represent
+ * a valid UTF-8 stream it returns true, otherwise it returns false.
+ *
+ * This function is much faster than running a full conversion if you
+ * do not need the result since it does not write anything to memory.
+ * Note also that this function does not throw on invalid characters
+ * whereas the convertion functions do.
+ *
+ * \note
+ * This test is done on data received from clients to make sure that
+ * the form data encoding was respected. We only support UTF-8 forms
+ * so any client that does not is pretty much limited to sending
+ * ASCII characters...
+ *
+ * Source: http://stackoverflow.com/questions/1031645/how-to-detect-utf-8-in-plain-c
+ * Source: http://www.w3.org/International/questions/qa-forms-utf-8
+ *
+ * \note
+ * The test ensures proper encoding of UTF-8 in the range 0 to
+ * 0x10FFFF and also that UTF-16 surrogate aren't used as characters
+ * (i.e. code points 0xD800 to 0xDFFF). No other code points are considered
+ * invalid (i.e. 0xFFFE is not a valid character, but this function does
+ * not return false when it finds such.)
+ *
+ * The Perl expression:
+ *
+ * \code
+ * $field =~
+ *   m/\A(
+ *      [\x09\x0A\x0D\x20-\x7E]            # ASCII
+ *    | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
+ *    |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
+ *    | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
+ *    |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
+ *    |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
+ *    | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
+ *    |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
+ *   )*\z/x;
+ * \endcode
+ *
+ * \warning
+ * Remember that QString already handles UTF-8. However, it keeps the
+ * characters as UTF-16 characters in its buffers. This means asking
+ * for the UTF-8 representation of a QString should always be considered
+ * valid UTF-8 (although some surrogates, etc. may be wrong!)
+ *
+ * \param[in] string  The NUL terminated string to scan.
+ *
+ * \return true if the string is valid UTF-8
+ */
+bool is_valid_utf8(char const *str)
+{
+    if(str == nullptr)
+    {
+        // empty strings are considered valid
+        return true;
+    }
+
+    // use unsigned characters so it works even if char is signed
+    unsigned char const *s(reinterpret_cast<unsigned char const *>(str));
+    while(*s != '\0')
+    {
+        if(s[0] <= 0x7F)
+        {
+            ++s;
+        }
+        else if(s[0] >= 0xC2 && s[0] <= 0xDF // non-overlong 2-byte
+             && s[1] >= 0x80 && s[1] <= 0xBF)
+        {
+            s += 2;
+        }
+        else if(s[0] == 0xE0 // excluding overlongs
+             && s[1] >= 0xA0 && s[1] <= 0xBF
+             && s[2] >= 0x80 && s[2] <= 0xBF)
+        {
+            s += 3;
+        }
+        else if(((0xE1 <= s[0] && s[0] <= 0xEC) || s[0] == 0xEE || s[0] == 0xEF) // straight 3-byte
+             && s[1] >= 0x80 && s[1] <= 0xBF
+             && s[2] >= 0x80 && s[2] <= 0xBF)
+        {
+            s += 3;
+        }
+        else if(s[0] == 0xED // excluding surrogates
+             && s[1] >= 0x80 && s[1] <= 0x9F
+             && s[2] >= 0x80 && s[2] <= 0xBF)
+        {
+            s += 3;
+        }
+        else if(s[0] == 0xF0 // planes 1-3
+             && s[1] >= 0x90 && s[1] <= 0xBF
+             && s[2] >= 0x80 && s[2] <= 0xBF
+             && s[3] >= 0x80 && s[3] <= 0xBF)
+        {
+            s += 4;
+        }
+        else if(s[0] >= 0xF1 && s[0] <= 0xF3 // planes 4-15
+             && s[1] >= 0x80 && s[1] <= 0xBF
+             && s[2] >= 0x80 && s[2] <= 0xBF
+             && s[3] >= 0x80 && s[3] <= 0xBF)
+        {
+            s += 4;
+        }
+        else if(s[0] == 0xF4 // plane 16
+             && s[1] >= 0x80 && s[1] <= 0x8F
+             && s[2] >= 0x80 && s[2] <= 0xBF
+             && s[3] >= 0x80 && s[3] <= 0xBF)
+        {
+            s += 4;
+        }
+        else
+        {
+            // not a supported character
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+/** \brief Check whether a string is valid UTF-8 or not.
+ *
+ * This function is an overload of the is_valid_utf8(char const *) with
+ * an std::string.
+ *
+ * \param[in] str  The std::string to scan.
+ *
+ * \return true if the string is valid UTF-8
+ */
+bool is_valid_utf8(std::string const & str)
+{
+    return is_valid_utf8(str.c_str());
+}
+
+
+/** \brief Validate a Unicode character.
+ *
+ * This function checks the specified character. If it looks like a valid
+ * Unicode character, the function returns true.
+ *
+ * Valid characters are between 0 and 0x10FFFF inclusive. However, the
+ * code points between 0xD800 and 0xDFFF are considered invalid. They
+ * are not supported in UTF-32.
+ *
+ * When the \p ctrl flag is set to false, then control characters are not
+ * included so code points 0x00 to 0x1F and 0x7F to 0x9F are considered
+ * invalid even those they are valid UTF-32 code points.
+ *
+ * \param[in] wc  The character to validate.
+ * \param[in] ctrl  Whether the character canbe a control or not.
+ *
+ * \return true if wc is considered valid.
+ */
+bool is_valid_unicode(char32_t wc, bool ctrl)
+{
+    if(ctrl)
+    {
+        return wc < 0x110000 && (wc < 0x00D800 || wc > 0x00DFFF);
+    }
+
+    return  wc <  0x110000
+        &&  wc >= 0x000020
+        && (wc <  0x00007F || wc > 0x00009F)
+        && (wc <  0x00D800 || wc > 0x00DFFF);
+}
+
+
+/** \brief Validate a string as Unicode characters.
+ *
+ * This function checks that all the characters in a string are comprised
+ * only of Unicode characters (code bytes 0x01 to 0x10FFFF, since 0x00 is
+ * viewed as the end of the string, it is not included as valid).
+ *
+ * When the ctrl parameter is set to true, controls are accepted. Otherwise
+ * codes between 0x00-0x1F and 0x7F-0x9F are refused.
+ *
+ * \note
+ * Code between 0xD800 and 0xDFFF inclusive are viewed as invalid Unicode
+ * characters.
+ *
+ * \param[in] str  The NUL terminated string to be validated.
+ * \param[in] ctrl  Set to true to also accept controls.
+ *
+ * \return true if the string is empty, nullptr, or only includes ASCII
+ *         characters.
+ */
+bool is_valid_unicode(char32_t const *str, bool ctrl)
+{
+    if(str != nullptr)
+    {
+        for(; *str != '\0'; ++str)
+        {
+            if(!is_valid_unicode(*str, ctrl))
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+
+/** \brief Validate a string as ASCII characters.
+ *
+ * This function is an overload which accepts an std::u32string as input.
+ *
+ * \param[in] str  The string to be validated.
+ * \param[in] ctrl  Set to true to also accept controls.
+ *
+ * \return true if the string is empty, nullptr, or only includes ASCII
+ *         characters.
+ */
+bool is_valid_unicode(std::u32string const & str, bool ctrl)
+{
+    return is_valid_unicode(str.c_str(), ctrl);
+}
+
+
 /** \brief Check whether \p str starts with a BOM or not.
  *
  * This function checks the first few bytes of the buffer pointed by \p str
@@ -84,7 +382,8 @@ namespace libutf8
  */
 bom_t start_with_bom(char const * str, size_t len)
 {
-    if(len < 2)
+    if(str == nullptr
+    || len < 2)
     {
         // buffer too small for any BOM
         //
@@ -170,12 +469,11 @@ bom_t start_with_bom(char const * str, size_t len)
  */
 std::string to_u8string(std::u32string const & str)
 {
-    // TODO: calculate resulting string size and preallocate buffer (reserve)
-    //
     std::string result;
 
     char mb[MBS_MIN_BUFFER_LENGTH];
     std::u32string::size_type const max(str.length());
+    result.reserve(max * 2);  // TODO: calculate correct resulting string size?
     std::u32string::value_type const * s(str.c_str());
     for(std::u32string::size_type idx(0); idx < max; ++idx)
     {
@@ -229,12 +527,11 @@ std::string to_u8string(std::u32string const & str)
  */
 std::string to_u8string(std::u16string const & str)
 {
-    // TODO: calculate resulting string size and preallocate buffer (reserve)
-    //
     std::string result;
 
     char mb[MBS_MIN_BUFFER_LENGTH];
     std::u16string::size_type const max(str.length());
+    result.reserve(max * 2);  // TODO: calculate correct resulting string size?
     std::u16string::value_type const * s(str.c_str());
     for(std::u32string::size_type idx(0); idx < max; ++idx)
     {

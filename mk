@@ -23,7 +23,8 @@ case $1 in
 	(
 		if make -j${PROCESSORS} -C ../../../BUILD/contrib/libutf8
 		then
-			../../../BUILD/contrib/libutf8/tests/unittest --progress
+			shift
+			../../../BUILD/contrib/libutf8/tests/unittest --progress $*
 		fi
 	) 2>&1 | less -SR
 	;;

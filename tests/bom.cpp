@@ -39,6 +39,14 @@ CATCH_TEST_CASE("bom", "[characters],[bom]")
         CATCH_REQUIRE(libutf8::BOM_CHAR == 0xFEFF);
     CATCH_END_SECTION()
 
+    CATCH_START_SECTION("Verify with a string that's too small")
+    {
+        CATCH_REQUIRE(libutf8::start_with_bom(nullptr, rand()) == libutf8::bom_t::BOM_NONE);
+        CATCH_REQUIRE(libutf8::start_with_bom("", 0) == libutf8::bom_t::BOM_NONE);
+        CATCH_REQUIRE(libutf8::start_with_bom("a", 1) == libutf8::bom_t::BOM_NONE);
+    }
+    CATCH_END_SECTION()
+
     CATCH_START_SECTION("Verify the five BOMs as is")
         char buf[4];
         char32_t const bom(libutf8::BOM_CHAR);

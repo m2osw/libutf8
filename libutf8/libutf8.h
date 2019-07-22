@@ -51,6 +51,14 @@ enum class bom_t
 constexpr char32_t  BOM_CHAR = U'\U0000FEFF';
 
 
+bool                is_valid_ascii(char c, bool ctrl = true);
+bool                is_valid_ascii(char const * str, bool ctrl = true);
+bool                is_valid_ascii(std::string const & str, bool ctrl = true);
+bool                is_valid_utf8(char const * str);
+bool                is_valid_utf8(std::string const & str);
+bool                is_valid_unicode(char32_t const wc, bool ctrl = true);
+bool                is_valid_unicode(char32_t const * str, bool ctrl = true);
+bool                is_valid_unicode(std::u32string const & str, bool ctrl = true);
 bom_t               start_with_bom(char const * str, size_t len);
 std::string         to_u8string(std::u32string const & str);
 std::string         to_u8string(std::u16string const & str);
