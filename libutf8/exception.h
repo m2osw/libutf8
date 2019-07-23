@@ -68,6 +68,14 @@ public:
 
 
 
+class libutf8_exception_unsupported : public libutf8_exception
+{
+public:
+    libutf8_exception_unsupported(std::string const & msg) : libutf8_exception(msg) {}
+};
+
+
+
 
 
 } // libutf8 namespace

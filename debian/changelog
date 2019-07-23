@@ -10,6 +10,11 @@ libutf8 (1.0.6.0~xenial) xenial; urgency=high
   * Added another validation for UTF-32 strings and characters.
   * Allow for a specific test to be run with `mk -t <name>`.
   * Allow for a nullptr when calling start_with_bom().
+  * Added a new exception for unsupported features.
+  * Aded a function to check whether a character is a surrogate and which one.
+  * Added a to_u8string() with std::wstring as input.
+  * Added a to_u8string() with wchar_t as input.
+  * Added a to_u8string() with char16_t as input.
 
  -- Alexis Wilke <alexis@m2osw.com>  Wed, 17 Jul 2019 19:58:43 -0800
 

@@ -149,6 +149,7 @@ CATCH_TEST_CASE("string_validations", "[strings][valid][u8][u32]")
         {
             if(wc >= 0xD800 && wc <= 0xDFFF)
             {
+                wc = 0xDFFF;
                 continue;
             }
 
@@ -235,6 +236,122 @@ CATCH_TEST_CASE("string_validations", "[strings][valid][u8][u32]")
 
             std::string const ws(mb);
             CATCH_REQUIRE_FALSE(libutf8::is_valid_utf8(ws));
+        }
+    }
+    CATCH_END_SECTION()
+
+    CATCH_START_SECTION("Valid UTF-16 (no surrogates)")
+    {
+        // nullptr is considered to be an empty string
+        //
+        CATCH_REQUIRE(libutf8::is_valid_utf8(nullptr));
+        CATCH_REQUIRE(libutf8::is_valid_utf8(""));
+
+        for(wchar_t wc(1); wc < 0xFFFF; ++wc)
+        {
+            if(wc >= 0xD800 && wc <= 0xDFFF)
+            {
+                wc = 0xDFFF;
+                continue;
+            }
+
+            wchar_t buf[2];
+            buf[0] = wc;
+            buf[1] = L'\0';
+
+            std::string const ws1(libutf8::to_u8string(buf));
+            CATCH_REQUIRE(libutf8::is_valid_utf8(ws1.c_str()));
+
+            std::string const ws2(libutf8::to_u8string(wc));
+            CATCH_REQUIRE(libutf8::is_valid_utf8(ws2.c_str()));
+
+            char16_t const u16(wc);
+            std::string const ws3(libutf8::to_u8string(u16));
+            CATCH_REQUIRE(libutf8::is_valid_utf8(ws3.c_str()));
+        }
+
+        if(sizeof(wchar_t) == 4)
+        {
+            // on Linux wchar_t is like char32_t
+            //
+            for(wchar_t wc(0x10000); wc < 0x110000; ++wc)
+            {
+                wchar_t buf[2];
+                buf[0] = wc;
+                buf[1] = L'\0';
+
+                std::string const ws1(libutf8::to_u8string(buf));
+                CATCH_REQUIRE(libutf8::is_valid_utf8(ws1.c_str()));
+
+                std::string const ws2(libutf8::to_u8string(wc));
+                CATCH_REQUIRE(libutf8::is_valid_utf8(ws2.c_str()));
+            }
+        }
+    }
+    CATCH_END_SECTION()
+
+    CATCH_START_SECTION("Valid UTF-16 (surrogates)")
+    {
+        // nullptr is considered to be an empty string
+        //
+        CATCH_REQUIRE(libutf8::is_valid_utf8(nullptr));
+        CATCH_REQUIRE(libutf8::is_valid_utf8(""));
+
+        for(char32_t wc(0x10000); wc < 0x110000; ++wc)
+        {
+            char16_t buf[3];
+            buf[0] = ((wc - 0x10000) >> 10) | 0xD800;
+            buf[1] = ((wc - 0x10000) & 0x3FF) | 0xDC00;
+            buf[2] = L'\0';
+
+            std::string const ws1(libutf8::to_u8string(buf));
+            CATCH_REQUIRE(libutf8::is_valid_utf8(ws1.c_str()));
+
+            std::string const ws2(libutf8::to_u8string(buf[0], buf[1]));
+            CATCH_REQUIRE(libutf8::is_valid_utf8(ws2.c_str()));
+
+            if(sizeof(wchar_t) == 2)
+            {
+                // under Windows wchar_t is like char16_t
+                //
+                std::string const ws3(libutf8::to_u8string(buf));
+                CATCH_REQUIRE(libutf8::is_valid_utf8(ws3.c_str()));
+
+                std::string const ws4(libutf8::to_u8string(buf[0], buf[1]));
+                CATCH_REQUIRE(libutf8::is_valid_utf8(ws4.c_str()));
+            }
+        }
+    }
+    CATCH_END_SECTION()
+
+    CATCH_START_SECTION("Valid UTF-16 (invalid surrogates)")
+    {
+        // first character has to be a valid HIGH surrogate
+        //
+        for(char16_t wc1(0xDC00); wc1 < 0xE000; ++wc1)
+        {
+            char16_t const wc2(rand());
+            CATCH_REQUIRE_THROWS_MATCHES(
+                      libutf8::to_u8string(wc1, wc2)
+                    , libutf8::libutf8_exception_decoding
+                    , Catch::Matchers::ExceptionMessage(
+                                  "to_u8string(char16_t, char16_t): the input did not represent a valid surrogate sequence."));
+        }
+
+        // second character has to be a valid LOW surrogate
+        //
+        for(char16_t wc2(1); wc2 != u'\0'; ++wc2)
+        {
+            if(wc2 >= 0xDC00 && wc2 <= 0xDFFF)
+            {
+                wc2 = 0xE000;
+            }
+            char16_t const wc1((rand() & 0x3FF) + 0xD800);
+            CATCH_REQUIRE_THROWS_MATCHES(
+                      libutf8::to_u8string(wc1, wc2)
+                    , libutf8::libutf8_exception_decoding
+                    , Catch::Matchers::ExceptionMessage(
+                                  "to_u8string(char16_t, char16_t): the input did not represent a valid surrogate sequence."));
         }
     }
     CATCH_END_SECTION()

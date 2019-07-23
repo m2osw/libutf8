@@ -362,6 +362,35 @@ bool is_valid_unicode(std::u32string const & str, bool ctrl)
 }
 
 
+/** \brief Check whether a wide character represents a surrogate or not.
+ *
+ * This function checks whether \p wc represents a surrogate, either
+ * the low, the high or not a surrogate. The function returns a
+ * surrogate_t enumeration:
+ *
+ * \li SURROGATE_NO -- not a surrogate
+ * \li SURROGATE_HIGH -- a high surrogate (0xD800 to 0xDBFF)
+ * \li SURROGATE_LOW -- a low surrogate (0xDC00 to 0xDFFF)
+ *
+ * \param[in] wc  The wide character to be checked.
+ *
+ * \return The surrogate category.
+ */
+surrogate_t is_surrogate(char32_t wc)
+{
+    wc &= 0xFFFFFC00;
+    if(wc == 0xD800)
+    {
+        return surrogate_t::SURROGATE_HIGH;
+    }
+    if(wc == 0xDC00)
+    {
+        return surrogate_t::SURROGATE_LOW;
+    }
+    return surrogate_t::SURROGATE_NO;
+}
+
+
 /** \brief Check whether \p str starts with a BOM or not.
  *
  * This function checks the first few bytes of the buffer pointed by \p str
@@ -550,25 +579,28 @@ std::string to_u8string(std::u16string const & str)
         {
             // convert the UTF-16 character in a UTF-32 character
             //
-            if((wc & 0xFFFFF800) == 0xD800)
+            surrogate_t const high_surrogate(is_surrogate(wc));
+            if(high_surrogate != surrogate_t::SURROGATE_NO)
             {
                 // large character, verify that the two surrogates are correct
                 //
-                if((wc & 0x0400) != 0)
+                if(high_surrogate != surrogate_t::SURROGATE_HIGH)
                 {
                     // 0xDC00 to 0xDFFF; introducer missing
                     //
                     throw libutf8_exception_decoding("to_u8string(): found a high UTF-16 surrogate without the low surrogate.");
                 }
-                if(idx + 1 >= max)
+                ++idx;
+                if(idx >= max)
                 {
                     // must be followed by a code between 0xDC00 and 0xDFFF
                     //
                     throw libutf8_exception_decoding("to_u8string(): the high UTF-16 surrogate is not followed by the low surrogate.");
                 }
-                if((s[idx + 1] & 0xFC00) != 0xDC00)
+                surrogate_t const low_surrogate(is_surrogate(s[idx]));
+                if(low_surrogate != surrogate_t::SURROGATE_LOW)
                 {
-                    if((s[idx + 1] & 0xFC00) != 0xD800)
+                    if(low_surrogate == surrogate_t::SURROGATE_HIGH)
                     {
                         throw libutf8_exception_decoding("to_u8string(): found two high UTF-16 surrogates in a row.");
                     }
@@ -578,7 +610,6 @@ std::string to_u8string(std::u16string const & str)
                     }
                 }
 
-                ++idx;
                 wc = ((wc << 10)
                    + static_cast<char32_t>(s[idx]))
                    + (static_cast<char32_t>(0x10000)
@@ -598,6 +629,121 @@ std::string to_u8string(std::u16string const & str)
     }
 
     return result;
+}
+
+
+/** \brief Converts an std::wstring to a UTF-8 string.
+ *
+ * This function converts an std::wstring to UTF-8. The function first
+ * determines whether `wchar_t` represents 16 or 32 bits and then
+ * calls the corresponding `char16_t` or `char32_t` function.
+ *
+ * \param[in] str  The wide character string to convert to UTF-8.
+ *
+ * \return The converted string.
+ */
+std::string to_u8string(std::wstring const & str)
+{
+    switch(sizeof(wchar_t))
+    {
+    case 2:
+        return to_u8string(std::u16string(str.begin(), str.end()));
+
+    case 4:
+        return to_u8string(std::u32string(str.begin(), str.end()));
+
+    }
+
+    throw libutf8_exception_unsupported("wchar_t has an unsupported size.");
+}
+
+
+/** \brief Converts a wchar_t character to a UTF-8 string.
+ *
+ * This function converts a wide character (wchar_t) to a
+ * UTF-8 std::string. If the wchar_t type is 4 bytes, it gets
+ * converted to a char32_t. If the wchar_t type is 2 bytes,
+ * it gets converted to char16_t and the \p two parameter
+ * also gets forwarded to the to_u8string(char16_t, char16_t);
+ * function
+ *
+ * \note
+ * This means that a wchar_t of 4 bytes cannot ever be a
+ * surrogate.
+ *
+ * \param[in] one  The wchar_t character or high surrogate.
+ * \param[in] two  The low surrogate if \p one is a high surrogate and wchar_t
+ *                 is 2 bytes.
+ *
+ * \return The converted string.
+ */
+std::string to_u8string(wchar_t one, wchar_t two)
+{
+    switch(sizeof(wchar_t))
+    {
+    case 2:
+        return to_u8string(static_cast<char16_t>(one), static_cast<char16_t>(two));
+
+    case 4:
+        return to_u8string(static_cast<char32_t>(one));
+
+    }
+
+    throw libutf8_exception_unsupported("wchar_t has an unsupported size.");
+}
+
+
+/** \brief Converts a char16_t character to a UTF-8 string.
+ *
+ * This function converts a wide character (char16_t) to a
+ * UTF-8 std::string. The function takes two characters in case
+ * the input is a pair of surrogate. If the first character is
+ * not a surrogate, then you can set the second character to
+ * u'\0' since it won't be used.
+ *
+ * You can check whether \p one or \p two is a surrogate using
+ * the is_surrogate() function.
+ *
+ * \warning
+ * The character U'\0' does not get added to the result. In that
+ * situation the function returns an empty string.
+ *
+ * \exception libutf8_exception_decoding
+ * The input character must be a valid UTF-16 character or this exception
+ * gets raised. This only happens if \p one and \p two are surrogate but
+ * not a valid surrogate sequence.
+ *
+ * \param[in] one  The UTF-16 character or high surrogate.
+ * \param[in] two  The low surrogate if \p one is a high surrogate.
+ *
+ * \return The converted string.
+ */
+std::string to_u8string(char16_t one, char16_t two)
+{
+    surrogate_t const a(is_surrogate(one));
+    if(a == surrogate_t::SURROGATE_NO)
+    {
+        std::u16string s;
+        s += one;
+        return to_u8string(s);
+    }
+
+    if(a == surrogate_t::SURROGATE_HIGH)
+    {
+        surrogate_t const b(is_surrogate(two));
+        if(b == surrogate_t::SURROGATE_LOW)
+        {
+            // the to_u8string() of the u16string will determine the valid order
+            // for us
+            //
+            std::u16string s;
+            s += one;
+            s += two;
+            return to_u8string(s);
+        }
+    }
+
+    throw libutf8_exception_decoding("to_u8string(char16_t, char16_t): the input did not represent a valid surrogate sequence.");
 }
 
 

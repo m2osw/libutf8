@@ -44,7 +44,15 @@ enum class bom_t
     BOM_UTF16_LE,
     BOM_UTF16_BE,
     BOM_UTF32_LE,
-    BOM_UTF32_BE,
+    BOM_UTF32_BE
+};
+
+
+enum class surrogate_t
+{
+    SURROGATE_NO,
+    SURROGATE_HIGH,
+    SURROGATE_LOW
 };
 
 
@@ -59,9 +67,13 @@ bool                is_valid_utf8(std::string const & str);
 bool                is_valid_unicode(char32_t const wc, bool ctrl = true);
 bool                is_valid_unicode(char32_t const * str, bool ctrl = true);
 bool                is_valid_unicode(std::u32string const & str, bool ctrl = true);
+surrogate_t         is_surrogate(char32_t wc);
 bom_t               start_with_bom(char const * str, size_t len);
 std::string         to_u8string(std::u32string const & str);
 std::string         to_u8string(std::u16string const & str);
+std::string         to_u8string(std::wstring const & str);
+std::string         to_u8string(wchar_t one, wchar_t two = L'\0');
+std::string         to_u8string(char16_t one, char16_t two = u'\0');
 std::string         to_u8string(char32_t wc);
 std::u16string      to_u16string(std::string const & str);
 std::u32string      to_u32string(std::string const & str);
