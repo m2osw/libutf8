@@ -12,7 +12,7 @@
 # License:
 #       Copyright (c) 2013-2019 Made to Order Software Corp.
 #
-#       https://snapwebsites.org/projects/libutf8
+#       https://snapwebsites.org/project/libutf8
 #       contact@m2osw.com
 #
 #       Permission is hereby granted, free of charge, to any person obtaining a

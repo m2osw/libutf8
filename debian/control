@@ -13,7 +13,7 @@ Standards-Version: 3.9.4
 Section: libs
 Homepage: https://snapwebsites.org/
 Vcs-Git: https://github.com/m2osw/snapcpp.git
-Vcs-Browser: https://github.com/m2osw/advgetopt
+Vcs-Browser: https://github.com/m2osw/libutf8
 
 Package: libutf8-dev
 Section: libdevel
