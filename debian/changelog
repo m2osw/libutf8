@@ -1,3 +1,9 @@
+libutf8 (1.0.6.2~bionic) bionic; urgency=high
+
+  * Create a bionic version.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Thu, 30 Apr 2020 20:59:23 -0800
+
 libutf8 (1.0.6.0~xenial) xenial; urgency=high
 
   * Added the libutf8::case_insensitive_string type.
