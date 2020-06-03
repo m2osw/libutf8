@@ -103,7 +103,7 @@ char32_t utf8_iterator::operator * () const
 {
     if(f_pos >= f_str.length())
     {
-        return EOF;
+        return EOS;
     }
     char const * s(f_str.c_str() + f_pos);
     char32_t wc(U'\0');

@@ -37,6 +37,8 @@ namespace libutf8
 {
 
 
+constexpr char32_t              EOS = static_cast<char32_t>(EOF);
+
 
 class utf8_iterator
 {

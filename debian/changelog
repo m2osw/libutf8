@@ -1,3 +1,11 @@
+libutf8 (1.0.7.0~bionic) bionic; urgency=high
+
+  * Changed the EOF of the iterator in an EOS so it works as expected with
+    the newest versions of catch2 (proper signess for char32_t).
+  * Fixed one assignment from L'0' to u'0'.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Tue, 26 Apr 2020 18:25:27 -0800
+
 libutf8 (1.0.6.2~bionic) bionic; urgency=high
 
   * Create a bionic version.

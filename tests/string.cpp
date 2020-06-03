@@ -302,7 +302,7 @@ CATCH_TEST_CASE("string_validations", "[strings][valid][u8][u32]")
             char16_t buf[3];
             buf[0] = ((wc - 0x10000) >> 10) | 0xD800;
             buf[1] = ((wc - 0x10000) & 0x3FF) | 0xDC00;
-            buf[2] = L'\0';
+            buf[2] = u'\0';
 
             std::string const ws1(libutf8::to_u8string(buf));
             CATCH_REQUIRE(libutf8::is_valid_utf8(ws1.c_str()));

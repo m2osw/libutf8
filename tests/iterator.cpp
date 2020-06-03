@@ -115,7 +115,7 @@ CATCH_TEST_CASE("libutf8 iterator", "[iterator]")
                 CATCH_REQUIRE(str.end() == it);
                 CATCH_REQUIRE(str.cend() == it);
 
-                CATCH_REQUIRE(*it == EOF);
+                CATCH_REQUIRE(*it == libutf8::EOS);
                 ++it;
                 it++;
                 CATCH_REQUIRE(it == str.cend());
@@ -273,7 +273,7 @@ CATCH_TEST_CASE("libutf8 iterator invalid string", "[iterator],[invalid]")
                 CATCH_REQUIRE(str.end()    == it);
                 CATCH_REQUIRE(str.cend()   == it);
 
-                CATCH_REQUIRE(*it == EOF);
+                CATCH_REQUIRE(*it == libutf8::EOS);
                 ++it;
                 it++;
                 CATCH_REQUIRE(it == str.cend());
@@ -288,7 +288,7 @@ CATCH_TEST_CASE("libutf8 iterator invalid string", "[iterator],[invalid]")
                 CATCH_REQUIRE(*it++ == U'\0');       // we broke this one
                 CATCH_REQUIRE(*it++ == wstr[2]);
                 CATCH_REQUIRE(*it++ == wstr[3]);
-                CATCH_REQUIRE(*it++ == EOF);
+                CATCH_REQUIRE(*it++ == libutf8::EOS);
             }
 
             {
@@ -346,7 +346,7 @@ CATCH_TEST_CASE("libutf8 iterator invalid string", "[iterator],[invalid]")
                 CATCH_REQUIRE(str.end()    == it);
                 CATCH_REQUIRE(str.cend()   == it);
 
-                CATCH_REQUIRE(*it == EOF);
+                CATCH_REQUIRE(*it == libutf8::EOS);
                 ++it;
                 it++;
                 CATCH_REQUIRE(it == str.cend());

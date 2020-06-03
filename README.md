@@ -136,14 +136,14 @@ You can compare standard `std::string` iterators with `==` and `!=`. The
 at the end, nothing happens. If you do a `--` when already at the beginning,
 nothing happens.
 
-Once you are at the end, getting the character (`*it`) returns `EOF`. So
-you can loop through until you get `EOF` instead of checking against the
-end iterator:
+Once you are at the end, getting the character (`*it`) returns `libutf8::EOS`.
+So you can loop through until you get `libutf8::EOS` instead of checking
+against the end iterator:
 
     std::string u8("This is your UTF-8 string");
 
     libutf8::utf8_iterator it(u8);
-    while(*it != EOF)
+    while(*it != libutf8::EOS)
     {
     	std::cout << static_cast<int>(*it++) << std::endl;
     }
