@@ -816,7 +816,7 @@ std::u32string to_u32string(std::string const & str)
         char32_t wc;
         if(mbstowc(wc, mb, len) < 0)
         {
-            throw libutf8_exception_decoding("to_u16string(): a UTF-8 character could not be extracted.");
+            throw libutf8_exception_decoding("to_u32string(): a UTF-8 character could not be extracted.");
         }
 
         result += wc;
