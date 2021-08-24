@@ -1,3 +1,13 @@
+libutf8 (1.0.9.0~bionic) bionic; urgency=high
+
+  * Slowly adding Unicode to canonicalize UTF-8 strings.
+  * Added SnapDev as a dependency to implement the Unicode parser.
+  * Added a tool to run the parser (which is part of the library).
+  * Updated the exception declarations with our macros.
+  * Cleaned up licenses & copyrights.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Tue, 24 Aug 2021 15:49:14 -0700
+
 libutf8 (1.0.8.1~bionic) bionic; urgency=high
 
   * Bumped build version to rebuild on Launchpad.
