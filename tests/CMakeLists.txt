@@ -15,15 +15,15 @@
 #
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+# 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.
 
 # Note that if user does not have Catch then this does not get included
 # in the final output
 project(unittest)
 
-find_package( Catch2 )
+find_package(Catch2)
 
-if( Catch2_FOUND )
+if(Catch2_FOUND)
 
     add_definitions(
         -DCATCH_CONFIG_PREFIX_ALL
@@ -51,12 +51,12 @@ if( Catch2_FOUND )
         utf8
     )
 
-    add_test( unittests ${PROJECT_NAME} )
+    add_test(unittests ${PROJECT_NAME})
 
-else( Catch2_FOUND )
+else(Catch2_FOUND)
 
     message("snapcatch2 not found... no test will be built.")
 
-endif( Catch2_FOUND )
+endif(Catch2_FOUND)
 
 # vim: ts=4 sw=4 et
