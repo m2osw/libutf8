@@ -1,4 +1,4 @@
-// Copyright (c) 2000-2021  Made to Order Software Corporation
+// Copyright (c) 2000-2021  Made to Order Software Corp.  All Rights Reserved
 //
 // https://snapwebsites.org/project/libutf8
 // contact@m2osw.com
@@ -15,7 +15,7 @@
 //
 // You should have received a copy of the GNU General Public License along
 // with this program; if not, write to the Free Software Foundation, Inc.,
-// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA.
 
 /** \file
  * \brief Implementation of the UTF-8 functions.
