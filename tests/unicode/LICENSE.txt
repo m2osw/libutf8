@@ -1,0 +1,1 @@
+Please see the ../conf/unicode/LICENSE.txt files for the license.
