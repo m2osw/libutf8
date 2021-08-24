@@ -17,14 +17,8 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-project(libutf8_cmake)
+project(utf8_library_conf)
 
-install(
-    FILES
-        LibUtf8Config.cmake
+add_subdirectory(unicode)
 
-    DESTINATION
-        share/cmake/LibUtf8
-)
-
-# vim: ts=4 sw=4 et nocindent
+# vim: ts=4 sw=4 et

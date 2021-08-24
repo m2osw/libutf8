@@ -1,4 +1,4 @@
-# Copyright (C) 2000-2021  Made to Order Software Corporation
+# Copyright (c) 2012-2021  Made to Order Software Corp.  All Rights Reserved
 #
 # https://snapwebsites.org/project/libutf8
 # contact@m2osw.com
@@ -15,16 +15,23 @@
 #
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+# 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-project(libutf8_cmake)
+##
+## unicode-data
+##
+project(unicode-data)
 
 install(
     FILES
-        LibUtf8Config.cmake
+        DerivedAge.txt
+        Jamo.txt
+        NameAliases.txt
+        UnicodeData.txt
 
     DESTINATION
-        share/cmake/LibUtf8
+        share/libutf8/unicode
 )
 
-# vim: ts=4 sw=4 et nocindent
+
+# vim: ts=4 sw=4 et

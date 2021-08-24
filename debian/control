@@ -8,7 +8,8 @@ Build-Depends: cmake,
     libboost-dev,
     libexcept-dev (>= 1.1.0.0~bionic),
     snapcatch2 (>= 2.7.2.10~bionic),
-    snapcmakemodules (>= 1.0.35.3~bionic)
+    snapcmakemodules (>= 1.0.35.3~bionic),
+    snapdev (>= 1.1.16.0~bionic)
 Standards-Version: 3.9.4
 Section: libs
 Homepage: https://snapwebsites.org/

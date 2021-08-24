@@ -1,39 +1,21 @@
+# Copyright (c) 2000-2021  Made to Order Software Corporation
 #
-# File:
-#       libutf8/CMakeLists.txt
+# https://snapwebsites.org/project/libutf8
+# contact@m2osw.com
 #
-# Description:
-#       A simple to use C++ library to convert UTF-8 strings to and from wide
-#       character strings (UTF-32).
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 #
-# Documentation:
-#       See the CMake documentation.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-# License:
-#       Copyright (c) 2013-2019 Made to Order Software Corp.
-#
-#       https://snapwebsites.org/project/libutf8
-#       contact@m2osw.com
-#
-#       Permission is hereby granted, free of charge, to any person obtaining a
-#       copy of this software and associated documentation files (the
-#       "Software"), to deal in the Software without restriction, including
-#       without limitation the rights to use, copy, modify, merge, publish,
-#       distribute, sublicense, and/or sell copies of the Software, and to
-#       permit persons to whom the Software is furnished to do so, subject to
-#       the following conditions:
-#
-#       The above copyright notice and this permission notice shall be included
-#       in all copies or substantial portions of the Software.
-#
-#       THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-#       OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-#       MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-#       IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-#       CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-#       TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-#       SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 ##
 ## utf8 library
@@ -46,24 +28,29 @@ configure_file(
     ${CMAKE_CURRENT_BINARY_DIR}/version.h
 )
 
-add_library( ${PROJECT_NAME} SHARED
+add_library(${PROJECT_NAME} SHARED
     base.cpp
     iterator.cpp
     libutf8.cpp
+    unicode_data.cpp
+    unicode_data_file.cpp
     version.cpp
 )
 
-include_directories(
-    ${LIBEXCEPT_INCLUDE_DIRS}
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        ${LIBEXCEPT_INCLUDE_DIRS}
+        ${SNAPDEV_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT_NAME}
     ${LIBEXCEPT_LIBRARIES}
 )
 
-set_target_properties( ${PROJECT_NAME} PROPERTIES
+set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION
         ${LIBUTF8_VERSION_MAJOR}.${LIBUTF8_VERSION_MINOR}
+
     SOVERSION
         ${LIBUTF8_VERSION_MAJOR}
 )
@@ -71,10 +58,13 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES
 install(
     TARGETS
         ${PROJECT_NAME}
+
     RUNTIME DESTINATION
         bin
+
     LIBRARY DESTINATION
         lib
+
     ARCHIVE DESTINATION
         lib
 )
@@ -86,6 +76,7 @@ install(
         exception.h
         iterator.h
         libutf8.h
+        unicode_data.h
         ${CMAKE_CURRENT_BINARY_DIR}/version.h
 
     DESTINATION

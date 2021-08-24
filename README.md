@@ -49,7 +49,7 @@ Here is an example of usage:
     u32 = libutf8::to_u32string(u8);
 
     std::string back;
-    back = libutfi::to_u8string(u32);
+    back = libutf8::to_u8string(u32);
 
 Note that u8 string could be _more_ UTF-8 by including characters outside
 of the ASCII range and it would still work as you would expect.
@@ -166,13 +166,40 @@ code.
 
 # TODO
 
-We'd like add support for UTF-16 and UCS-2.
+## Auto-Conversions
 
-Also conversions for many more types of strings such as all the `char *`
+Conversions for many more types of strings such as all the `char *`
 and also look into whether implementing an extension to the
 `std::basic_string` would be possible to directly have conversions
 integrated in our strings (i.e. to be able to write `str8 = str32;` and
 `str32 = str8` without having to write `str8 = libutf8::to_u8string(str32)`.)
+
+## Canonicalization
+
+Right now, we do not try to canonicalize the strings, so diacritics may
+appear as standalone or combined characters. We want to implement the
+necessary code to decomposed and re-composed in a normalized manner.
+
+This is very important for comparing strings against each other for
+equality (i.e. an 'a' with a grave accent is equal to an 'a' followed
+by the grave accent character).
+
+## Character Name, Type, etc.
+
+The UnicodeData.txt file (offered by the Unicode website) lists all the
+characters with their name and their types. We want to offer the user
+access to that data.
+
+We should simple have the table as a struct and return a pointer to
+the corresponding character. Sort those by character number and use
+a binary search to find the structure.
+
+Some of that information is to be used for the canonicalization so it
+is a must have.
+
+UnicodeData.txt file format is defined in:
+http://www.unicode.org/L2/L1999/UnicodeData.html
+
 
 
 # License

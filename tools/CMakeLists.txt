@@ -1,4 +1,4 @@
-# Copyright (C) 2000-2021  Made to Order Software Corporation
+# Copyright (c) 2012-2021  Made to Order Software Corp.  All Rights Reserved
 #
 # https://snapwebsites.org/project/libutf8
 # contact@m2osw.com
@@ -15,16 +15,33 @@
 #
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+# 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-project(libutf8_cmake)
+##
+## unicode-data-parser
+##
+project(unicode-data-parser)
 
-install(
-    FILES
-        LibUtf8Config.cmake
-
-    DESTINATION
-        share/cmake/LibUtf8
+add_executable(${PROJECT_NAME}
+    unicode_data_parser.cpp
 )
 
-# vim: ts=4 sw=4 et nocindent
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        ${ADVGETOPT_INCLUDE_DIRS}
+)
+
+target_link_libraries(${PROJECT_NAME}
+    utf8
+)
+
+install(
+    TARGETS
+        ${PROJECT_NAME}
+
+    RUNTIME DESTINATION
+        bin
+)
+
+
+# vim: ts=4 sw=4 et

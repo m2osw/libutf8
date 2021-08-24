@@ -1,23 +1,21 @@
-/*    libutf8/exception.h -- convert between wchar_t and UTF-8 encodings
- *    Copyright (C) 2000-2015  Made to Order Software Corporation
- *
- *    This program is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 2 of the License, or
- *    (at your option) any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License along
- *    with this program; if not, write to the Free Software Foundation, Inc.,
- *    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- *    Authors
- *    Alexis Wilke   alexis@m2osw.com
- */
+// Copyright (c) 2000-2021  Made to Order Software Corporation
+//
+// https://snapwebsites.org/project/libutf8
+// contact@m2osw.com
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #pragma once
 
 /** \file
@@ -27,7 +25,9 @@
  * functions used to convert a string from one format to another.
  */
 
-#include <libexcept/exception.h>
+// libexcept lib
+//
+#include    <libexcept/exception.h>
 
 
 
@@ -36,45 +36,17 @@ namespace libutf8
 
 
 
-class libutf8_logic_exception : public libexcept::logic_exception_t
-{
-public:
-    libutf8_logic_exception(std::string const & msg) : logic_exception_t(msg) {}
-};
+DECLARE_LOGIC_ERROR(libutf8_logic_exception);
 
+DECLARE_MAIN_EXCEPTION(libutf8_exception);
 
-
-class libutf8_exception : public libexcept::exception_t
-{
-public:
-    libutf8_exception(std::string const & msg) : exception_t(msg) {}
-};
-
-
-
-class libutf8_exception_decoding : public libutf8_exception
-{
-public:
-    libutf8_exception_decoding(std::string const & msg) : libutf8_exception(msg) {}
-};
-
-
-
-class libutf8_exception_encoding : public libutf8_exception
-{
-public:
-    libutf8_exception_encoding(std::string const & msg) : libutf8_exception(msg) {}
-};
-
-
-
-class libutf8_exception_unsupported : public libutf8_exception
-{
-public:
-    libutf8_exception_unsupported(std::string const & msg) : libutf8_exception(msg) {}
-};
-
-
+DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_decoding);
+DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_encoding);
+DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_invalid_parameter);
+DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_io);
+DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_missing);
+DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_twice);
+DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_unsupported);
 
 
 
