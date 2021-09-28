@@ -62,6 +62,7 @@ public:
     friend std::string::size_type
                                 operator - (std::string::const_iterator it, utf8_iterator const & rhs);
 
+    void                        clear();
     bool                        good() const;
     bool                        bad() const;
 

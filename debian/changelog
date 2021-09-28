@@ -1,3 +1,11 @@
+libutf8 (1.0.11.0~bionic) bionic; urgency=high
+
+  * Added a clear() for the good flag in the utf8_iterator.
+  * Fixed the string test, the exception now include "libutf8_exception: ".
+  * Correctly test the good flag status in cases were the iterator fails.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Mon, 27 Sep 2021 18:08:13 -0700
+
 libutf8 (1.0.10.0~bionic) bionic; urgency=high
 
   * Updated the tests to match the new libexcept library setup.

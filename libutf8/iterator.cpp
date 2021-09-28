@@ -274,6 +274,12 @@ std::string::size_type operator - (std::string::const_iterator it, utf8_iterator
 }
 
 
+void utf8_iterator::clear()
+{
+    f_good = true;
+}
+
+
 bool utf8_iterator::good() const
 {
     return f_good;

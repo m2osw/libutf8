@@ -1,41 +1,46 @@
-/*    tests/iterator.cpp
- *    Copyright (C) 2013-2019  Made to Order Software Corporation
- *
- *    This program is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 2 of the License, or
- *    (at your option) any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License along
- *    with this program; if not, write to the Free Software Foundation, Inc.,
- *    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- *    Authors
- *    Alexis Wilke   alexis@m2osw.com
- */
+// Copyright (C) 2013-2021  Made to Order Software Corporation
+//
+// https://snapwebsites.org/project/libutf8
+// contact@m2osw.com
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 // unit test
 //
-#include "main.h"
+#include    "main.h"
 
 // libutf8 lib
 //
-#include "libutf8/base.h"
-#include "libutf8/iterator.h"
-#include "libutf8/libutf8.h"
+#include    "libutf8/base.h"
+#include    "libutf8/iterator.h"
+#include    "libutf8/libutf8.h"
+
 
 // C++ lib
 //
-#include <cctype>
-#include <iostream>
+#include    <cctype>
+#include    <iostream>
 
 
-CATCH_TEST_CASE("libutf8 iterator", "[iterator]")
+// last include
+//
+#include    <snapdev/poison.h>
+
+
+
+CATCH_TEST_CASE("libutf8_iterator", "[iterator]")
 {
     CATCH_START_SECTION("valid iterators tests")
         char32_t p(0);
@@ -136,7 +141,7 @@ CATCH_TEST_CASE("libutf8 iterator", "[iterator]")
                 it--;
 
                 CATCH_REQUIRE(it.good());
-                CATCH_REQUIRE(!it.bad());
+                CATCH_REQUIRE_FALSE(it.bad());
             }
 
             if(plan == p)
@@ -155,8 +160,14 @@ CATCH_TEST_CASE("libutf8 iterator", "[iterator]")
 
                 CATCH_REQUIRE(it == str.end());
                 it++;
+                CATCH_REQUIRE(it.good());
+                CATCH_REQUIRE_FALSE(it.bad());
                 ++it;
+                CATCH_REQUIRE(it.good());
+                CATCH_REQUIRE_FALSE(it.bad());
                 CATCH_REQUIRE(it == str.end());
+                CATCH_REQUIRE(it.good());
+                CATCH_REQUIRE_FALSE(it.bad());
 
                 for(char32_t wc(0x10000); wc > 0; )
                 {
@@ -209,9 +220,10 @@ CATCH_TEST_CASE("libutf8 iterator", "[iterator]")
 }
 
 
-CATCH_TEST_CASE("libutf8 iterator invalid string", "[iterator],[invalid]")
+CATCH_TEST_CASE("libutf8_iterator_invalid_string", "[iterator],[invalid]")
 {
     CATCH_START_SECTION("iterators with invalid characters (bad UTF-8)")
+    {
         for(int repeat(0); repeat < 100; ++repeat)
         {
             // create one plan in one string
@@ -277,6 +289,9 @@ CATCH_TEST_CASE("libutf8 iterator invalid string", "[iterator],[invalid]")
                 ++it;
                 it++;
                 CATCH_REQUIRE(it == str.cend());
+
+                CATCH_REQUIRE(it.good());
+                CATCH_REQUIRE_FALSE(it.bad());
             }
 
             {
@@ -289,6 +304,12 @@ CATCH_TEST_CASE("libutf8 iterator invalid string", "[iterator],[invalid]")
                 CATCH_REQUIRE(*it++ == wstr[2]);
                 CATCH_REQUIRE(*it++ == wstr[3]);
                 CATCH_REQUIRE(*it++ == libutf8::EOS);
+
+                CATCH_REQUIRE_FALSE(it.good());
+                CATCH_REQUIRE(it.bad());
+                it.clear();
+                CATCH_REQUIRE(it.good());
+                CATCH_REQUIRE_FALSE(it.bad());
             }
 
             {
@@ -301,14 +322,23 @@ CATCH_TEST_CASE("libutf8 iterator invalid string", "[iterator],[invalid]")
                 CATCH_REQUIRE(*it++ == U'\0');
                 CATCH_REQUIRE(*it++ == wstr[2]);
                 CATCH_REQUIRE(*it++ == U'\0');
+
+                CATCH_REQUIRE_FALSE(it.good());
+                CATCH_REQUIRE(it.bad());
+                it.clear();
+                CATCH_REQUIRE(it.good());
+                CATCH_REQUIRE_FALSE(it.bad());
             }
         }
+    }
     CATCH_END_SECTION()
 
     CATCH_START_SECTION("iterators with invalid characters (too large)")
+    {
         for(char32_t wc(0x110000); wc < 0x1FFFFF; ++wc)
         {
-            // since this character is not we have to encode it _manually_
+            // since this character is not valid
+            // we have to encode it _manually_
             //
             char buf[4];
             buf[0] = 0xF0 | ((wc >> 18) & 0x07);
@@ -334,6 +364,13 @@ CATCH_TEST_CASE("libutf8 iterator invalid string", "[iterator],[invalid]")
                 CATCH_REQUIRE(str.cend()   != it);
 
                 CATCH_REQUIRE(*it == '\0');
+
+                CATCH_REQUIRE_FALSE(it.good());
+                CATCH_REQUIRE(it.bad());
+                it.clear();
+                CATCH_REQUIRE(it.good());
+                CATCH_REQUIRE_FALSE(it.bad());
+
                 ++it;
 
                 CATCH_REQUIRE(it != str.begin());
@@ -350,8 +387,12 @@ CATCH_TEST_CASE("libutf8 iterator invalid string", "[iterator],[invalid]")
                 ++it;
                 it++;
                 CATCH_REQUIRE(it == str.cend());
+
+                CATCH_REQUIRE_FALSE(it.good());
+                CATCH_REQUIRE(it.bad());
             }
         }
+    }
     CATCH_END_SECTION()
 }
 
