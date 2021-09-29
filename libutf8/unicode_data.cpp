@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2021  Made to Order Software Corp.  All Rights Reserved
+// Copyright (c) 2000-2021  Made to Order Software Corp.  All Rights Reserved
 //
 // https://snapwebsites.org/project/libutf8
 // contact@m2osw.com

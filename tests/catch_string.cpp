@@ -19,7 +19,7 @@
 
 // unit test
 //
-#include    "main.h"
+#include    "catch_main.h"
 
 
 // libutf8 lib

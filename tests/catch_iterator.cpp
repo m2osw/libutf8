@@ -1,4 +1,4 @@
-// Copyright (C) 2013-2021  Made to Order Software Corporation
+// Copyright (c) 2013-2021  Made to Order Software Corporation
 //
 // https://snapwebsites.org/project/libutf8
 // contact@m2osw.com
@@ -19,7 +19,8 @@
 
 // unit test
 //
-#include    "main.h"
+#include    "catch_main.h"
+
 
 // libutf8 lib
 //
@@ -43,6 +44,7 @@
 CATCH_TEST_CASE("libutf8_iterator", "[iterator]")
 {
     CATCH_START_SECTION("valid iterators tests")
+    {
         char32_t p(0);
         do
         {
@@ -216,6 +218,7 @@ CATCH_TEST_CASE("libutf8_iterator", "[iterator]")
                 }
             }
         }
+    }
     CATCH_END_SECTION()
 }
 

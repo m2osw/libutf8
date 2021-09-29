@@ -45,6 +45,7 @@ DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_encoding);
 DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_invalid_parameter);
 DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_io);
 DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_missing);
+DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_overflow);
 DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_twice);
 DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_unsupported);
 

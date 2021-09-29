@@ -37,14 +37,15 @@ if(Catch2_FOUND)
     )
 
     add_executable( ${PROJECT_NAME}
-        main.cpp
+        catch_main.cpp
 
-        bom.cpp
-        caseinsensitive.cpp
-        character.cpp
-        iterator.cpp
-        string.cpp
-        version.cpp
+        catch_bom.cpp
+        catch_caseinsensitive.cpp
+        catch_character.cpp
+        catch_iterator.cpp
+        catch_json_tokens.cpp
+        catch_string.cpp
+        catch_version.cpp
     )
 
     target_link_libraries( ${PROJECT_NAME}

@@ -31,6 +31,7 @@ configure_file(
 add_library(${PROJECT_NAME} SHARED
     base.cpp
     iterator.cpp
+    json_tokens.cpp
     libutf8.cpp
     unicode_data.cpp
     unicode_data_file.cpp
