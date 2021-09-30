@@ -76,6 +76,7 @@ install(
         caseinsensitivestring.h
         exception.h
         iterator.h
+        json_tokens.h
         libutf8.h
         unicode_data.h
         ${CMAKE_CURRENT_BINARY_DIR}/version.h
