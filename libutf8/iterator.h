@@ -62,6 +62,7 @@ public:
     friend std::string::size_type
                                 operator - (std::string::const_iterator it, utf8_iterator const & rhs);
 
+    void                        rewind();
     void                        clear();
     bool                        good() const;
     bool                        bad() const;
@@ -72,6 +73,8 @@ private:
 
     std::string const &         f_str;
     std::string::size_type      f_pos = 0;
+    std::string::size_type const
+                                f_start_pos;
     mutable bool                f_good = true;
 };
 

@@ -67,6 +67,7 @@ namespace libutf8
 utf8_iterator::utf8_iterator(std::string const & str, bool end)
     : f_str(str)
     , f_pos(end ? str.length() : 0)
+    , f_start_pos(f_pos)
 {
 }
 
@@ -239,6 +240,15 @@ void utf8_iterator::increment()
 }
 
 
+/** \brief Decrement the iterator.
+ *
+ * If the iterator is not already at position 0, decrement it to the previous
+ * UTF-8 character. This means skipping to the first UTF-8 byte.
+ *
+ * \note
+ * Contrary the increment(), this function does not set the good flag to
+ * false if it is at the start or there is an invalid character.
+ */
 void utf8_iterator::decrement()
 {
     if(f_pos == 0)
@@ -262,30 +272,96 @@ void utf8_iterator::decrement()
 }
 
 
+/** \brief Compute the distance between two iterators.
+ *
+ * This operator computes the difference between this iterator and the
+ * specified \p it iterator.
+ *
+ * \param[in] it  The iterator to calculate the distance from.
+ *
+ * \return The distance between the two iterators.
+ */
 std::string::size_type utf8_iterator::operator - (std::string::const_iterator it) const
 {
     return static_cast<std::string::size_type>(f_str.cbegin() + f_pos - it);
 }
 
 
+/** \brief Compute the distance between two iterators.
+ *
+ * This operator computes the difference between the two specified iterators
+ * \p it and \p rhs.
+ *
+ * \param[in] it  The iterator to calculate the distance from.
+ * \param[in] rhs  The iterator to calculate the distance to.
+ *
+ * \return The distance between the two specified iterators.
+ */
 std::string::size_type operator - (std::string::const_iterator it, utf8_iterator const & rhs)
 {
     return static_cast<std::string::size_type>(it - rhs.f_str.cbegin() - rhs.f_pos);
 }
 
 
+/** \brief Restart  the iterator.
+ *
+ * The iterator started at 0 or the end of the string, then you moved it
+ * using the `++` or `--` operators. Later you may want to re-parse the
+ * string from the start or end of the string.
+ *
+ * This function resets the position back to 0 or the end as defined on
+ * the constructor.
+ */
+void utf8_iterator::rewind()
+{
+    f_pos = f_start_pos;
+}
+
+
+/** \brief Clear the errors.
+ *
+ * The iterator is considered good by default. If you try to retreive
+ * a character after the end of the string being iterated or the
+ * bytes do not represent an invalid UTF-8 character.
+ *
+ * \sa good()
+ * \sa bad()
+ */
 void utf8_iterator::clear()
 {
     f_good = true;
 }
 
 
+/** \brief Check whether the iterator did not run in an error.
+ *
+ * The iterator remains good as long as the input characters are valid
+ * and the end of the string is not reached. After either event, this
+ * function returns false.
+ *
+ * You can clear this flag by calling the clear() function.
+ *
+ * \return true if no errors were encountered so far.
+ *
+ * \sa clear()
+ * \sa bad()
+ */
 bool utf8_iterator::good() const
 {
     return f_good;
 }
 
 
+/** \brief Check whether the iterator ran in an error.
+ *
+ * This function returns true if an invalid character or the end of the
+ * string was found.
+ *
+ * \return true if an error condition was encountered.
+ *
+ * \sa clear()
+ * \sa good()
+ */
 bool utf8_iterator::bad() const
 {
     return !f_good;
