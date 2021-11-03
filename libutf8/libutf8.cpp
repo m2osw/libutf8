@@ -672,7 +672,7 @@ std::string to_u8string(std::wstring const & str)
  * converted to a char32_t. If the wchar_t type is 2 bytes,
  * it gets converted to char16_t and the \p two parameter
  * also gets forwarded to the to_u8string(char16_t, char16_t);
- * function
+ * function.
  *
  * \note
  * This means that a wchar_t of 4 bytes cannot ever be a
