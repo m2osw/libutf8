@@ -39,6 +39,12 @@ constexpr char32_t              EOS = static_cast<char32_t>(EOF);
 
 
 class utf8_iterator
+    : public std::iterator<
+              std::bidirectional_iterator_tag
+            , char32_t
+            , ssize_t
+            , char32_t const *
+            , std::string::size_type>
 {
 public:
                                 utf8_iterator(std::string const & str, bool end = false);
@@ -47,7 +53,7 @@ public:
     utf8_iterator               operator ++ (int);
     utf8_iterator &             operator -- ();
     utf8_iterator               operator -- (int);
-    char32_t                    operator * () const;
+    value_type                  operator * () const;
     bool                        operator == (utf8_iterator const & rhs) const;
     bool                        operator != (utf8_iterator const & rhs) const;
     bool                        operator == (std::string::iterator it) const;
@@ -58,9 +64,9 @@ public:
     friend bool                 operator != (std::string::iterator it, utf8_iterator const & rhs);
     friend bool                 operator == (std::string::const_iterator it, utf8_iterator const & rhs);
     friend bool                 operator != (std::string::const_iterator it, utf8_iterator const & rhs);
-    std::string::size_type      operator - (std::string::const_iterator it) const;
-    friend std::string::size_type
-                                operator - (std::string::const_iterator it, utf8_iterator const & rhs);
+    difference_type             operator - (utf8_iterator const & rhs) const;
+    difference_type             operator - (std::string::const_iterator it) const;
+    friend difference_type      operator - (std::string::const_iterator it, utf8_iterator const & rhs);
 
     void                        rewind();
     void                        clear();
@@ -71,10 +77,9 @@ private:
     void                        increment();
     void                        decrement();
 
-    std::string const &         f_str;
+    std::string const *         f_str = nullptr;
     std::string::size_type      f_pos = 0;
-    std::string::size_type const
-                                f_start_pos;
+    std::string::size_type      f_start_pos = 0;
     mutable bool                f_good = true;
 };
 

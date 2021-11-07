@@ -190,9 +190,12 @@ CATCH_TEST_CASE("libutf8_iterator", "[iterator]")
                 CATCH_REQUIRE(str.begin() == it);
             }
 
-            if(plan == (p + 1) % 0x11)
+            if(plan == (p + 0x10000) % 0x110000)
             {
                 libutf8::utf8_iterator it(str);
+                libutf8::utf8_iterator start(str);
+                CATCH_REQUIRE(it - start == 0);
+                CATCH_REQUIRE(start - it == 0);
 
                 for(char32_t wc(0); wc < 0x10000; ++wc)
                 {
@@ -203,7 +206,22 @@ CATCH_TEST_CASE("libutf8_iterator", "[iterator]")
                     }
                     CATCH_REQUIRE(*it == wc + plan);
                     it++;
+
+                    libutf8::utf8_iterator zero(it);
+                    zero.rewind();
+                    CATCH_REQUIRE(zero == start);
                 }
+
+                libutf8::utf8_iterator copy(it);
+                CATCH_REQUIRE(static_cast<std::size_t>(it - start) == str.length());
+                CATCH_REQUIRE(static_cast<std::size_t>(copy - start) == str.length());
+                CATCH_REQUIRE(copy - it == 0);
+                CATCH_REQUIRE(it - copy == 0);
+                copy.rewind();
+                CATCH_REQUIRE(copy - start == 0);
+                CATCH_REQUIRE(start - copy == 0);
+                CATCH_REQUIRE(static_cast<std::size_t>(start - copy) == 0);
+                CATCH_REQUIRE(static_cast<std::size_t>(copy - start) == 0);
 
                 for(char32_t wc(0x10000); wc > 0; )
                 {

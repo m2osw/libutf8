@@ -34,11 +34,6 @@
  * converter that is sure not to use a locale and this way we can use
  * standard strings (std::string and std::wstring) instead of having to
  * call C functions.
- *
- * \todo
- * At this time this iterator is not properly derived from an STL
- * iterator. It should be a BidirectionalIterator. That way we can
- * use it in algorithms, etc.
  */
 
 // self
@@ -65,7 +60,7 @@ namespace libutf8
 
 
 utf8_iterator::utf8_iterator(std::string const & str, bool end)
-    : f_str(str)
+    : f_str(&str)
     , f_pos(end ? str.length() : 0)
     , f_start_pos(f_pos)
 {
@@ -104,13 +99,13 @@ utf8_iterator utf8_iterator::operator -- (int) // post-decrement
 
 char32_t utf8_iterator::operator * () const
 {
-    if(f_pos >= f_str.length())
+    if(f_pos >= f_str->length())
     {
         return EOS;
     }
-    char const * s(f_str.c_str() + f_pos);
+    char const * s(f_str->c_str() + f_pos);
     char32_t wc(U'\0');
-    size_t len(f_str.length() - f_pos);
+    size_t len(f_str->length() - f_pos);
     if(mbstowc(wc, s, len) < 0)
     {
         f_good = false;
@@ -133,49 +128,49 @@ bool utf8_iterator::operator != (utf8_iterator const & rhs) const
 
 bool utf8_iterator::operator == (std::string::iterator it) const
 {
-    return static_cast<std::string::size_type>(it - f_str.begin()) == f_pos;
+    return static_cast<std::string::size_type>(it - f_str->begin()) == f_pos;
 }
 
 
 bool utf8_iterator::operator != (std::string::iterator it) const
 {
-    return static_cast<std::string::size_type>(it - f_str.begin()) != f_pos;
+    return static_cast<std::string::size_type>(it - f_str->begin()) != f_pos;
 }
 
 
 bool utf8_iterator::operator == (std::string::const_iterator it) const
 {
-    return static_cast<std::string::size_type>(it - f_str.cbegin()) == f_pos;
+    return static_cast<std::string::size_type>(it - f_str->cbegin()) == f_pos;
 }
 
 
 bool utf8_iterator::operator != (std::string::const_iterator it) const
 {
-    return static_cast<std::string::size_type>(it - f_str.cbegin()) != f_pos;
+    return static_cast<std::string::size_type>(it - f_str->cbegin()) != f_pos;
 }
 
 
 bool operator == (std::string::iterator it, utf8_iterator const & rhs)
 {
-    return static_cast<std::string::size_type>(it - rhs.f_str.begin()) == rhs.f_pos;
+    return static_cast<std::string::size_type>(it - rhs.f_str->begin()) == rhs.f_pos;
 }
 
 
 bool operator != (std::string::iterator it, utf8_iterator const & rhs)
 {
-    return static_cast<std::string::size_type>(it - rhs.f_str.begin()) != rhs.f_pos;
+    return static_cast<std::string::size_type>(it - rhs.f_str->begin()) != rhs.f_pos;
 }
 
 
 bool operator == (std::string::const_iterator it, utf8_iterator const & rhs)
 {
-    return static_cast<std::string::size_type>(it - rhs.f_str.cbegin()) == rhs.f_pos;
+    return static_cast<std::string::size_type>(it - rhs.f_str->cbegin()) == rhs.f_pos;
 }
 
 
 bool operator != (std::string::const_iterator it, utf8_iterator const & rhs)
 {
-    return static_cast<std::string::size_type>(it - rhs.f_str.cbegin()) != rhs.f_pos;
+    return static_cast<std::string::size_type>(it - rhs.f_str->cbegin()) != rhs.f_pos;
 }
 
 
@@ -184,14 +179,14 @@ void utf8_iterator::increment()
     auto skip = [&]()
     {
         for(unsigned char b(0)
-            ; f_pos < f_str.length()
-                && (b = static_cast<unsigned char>(f_str[f_pos]),
+            ; f_pos < f_str->length()
+                && (b = static_cast<unsigned char>(f_str[0][f_pos]),
                             (b >= 0x80 && b <= 0xBF) || b >= 0xF5)
             ; ++f_pos);
         f_good = false;
     };
 
-    if(f_pos >= f_str.length())
+    if(f_pos >= f_str->length())
     {
         return;
     }
@@ -199,7 +194,7 @@ void utf8_iterator::increment()
     // increment is easy we can just get the current character and we know
     // the size of the character in UTF-8
     //
-    unsigned char c(static_cast<unsigned char>(f_str[f_pos]));
+    unsigned char c(static_cast<unsigned char>(f_str[0][f_pos]));
 
     if(c < 0x80)
     {
@@ -214,9 +209,9 @@ void utf8_iterator::increment()
     else if(c >= 0xF0)
     {
         f_pos += 4;
-        if(c == 0xF4 && f_pos - 3 < f_str.length())
+        if(c == 0xF4 && f_pos - 3 < f_str->length())
         {
-            c = static_cast<unsigned char>(f_str[f_pos - 3]);
+            c = static_cast<unsigned char>(f_str[0][f_pos - 3]);
             if(c >= 0x90)
             {
                 f_pos -= 3;
@@ -232,9 +227,9 @@ void utf8_iterator::increment()
     {
         f_pos += 2;
     }
-    if(f_pos > f_str.length())
+    if(f_pos > f_str->length())
     {
-        f_pos = f_str.length();
+        f_pos = f_str->length();
         f_good = false;
     }
 }
@@ -262,13 +257,28 @@ void utf8_iterator::decrement()
     while(f_pos > 0)
     {
         --f_pos;
-        unsigned char c(static_cast<unsigned char>(f_str[f_pos]));
+        unsigned char c(static_cast<unsigned char>(f_str[0][f_pos]));
         if(c < 0x80
         || c >= 0xC0)
         {
             break;
         }
     }
+}
+
+
+/** \brief Compute the distance between two iterators.
+ *
+ * This function computers the distance between two libutf8 iterators.
+ *
+ * The right hand side iterator must be from the same string as the
+ * lhs string.
+ *
+ * \return The distance between the two iterators.
+ */
+utf8_iterator::difference_type utf8_iterator::operator - (utf8_iterator const & rhs) const
+{
+    return f_pos - rhs.f_pos;
 }
 
 
@@ -281,9 +291,9 @@ void utf8_iterator::decrement()
  *
  * \return The distance between the two iterators.
  */
-std::string::size_type utf8_iterator::operator - (std::string::const_iterator it) const
+utf8_iterator::difference_type utf8_iterator::operator - (std::string::const_iterator it) const
 {
-    return static_cast<std::string::size_type>(f_str.cbegin() + f_pos - it);
+    return static_cast<std::string::size_type>(f_str->cbegin() + f_pos - it);
 }
 
 
@@ -297,9 +307,9 @@ std::string::size_type utf8_iterator::operator - (std::string::const_iterator it
  *
  * \return The distance between the two specified iterators.
  */
-std::string::size_type operator - (std::string::const_iterator it, utf8_iterator const & rhs)
+utf8_iterator::difference_type operator - (std::string::const_iterator it, utf8_iterator const & rhs)
 {
-    return static_cast<std::string::size_type>(it - rhs.f_str.cbegin() - rhs.f_pos);
+    return static_cast<std::string::size_type>(it - rhs.f_str->cbegin() - rhs.f_pos);
 }
 
 
