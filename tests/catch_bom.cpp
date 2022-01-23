@@ -1,4 +1,4 @@
-// Copyright (c) 2021  Made to Order Software Corporation
+// Copyright (c) 2021-2022  Made to Order Software Corporation
 //
 // https://snapwebsites.org/project/libutf8
 // contact@m2osw.com

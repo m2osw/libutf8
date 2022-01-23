@@ -1,4 +1,4 @@
-// Copyright (c) 2021  Made to Order Software Corporation
+// Copyright (c) 2021-2022  Made to Order Software Corporation
 //
 // https://snapwebsites.org/project/libutf8
 // contact@m2osw.com
@@ -88,21 +88,21 @@ CATCH_TEST_CASE("json_tokens", "[json][iterator]")
         CATCH_REQUIRE(jt.line() == 2);
         CATCH_REQUIRE(jt.column() == 21);
         CATCH_REQUIRE(jt.next_token() == libutf8::token_t::TOKEN_NUMBER);
-        CATCH_REQUIRE(jt.number() == 1.0);
+        CATCH_REQUIRE(jt.number() == 1.0_a);
         CATCH_REQUIRE(jt.line() == 3);
         CATCH_REQUIRE(jt.column() == 2);
         CATCH_REQUIRE(jt.next_token() == libutf8::token_t::TOKEN_COMMA);
         CATCH_REQUIRE(jt.line() == 3);
         CATCH_REQUIRE(jt.column() == 3 + 1);    // error due to the unget
         CATCH_REQUIRE(jt.next_token() == libutf8::token_t::TOKEN_NUMBER);
-        CATCH_REQUIRE(jt.number() == 1.0);
+        CATCH_REQUIRE(jt.number() == 1.0_a);
         CATCH_REQUIRE(jt.line() == 4);
         CATCH_REQUIRE(jt.column() == 2);
         CATCH_REQUIRE(jt.next_token() == libutf8::token_t::TOKEN_COMMA);
         CATCH_REQUIRE(jt.line() == 4);
         CATCH_REQUIRE(jt.column() == 5 + 1);    // error due to the unget
         CATCH_REQUIRE(jt.next_token() == libutf8::token_t::TOKEN_NUMBER);
-        CATCH_REQUIRE(jt.number() == -0.1);
+        CATCH_REQUIRE(jt.number() == -0.1_a);
         CATCH_REQUIRE(jt.line() == 5);
         CATCH_REQUIRE(jt.column() == 2);
         CATCH_REQUIRE(jt.next_token() == libutf8::token_t::TOKEN_CLOSE_ARRAY);

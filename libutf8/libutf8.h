@@ -1,4 +1,4 @@
-// Copyright (c) 2000-2021  Made to Order Software Corp.  All Rights Reserved
+// Copyright (c) 2000-2022  Made to Order Software Corp.  All Rights Reserved
 //
 // https://snapwebsites.org/project/libutf8
 // contact@m2osw.com
@@ -82,4 +82,13 @@ int                 u8casecmp(std::string const & lhs, std::string const & rhs);
 
 
 } // libutf8 namespace
+
+
+template<typename CharT, typename Traits>
+std::basic_ostream<CharT, Traits> & operator << (std::basic_ostream<CharT, Traits> & out, char32_t const & c)
+{
+    return out << libutf8::to_u8string(c);
+}
+
+
 // vim: ts=4 sw=4 et
