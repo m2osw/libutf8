@@ -1096,8 +1096,8 @@ private:
     std::string         f_input_dir = std::string();
     std::string         f_output_filename = std::string();
     lines_t             f_lines = lines_t();
-    std::shared_ptr<snap::file_contents>
-                        f_output = std::shared_ptr<snap::file_contents>();
+    std::shared_ptr<snapdev::file_contents>
+                        f_output = std::shared_ptr<snapdev::file_contents>();
     raw_character::map_t
                         f_characters = raw_character::map_t();
 };
@@ -1144,14 +1144,14 @@ void parser_impl::clear_output()
 
 void parser_impl::create_output()
 {
-    f_output = std::make_shared<snap::file_contents>(f_output_filename);
+    f_output = std::make_shared<snapdev::file_contents>(f_output_filename);
 }
 
 
 parser_impl::fields_t parser_impl::parse_fields(std::string const & line)
 {
     fields_t fields;
-    snap::tokenize_string(
+    snapdev::tokenize_string(
           fields
         , line
         , ";"
@@ -1213,7 +1213,7 @@ void parser_impl::remove_comments()
 
 void parser_impl::read_file(std::string const & filename)
 {
-    snap::file_contents input(f_input_dir + "/" + filename);
+    snapdev::file_contents input(f_input_dir + "/" + filename);
     if(!input.read_all())
     {
         std::string const msg(
@@ -1225,7 +1225,7 @@ void parser_impl::read_file(std::string const & filename)
     }
 
     f_lines.clear();
-    snap::tokenize_string(f_lines, input.contents(), "\n", true);
+    snapdev::tokenize_string(f_lines, input.contents(), "\n", true);
 
     remove_comments();
 }
@@ -1259,7 +1259,7 @@ void parser_impl::convert_unicode_data()
         && fields[1].back() == '>')
         {
             fields_t special_name;
-            snap::tokenize_string(
+            snapdev::tokenize_string(
                   special_name
                 , fields[1].substr(1, fields[1].length() - 2)
                 , ","
