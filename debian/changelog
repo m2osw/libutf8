@@ -1,3 +1,9 @@
+libutf8 (1.0.11.1~bionic) bionic; urgency=high
+
+  * Bumped build version to rebuild on Launchpad.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Sun, 13 Feb 2022 12:35:15 -0800
+
 libutf8 (1.0.11.0~bionic) bionic; urgency=high
 
   * Added a clear() for the good flag in the utf8_iterator.
