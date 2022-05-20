@@ -1,3 +1,9 @@
+libutf8 (1.0.12.1~bionic) bionic; urgency=high
+
+  * Updated the compat to v10.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Thu, 19 May 2022 20:28:28 -0700
+
 libutf8 (1.0.12.0~bionic) bionic; urgency=high
 
   * Cleane up the cmake file.
