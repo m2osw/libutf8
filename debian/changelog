@@ -1,3 +1,9 @@
+libutf8 (1.0.12.0~bionic) bionic; urgency=high
+
+  * Cleane up the cmake file.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Thu, 19 May 2022 18:09:49 -0700
+
 libutf8 (1.0.11.2~bionic) bionic; urgency=high
 
   * Bumped build version to rebuild on Launchpad.
