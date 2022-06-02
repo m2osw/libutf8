@@ -18,17 +18,17 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #pragma once
 
-// libutf8 lib
+// libutf8
 //
 #include    <libutf8/libutf8.h>     // for the ostream
 
 
-// catch2 lib
+// catch2
 //
 #include    <catch2/snapcatch2.hpp>
 
 
-// C++ lib
+// C++
 //
 #include    <string>
 #include    <cstring>

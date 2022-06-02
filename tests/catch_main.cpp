@@ -1,4 +1,4 @@
-// Copyright (c) 2021  Made to Order Software Corporation
+// Copyright (c) 2021-2022  Made to Order Software Corporation
 //
 // https://snapwebsites.org/project/libutf8
 // contact@m2osw.com
@@ -25,20 +25,20 @@
 #include    "catch_main.h"
 
 
-// libutf8 lib
+// libutf8
 //
-#include    "libutf8/libutf8.h"
-#include    "libutf8/version.h"
+#include    <libutf8/libutf8.h>
+#include    <libutf8/version.h>
 
 
-// libexcept lib
+// libexcept
 //
-#include    "libexcept/exception.h"
+#include    <libexcept/exception.h>
 
 
-// C++ lib
+// C++
 //
-#include <sstream>
+#include    <sstream>
 
 
 // last include

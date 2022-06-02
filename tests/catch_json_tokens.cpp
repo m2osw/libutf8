@@ -17,15 +17,16 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+// libutf8 lib
+//
+#include    <libutf8/json_tokens.h>
+
+#include    <libutf8/libutf8.h>
+
+
 // unit test
 //
 #include    "catch_main.h"
-
-
-// libutf8 lib
-//
-#include    "libutf8/json_tokens.h"
-#include    "libutf8/libutf8.h"
 
 
 // last include

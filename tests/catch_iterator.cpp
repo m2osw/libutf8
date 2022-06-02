@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2021  Made to Order Software Corporation
+// Copyright (c) 2013-2022  Made to Order Software Corporation
 //
 // https://snapwebsites.org/project/libutf8
 // contact@m2osw.com
@@ -17,16 +17,17 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+// libutf8 lib
+//
+#include    <libutf8/iterator.h>
+
+#include    <libutf8/base.h>
+#include    <libutf8/libutf8.h>
+
+
 // unit test
 //
 #include    "catch_main.h"
-
-
-// libutf8 lib
-//
-#include    "libutf8/base.h"
-#include    "libutf8/iterator.h"
-#include    "libutf8/libutf8.h"
 
 
 // C++ lib
