@@ -43,7 +43,7 @@
 #include    "libutf8/base.h"
 
 
-// C++ lib
+// C++
 //
 #include    <iostream>
 

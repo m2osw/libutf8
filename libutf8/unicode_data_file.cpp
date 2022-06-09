@@ -305,19 +305,19 @@
  */
 
 
-// self lib
+// self
 //
-#include    <libutf8/unicode_data_file.h>
+#include    "libutf8/unicode_data_file.h"
 
-#include    <libutf8/exception.h>
+#include    "libutf8/exception.h"
 
 
-// snapdev lib
+// snapdev
 //
 #include    <snapdev/file_contents.h>
 
 
-// C++ lib
+// C++
 //
 #include    <fstream>
 #include    <iostream>
@@ -327,7 +327,7 @@
 #include    <vector>
 
 
-// C lib
+// C
 //
 #include    <stdlib.h>
 #include    <unistd.h>

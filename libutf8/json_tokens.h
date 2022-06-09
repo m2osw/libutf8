@@ -34,7 +34,7 @@
 #include    <libutf8/iterator.h>
 
 
-// C++ lib
+// C++
 //
 #include    <cmath>
 #include    <string>

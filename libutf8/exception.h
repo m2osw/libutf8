@@ -25,7 +25,7 @@
  * functions used to convert a string from one format to another.
  */
 
-// libexcept lib
+// libexcept
 //
 #include    <libexcept/exception.h>
 

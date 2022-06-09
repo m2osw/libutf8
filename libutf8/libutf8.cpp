@@ -44,7 +44,7 @@
 #include    "libutf8/exception.h"
 
 
-// C++ lib
+// C++
 //
 #include    <cwctype>
 

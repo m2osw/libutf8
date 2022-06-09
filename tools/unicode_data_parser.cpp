@@ -29,24 +29,24 @@
  */
 
 
-// libutf8 lib
+// libutf8
 //
 #include    <libutf8/unicode_data.h>
 
 
-// snapdev lib
+// libexcept
 //
-//#include    <snapdev/file_contents.h>
+#include    <libexcept/file_inheritance.h>
 
 
-// C++ lib
+// C++
 //
 #include    <fstream>
 #include    <iostream>
 #include    <string>
 
 
-// C lib
+// C
 //
 #include    <stdlib.h>
 #include    <unistd.h>
@@ -81,6 +81,8 @@ void usage()
 
 int main(int argc, char * argv[])
 {
+    libexcept::verify_inherited_files();
+
     std::string input_dir;
     std::string output_filename;
 

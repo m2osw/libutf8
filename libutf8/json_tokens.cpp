@@ -37,7 +37,7 @@
 #include    "libutf8/libutf8.h"
 
 
-// C++ lib
+// C++
 //
 #include    <iostream>
 #include    <sstream>

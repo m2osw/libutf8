@@ -29,10 +29,12 @@ add_executable(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         ${ADVGETOPT_INCLUDE_DIRS}
+        ${LIBEXCEPT_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT_NAME}
     utf8
+    ${LIBEXCEPT_LIBRARIES}
 )
 
 install(

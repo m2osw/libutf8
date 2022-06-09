@@ -40,13 +40,10 @@
 //
 #include    "libutf8/base.h"
 
-
-// libutf8 lib
-//
 #include    "libutf8/exception.h"
 
 
-// C++ lib
+// C++
 //
 #include    <cctype>
 #include    <iostream>

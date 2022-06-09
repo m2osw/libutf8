@@ -30,12 +30,12 @@
  * considered private.
  */
 
-// self lib
+// self
 //
 #include    <libutf8/unicode_data.h>
 
 
-// C++ lib
+// C++
 //
 #include    <string>
 
