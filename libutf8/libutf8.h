@@ -85,10 +85,33 @@ int                 u8casecmp(std::string const & lhs, std::string const & rhs);
 
 
 template<typename CharT, typename Traits>
-std::basic_ostream<CharT, Traits> & operator << (std::basic_ostream<CharT, Traits> & out, char32_t const & c)
+std::basic_ostream<CharT, Traits> & operator << (std::basic_ostream<CharT, Traits> & out, char32_t wc)
 {
-    return out << libutf8::to_u8string(c);
+    return out << libutf8::to_u8string(wc);
 }
+
+
+inline std::string operator + (char32_t wc, std::string const & rhs)
+{
+    std::string v;
+    if(wc != U'\0')
+    {
+        v = libutf8::to_u8string(wc);
+    }
+    return v + rhs;
+}
+
+
+inline std::string operator + (std::string const & lhs, char32_t wc)
+{
+    std::string v;
+    if(wc != U'\0')
+    {
+        v = libutf8::to_u8string(wc);
+    }
+    return lhs + v;
+}
+
 
 
 // vim: ts=4 sw=4 et
