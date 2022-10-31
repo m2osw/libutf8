@@ -1,3 +1,9 @@
+libutf8 (1.0.14.0~bionic) bionic; urgency=high
+
+  * Added operator+ for char32_t/string where string is viewed as UTF-8.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Sun, 30 Oct 2022 21:24:12 -0700
+
 libutf8 (1.0.13.0~bionic) bionic; urgency=high
 
   * Added a verify_file_inheritance() in tools.
