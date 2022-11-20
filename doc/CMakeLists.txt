@@ -21,6 +21,7 @@
 ##
 ## Documentation
 ##
+find_package(SnapDoxygen)
 AddDoxygenTarget(libutf8
     ${LIBUTF8_VERSION_MAJOR}
     ${LIBUTF8_VERSION_MINOR}

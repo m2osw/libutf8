@@ -24,7 +24,6 @@ project(utf8_library)
 find_package(SnapCMakeModules REQUIRED)
 find_package(LibExcept        REQUIRED)
 find_package(SnapDev          REQUIRED)
-find_package(SnapDoxygen              )
 
 SnapGetVersion(LIBUTF8 ${CMAKE_CURRENT_SOURCE_DIR})
 
