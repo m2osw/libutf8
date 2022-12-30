@@ -32,6 +32,7 @@
 
 // C++
 //
+#include    <cstdint>
 #include    <memory>
 
 
