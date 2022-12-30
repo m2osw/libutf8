@@ -28,7 +28,7 @@
 #include    "catch_main.h"
 
 
-// C++ lib
+// C++
 //
 #include    <cctype>
 #include    <iostream>

@@ -27,7 +27,7 @@
  *
  * Contrary to many of the system functions, these functions do not take
  * anything from the system in account (the locale can be anything, it does
- * not change the exact behavior of these functions.)
+ * not change the exact behavior of these functions).
  *
  * Also similar functionality is found on Unices and MS-Windows, it was
  * simpler to just implement these few functions than to try to have a
@@ -41,6 +41,7 @@
 #include    "libutf8/iterator.h"
 
 #include    "libutf8/base.h"
+#include    "libutf8/libutf8.h"
 
 
 // C++
@@ -97,6 +98,66 @@ utf8_iterator utf8_iterator::operator -- (int) // post-decrement
 }
 
 
+/** \brief Read the current character.
+ *
+ * This function reads the current character and returns it as a char32_t
+ * (i.e. UTF-32).
+ *
+ * When the iterator is at the end of the input string (it == str.end()),
+ * then the function returns libutf8::EOS (-1).
+ *
+ * When the current character is valid, the value is any number from 0 to
+ * 0x10FFFF except for UTF-16 surrogate values (0xD800 to 0xDFFF).
+ *
+ * When the current character is invalid (bad UTF-8 encoding, although
+ * extended UTF-8 is accepted here), then the function returns
+ * libutf8::NOT_A_CHARACTER (-2). Further, the good flag is also set to
+ * false, which means good() returns false and bad() returns true.
+ *
+ * \code
+ *     for(libutf8::iterator it(s); it != s.end(); ++it)
+ *     {
+ *         char32_t c(*it);
+ *
+ *         // here you can choose:
+ *         if(c == libutf8::NOT_A_CHARACTER)
+ *         {
+ *             // handle error -- current character is not valid UTF-8
+ *             break;
+ *         }
+ *         // -- or --
+ *         if(it.bad())
+ *         {
+ *             // handle error -- current character is not valid UTF-8
+ *             break;
+ *         }
+ *     }
+ * \endcode
+ *
+ * Since this function returns EOS when the iterator is at the end of
+ * the string, you can also stop the iteration process like so:
+ *
+ * \code
+ *     libutf8::iterator it(s);
+ *     for(;;)
+ *     {
+ *         char32_t c(*it);
+ *         if(c == libutf8::EOS)
+ *         {
+ *             // success, all characters were valid
+ *             break;
+ *         }
+ *         ...handle other cases as above...
+ *     }
+ * \endcode
+ *
+ * \return EOS if at the end of the string, the current character as a
+ * char32_t value or NOT_A_CHARACTER if the current character encoding is
+ * wrong.
+ *
+ * \sa good()
+ * \sa bad()
+ */
 char32_t utf8_iterator::operator * () const
 {
     if(f_pos >= f_str->length())
@@ -104,7 +165,7 @@ char32_t utf8_iterator::operator * () const
         return EOS;
     }
     char const * s(f_str->c_str() + f_pos);
-    char32_t wc(U'\0');
+    char32_t wc(NOT_A_CHARACTER);
     size_t len(f_str->length() - f_pos);
     if(mbstowc(wc, s, len) < 0)
     {
@@ -241,8 +302,8 @@ void utf8_iterator::increment()
  * UTF-8 character. This means skipping to the first UTF-8 byte.
  *
  * \note
- * Contrary the increment(), this function does not set the good flag to
- * false if it is at the start or there is an invalid character.
+ * Contrary to the increment(), this function does not set the good flag to
+ * true or false whether it is at the start or there is an invalid character.
  */
 void utf8_iterator::decrement()
 {

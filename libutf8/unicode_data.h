@@ -27,7 +27,7 @@
 
 // self
 //
-#include    <libutf8/libutf8.h>
+#include    <libutf8/base.h>
 
 
 // C++

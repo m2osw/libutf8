@@ -40,8 +40,9 @@
 //
 #include    "libutf8/unicode_data.h"
 
-#include    "libutf8/unicode_data_file.h"
 #include    "libutf8/exception.h"
+#include    <libutf8/libutf8.h>
+#include    "libutf8/unicode_data_file.h"
 
 
 // C++

@@ -1,6 +1,8 @@
-libutf8 (1.0.14.1~bionic) bionic; urgency=high
+libutf8 (1.0.15.0~bionic) bionic; urgency=high
 
   * Moved find() of doxygen in the doc/CMakeLists.txt file.
+  * Changed the NOT_A_CHARACTER value to -2 to distinguish it from EOS.
+  * Made utf8_iterator::operator * return NOT_A_CHARACTER on an error.
 
  -- Alexis Wilke <alexis@m2osw.com>  Sun, 20 Nov 2022 09:00:37 -0800
 

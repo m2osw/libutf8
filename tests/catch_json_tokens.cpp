@@ -17,7 +17,7 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-// libutf8 lib
+// libutf8
 //
 #include    <libutf8/json_tokens.h>
 
@@ -29,12 +29,12 @@
 #include    "catch_main.h"
 
 
-// last include
+// snapdev
 //
 #include    <snapdev/file_contents.h>
 
 
-// C++ lib
+// C++
 //
 #include    <cctype>
 #include    <iomanip>

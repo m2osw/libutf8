@@ -54,8 +54,6 @@ enum class surrogate_t
 };
 
 
-constexpr char32_t const    BOM_CHAR = U'\U0000FEFF';
-constexpr char32_t const    NOT_A_CHARACTER = static_cast<char32_t>(-1);
 
 
 bool                is_valid_ascii(char c, bool ctrl = true);

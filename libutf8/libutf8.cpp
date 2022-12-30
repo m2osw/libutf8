@@ -44,6 +44,11 @@
 #include    "libutf8/exception.h"
 
 
+// snapdev
+//
+#include    <snapdev/hexadecimal_string.h>
+
+
 // C++
 //
 #include    <cwctype>
@@ -788,7 +793,10 @@ std::string to_u8string(char32_t wc)
         char mb[MBS_MIN_BUFFER_LENGTH];
         if(wctombs(mb, wc, sizeof(mb)) < 0)
         {
-            throw libutf8_exception_encoding("to_u8string(char32_t): the input wide character is not a valid UTF-32 character.");
+            throw libutf8_exception_encoding(
+                  "to_u8string(char32_t): the input wide character(\\U"
+                + snapdev::int_to_hex(wc, false, 6)
+                + ") is not a valid UTF-32 character.");
         }
         result += mb;
     }

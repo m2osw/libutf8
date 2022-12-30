@@ -252,14 +252,11 @@ int mbstowc(char32_t & wc, char const * & mb, size_t & len)
             ; ++skip_mb , --skip_len);
     };
 
-    // default output character is NUL
-    //
-    wc = U'\0';
-
     // already done?
     //
     if(len <= 0)
     {
+        wc = U'\0';
         return 0;
     }
 
@@ -273,6 +270,10 @@ int mbstowc(char32_t & wc, char const * & mb, size_t & len)
         wc = c;
         return 1;
     }
+
+    // by default return an invalid character
+    //
+    wc = NOT_A_CHARACTER;
 
     // invalid stream?
     //
