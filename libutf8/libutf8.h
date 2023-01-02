@@ -61,6 +61,7 @@ bool                is_valid_ascii(char const * str, bool ctrl = true);
 bool                is_valid_ascii(std::string const & str, bool ctrl = true);
 bool                is_valid_utf8(char const * str);
 bool                is_valid_utf8(std::string const & str);
+bool                is_valid_utf16(std::u16string const & str);
 bool                is_valid_unicode(char32_t const wc, bool ctrl = true);
 bool                is_valid_unicode(char32_t const * str, bool ctrl = true);
 bool                is_valid_unicode(std::u32string const & str, bool ctrl = true);
@@ -76,6 +77,7 @@ std::u16string      to_u16string(std::string const & str);
 std::u32string      to_u32string(std::string const & str);
 size_t              u8length(std::string const & str);
 int                 u8casecmp(std::string const & lhs, std::string const & rhs);
+ssize_t             u16length(std::u16string const & str);
 
 
 

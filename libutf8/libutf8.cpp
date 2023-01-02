@@ -199,7 +199,7 @@ bool is_valid_ascii(std::string const & str, bool ctrl)
  *
  * \return true if the string is valid UTF-8
  */
-bool is_valid_utf8(char const *str)
+bool is_valid_utf8(char const * str)
 {
     if(str == nullptr)
     {
@@ -266,6 +266,62 @@ bool is_valid_utf8(char const *str)
         }
     }
 
+    return true;
+}
+
+
+/** \brief Check whether a string is valid UTF-16 or not.
+ *
+ * This function is used to verify that an input string is valid
+ * UTF-16. The function checks each word (2 bytes) and if all the
+ * words represent a valid UTF-16 stream it returns true, otherwise
+ * it returns false.
+ *
+ * This function is much faster than running a full conversion if you
+ * do not need the result since it does not write anything to memory.
+ * Note also that this function does not throw on invalid characters
+ * whereas the convertion functions do.
+ *
+ * The function verifies that when large characters are used, that
+ * they properly use a high and then a low surrogates. If the function
+ * finds a low surrogate without a high first, or if a high surrogate
+ * is not followed by a low surrogate, then the function fails.
+ *
+ * \param[in] string  The UTF-16 string to scan.
+ *
+ * \return true if the string is valid UTF-16.
+ */
+bool is_valid_utf16(std::u16string const & str)
+{
+    for(std::u16string::value_type const * s(str.c_str());
+        *s != L'\0';
+        ++s)
+    {
+        surrogate_t const high_surrogate(is_surrogate(*s));
+        if(high_surrogate == surrogate_t::SURROGATE_LOW)
+        {
+            // missing HIGH surrogate before LOW surrogate
+            //
+            return false;
+        }
+        if(high_surrogate == surrogate_t::SURROGATE_HIGH)
+        {
+            ++s;
+            if(*s == L'\0')
+            {
+                // missing LOW surrogate after HIGH surrogate
+                //
+                return false;
+            }
+            surrogate_t const low_surrogate(is_surrogate(*s));
+            if(low_surrogate != surrogate_t::SURROGATE_LOW)
+            {
+                // missing LOW surrogate after HIGH surrogate
+                //
+                return false;
+            }
+        }
+    }
     return true;
 }
 
@@ -903,6 +959,57 @@ size_t u8length(std::string const & str)
         if((c < 0x80 || c > 0xBF) && c < 0xF8)
         {
             ++result;
+        }
+    }
+    return result;
+}
+
+
+/** \brief Determine the length of the UTF-16 string.
+ *
+ * This function counts the number of characters in the specified UTF-16
+ * string. It is optimized for speed for the UTF-16 encoding.
+ *
+ * In UTF-16, the surrogates have to appear in the correct order. This
+ * function returns -1 instead of the length if it detects an invalid
+ * surrogate.
+ *
+ * \param[in] str  The null terminated string to compute the length in
+ * characters of.
+ *
+ * \return The number of characters in the UTF-16 string or -1 if the string
+ * is considered invalid.
+ */
+ssize_t u16length(std::u16string const & str)
+{
+    ssize_t result(0);
+    for(std::u16string::value_type const * s(str.c_str());
+        *s != L'\0';
+        ++result, ++s)
+    {
+        surrogate_t const high_surrogate(is_surrogate(*s));
+        if(high_surrogate == surrogate_t::SURROGATE_LOW)
+        {
+            // missing HIGH surrogate before LOW surrogate
+            //
+            return -1;
+        }
+        if(high_surrogate == surrogate_t::SURROGATE_HIGH)
+        {
+            ++s;
+            if(*s == L'\0')
+            {
+                // missing LOW surrogate after HIGH surrogate
+                //
+                return -1;
+            }
+            surrogate_t const low_surrogate(is_surrogate(*s));
+            if(low_surrogate != surrogate_t::SURROGATE_LOW)
+            {
+                // missing LOW surrogate after HIGH surrogate
+                //
+                return -1;
+            }
         }
     }
     return result;
