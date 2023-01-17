@@ -115,7 +115,7 @@ utf8_iterator utf8_iterator::operator -- (int) // post-decrement
  * false, which means good() returns false and bad() returns true.
  *
  * \code
- *     for(libutf8::iterator it(s); it != s.end(); ++it)
+ *     for(libutf8::utf8_iterator it(s); it != s.end(); ++it)
  *     {
  *         char32_t c(*it);
  *
@@ -138,7 +138,7 @@ utf8_iterator utf8_iterator::operator -- (int) // post-decrement
  * the string, you can also stop the iteration process like so:
  *
  * \code
- *     libutf8::iterator it(s);
+ *     libutf8::utf8_iterator it(s);
  *     for(;;)
  *     {
  *         char32_t c(*it);
