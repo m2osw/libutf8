@@ -51,7 +51,7 @@
 #pragma GCC diagnostic ignored "-Wfloat-equal"
 CATCH_TEST_CASE("json_tokens", "[json][iterator]")
 {
-    CATCH_START_SECTION("valid JSON tokens")
+    CATCH_START_SECTION("json_tokens: valid JSON tokens")
     {
         std::string valid_json(
             "{\n"
@@ -157,7 +157,7 @@ CATCH_TEST_CASE("json_tokens", "[json][iterator]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("valid JSON numbers")
+    CATCH_START_SECTION("json_tokens: valid JSON numbers")
     {
         std::string valid_json(
             "["
@@ -196,7 +196,7 @@ CATCH_TEST_CASE("json_tokens", "[json][iterator]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("valid JSON special escaped characters")
+    CATCH_START_SECTION("json_tokens: valid JSON special escaped characters")
     {
         std::string valid_json(
             "{"
@@ -267,7 +267,7 @@ CATCH_TEST_CASE("json_tokens", "[json][iterator]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("valid JSON unicode escaped characters")
+    CATCH_START_SECTION("json_tokens: valid JSON unicode escaped characters")
     {
         for(char32_t c(1); c < 0x110000; ++c)
         {
@@ -313,7 +313,7 @@ CATCH_TEST_CASE("json_tokens", "[json][iterator]")
 
 CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
 {
-    CATCH_START_SECTION("invalid JSON negative number")
+    CATCH_START_SECTION("json_tokens_invalid: invalid JSON negative number")
     {
         std::string valid_json(
             "-a"
@@ -329,7 +329,7 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("invalid JSON number with fraction")
+    CATCH_START_SECTION("json_tokens_invalid: invalid JSON number with fraction")
     {
         std::string valid_json(
             "-3., 2."
@@ -345,7 +345,7 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("invalid JSON number exponent")
+    CATCH_START_SECTION("json_tokens_invalid: invalid JSON number exponent")
     {
         std::string valid_json(
             "-3.0e+a, 2.1"
@@ -361,7 +361,7 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("invalid JSON number with fraction")
+    CATCH_START_SECTION("json_tokens_invalid: invalid JSON number with fraction")
     {
         std::string valid_json(
             "\"back\\slash\""
@@ -377,7 +377,7 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("unsupported JSON backslash character")
+    CATCH_START_SECTION("json_tokens_invalid: unsupported JSON backslash character")
     {
         {
             std::string valid_json(
@@ -396,7 +396,7 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("invalid JSON unicode: too short")
+    CATCH_START_SECTION("json_tokens_invalid: invalid JSON unicode: too short")
     {
         {
             std::string valid_json(
@@ -443,7 +443,7 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("invalid JSON unicode: low surrogate missing backslash")
+    CATCH_START_SECTION("json_tokens_invalid: invalid JSON unicode: low surrogate missing backslash")
     {
         std::string valid_json(
             "\"\\uD91Fmissing\""
@@ -459,7 +459,7 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("invalid JSON unicode: low surrogate missing 'u'")
+    CATCH_START_SECTION("json_tokens_invalid: invalid JSON unicode: low surrogate missing 'u'")
     {
         std::string valid_json(
             "\"\\uD91F\\missing\""
@@ -475,7 +475,7 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("invalid JSON unicode: low surrogate expected")
+    CATCH_START_SECTION("json_tokens_invalid: invalid JSON unicode: low surrogate expected")
     {
         {
             std::string valid_json(
@@ -521,7 +521,7 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("invalid JSON unicode: low surrogate too short")
+    CATCH_START_SECTION("json_tokens_invalid: invalid JSON unicode: low surrogate too short")
     {
         {
             std::string valid_json(
@@ -567,7 +567,7 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("invalid JSON unicode: invalid hexadecimal digit (low surrogate)")
+    CATCH_START_SECTION("json_tokens_invalid: invalid JSON unicode: invalid hexadecimal digit (low surrogate)")
     {
         {
             std::string valid_json(
@@ -613,7 +613,7 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("invalid JSON unicode: low surrogate first")
+    CATCH_START_SECTION("json_tokens_invalid: invalid JSON unicode: low surrogate first")
     {
         for(char32_t c(0xDC00); c <= 0xDFFF; ++c)
         {
@@ -635,7 +635,7 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("invalid JSON unicode: invalid hexadecimal digit")
+    CATCH_START_SECTION("json_tokens_invalid: invalid JSON unicode: invalid hexadecimal digit")
     {
         {
             std::string valid_json(
@@ -681,7 +681,7 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("unterminated JSON string")
+    CATCH_START_SECTION("json_tokens_invalid: unterminated JSON string")
     {
         libutf8::json_tokens jt("\"unterminated");
         CATCH_REQUIRE(jt.line() == 0);
@@ -694,7 +694,7 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("JSON true with missing characters")
+    CATCH_START_SECTION("json_tokens_invalid: JSON true with missing characters")
     {
         {
             libutf8::json_tokens jt("{\"bad-true\":tru}");
@@ -733,7 +733,7 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("JSON false with missing characters")
+    CATCH_START_SECTION("json_tokens_invalid: JSON false with missing characters")
     {
         {
             libutf8::json_tokens jt("{\"bad-false\":fals}");
@@ -784,7 +784,7 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("JSON null with missing characters")
+    CATCH_START_SECTION("json_tokens_invalid: JSON null with missing characters")
     {
         {
             libutf8::json_tokens jt("{\"bad-null\":nul}");
@@ -823,7 +823,7 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("unexpected JSON characters")
+    CATCH_START_SECTION("json_tokens_invalid: unexpected JSON characters")
     {
         for(char32_t c(1); c < 0x110000; ++c)
         {
@@ -881,7 +881,7 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("unexpected '\\0' in JSON")
+    CATCH_START_SECTION("json_tokens_invalid: unexpected '\\0' in JSON")
     {
         std::string invalid_json;
         invalid_json += '\0';
@@ -892,7 +892,7 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("unexpected '\\0' in JSON string")
+    CATCH_START_SECTION("json_tokens_invalid: unexpected '\\0' in JSON string")
     {
         std::string invalid_json("\"string");
         invalid_json += '\0';

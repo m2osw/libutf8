@@ -34,9 +34,9 @@
 
 
 
-CATCH_TEST_CASE("Version", "[version]")
+CATCH_TEST_CASE("version", "[version]")
 {
-    CATCH_START_SECTION("verify runtime vs compile time version numbers")
+    CATCH_START_SECTION("version: verify runtime vs compile time version numbers")
     {
         CATCH_REQUIRE(libutf8::get_major_version()   == LIBUTF8_VERSION_MAJOR);
         CATCH_REQUIRE(libutf8::get_release_version() == LIBUTF8_VERSION_MINOR);

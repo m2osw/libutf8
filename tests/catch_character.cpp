@@ -40,13 +40,16 @@
 
 
 
-CATCH_TEST_CASE("Character Conversions", "[characters]")
+CATCH_TEST_CASE("character_conversions", "[characters]")
 {
-    CATCH_START_SECTION("Verify minimum buffer length for MBS conversions")
+    CATCH_START_SECTION("character_conversions: Verify minimum buffer length for MBS conversions")
+    {
         CATCH_REQUIRE(libutf8::MBS_MIN_BUFFER_LENGTH >= 5);
+    }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("Test UTF-32 to UTF-8 with characters between 0x00 and 0x7F inclusive")
+    CATCH_START_SECTION("character_conversions: Test UTF-32 to UTF-8 with characters between 0x00 and 0x7F inclusive")
+    {
         for(char32_t wc(0); wc < 0x000080; ++wc)
         {
             char buf[libutf8::MBS_MIN_BUFFER_LENGTH];
@@ -62,9 +65,11 @@ CATCH_TEST_CASE("Character Conversions", "[characters]")
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == 1);
             CATCH_REQUIRE(back == wc);
         }
+    }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("Test UTF-32 to UTF-8 with characters between 0x80 and 0x7FF inclusive")
+    CATCH_START_SECTION("character_conversions: Test UTF-32 to UTF-8 with characters between 0x80 and 0x7FF inclusive")
+    {
         for(char32_t wc(0x000080); wc < 0x000800; ++wc)
         {
             char buf[libutf8::MBS_MIN_BUFFER_LENGTH];
@@ -83,9 +88,11 @@ CATCH_TEST_CASE("Character Conversions", "[characters]")
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == 2);
             CATCH_REQUIRE(back == wc);
         }
+    }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("Test UTF-32 to UTF-8 with characters between 0x800 and 0xFFFF inclusive")
+    CATCH_START_SECTION("character_conversions: Test UTF-32 to UTF-8 with characters between 0x800 and 0xFFFF inclusive")
+    {
         for(char32_t wc(0x000800); wc < 0x010000; ++wc)
         {
             if(wc >= 0xD800 && wc <= 0xDFFF)
@@ -117,9 +124,11 @@ CATCH_TEST_CASE("Character Conversions", "[characters]")
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == 3);
             CATCH_REQUIRE(back == wc);
         }
+    }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("Test UTF-32 to UTF-8 with characters between 0x10000 and 0x10FFFF inclusive")
+    CATCH_START_SECTION("character_conversions: Test UTF-32 to UTF-8 with characters between 0x10000 and 0x10FFFF inclusive")
+    {
         for(char32_t wc(0x010000); wc < 0x110000; ++wc)
         {
             char buf[libutf8::MBS_MIN_BUFFER_LENGTH];
@@ -145,9 +154,11 @@ CATCH_TEST_CASE("Character Conversions", "[characters]")
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == 4);
             CATCH_REQUIRE(back == wc);
         }
+    }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("Test UTF-32 to UTF-8 with an empty input string")
+    CATCH_START_SECTION("character_conversions: Test UTF-32 to UTF-8 with an empty input string")
+    {
         for(char32_t repeat(0); repeat < 10; ++repeat)
         {
             char buf[libutf8::MBS_MIN_BUFFER_LENGTH];
@@ -167,13 +178,15 @@ CATCH_TEST_CASE("Character Conversions", "[characters]")
                 CATCH_REQUIRE(copy[idx] == buf[idx]);
             }
         }
+    }
     CATCH_END_SECTION()
 }
 
 
-CATCH_TEST_CASE("Invalid UTF-32 Character to UTF-8", "[characters],[invalid]")
+CATCH_TEST_CASE("invalid_utf32_to_utf8", "[characters],[invalid]")
 {
-    CATCH_START_SECTION("Verify that surrogates do not work in UTF-8")
+    CATCH_START_SECTION("invalid_utf32_to_utf8: Verify that surrogates do not work in UTF-8")
+    {
         for(char32_t wc(0x00D800); wc < 0x00E000; ++wc)
         {
             char buf[libutf8::MBS_MIN_BUFFER_LENGTH]
@@ -183,9 +196,11 @@ CATCH_TEST_CASE("Invalid UTF-32 Character to UTF-8", "[characters],[invalid]")
             CATCH_REQUIRE(libutf8::wctombs(buf, wc, sizeof(buf)) == -1);
             CATCH_REQUIRE(buf[0] == '\0');
         }
+    }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("Verify that too large a number is not supported")
+    CATCH_START_SECTION("invalid_utf32_to_utf8: Verify that too large a number is not supported")
+    {
         for(int repeat(0); repeat < 1000; ++repeat)
         {
             char buf[libutf8::MBS_MIN_BUFFER_LENGTH]
@@ -201,13 +216,15 @@ CATCH_TEST_CASE("Invalid UTF-32 Character to UTF-8", "[characters],[invalid]")
             CATCH_REQUIRE(libutf8::wctombs(buf, wc, sizeof(buf)) == -1);
             CATCH_REQUIRE(buf[0] == '\0');
         }
+    }
     CATCH_END_SECTION()
 }
 
 
-CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "[characters],[invalid]")
+CATCH_TEST_CASE("invalid_utf8_to_utf32", "[characters],[invalid]")
 {
-    CATCH_START_SECTION("Verify that surrogates do not work in UTF-8")
+    CATCH_START_SECTION("invalid_utf8_to_utf32: Verify that surrogates do not work in UTF-8")
+    {
         for(char32_t wc(0x00D800); wc < 0x00E000; ++wc)
         {
 //int mbstowc(char32_t & wc, char const * & mb, size_t & len);
@@ -220,7 +237,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "[characters],[invalid]")
             size_t len(3);
             char32_t cwc(rand());
             CATCH_REQUIRE(libutf8::mbstowc(cwc, s, len) == -1);
-            CATCH_REQUIRE(cwc == U'\0');
+            CATCH_REQUIRE(cwc == libutf8::NOT_A_CHARACTER);
             char const c1(static_cast<char>((wc >> 12) | 0xE0));
             CATCH_REQUIRE(buf[0] == c1);
             char const c2(static_cast<char>(((wc >> 6) & 0x3F) | 0x80));
@@ -231,9 +248,11 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "[characters],[invalid]")
             CATCH_REQUIRE(s == buf + 3);
             CATCH_REQUIRE(len == 0);
         }
+    }
     CATCH_END_SECTION()
 
-    //CATCH_START_SECTION("Verify that too large a number is not supported")
+    //CATCH_START_SECTION("invalid_utf8_to_utf32: Verify that too large a number is not supported")
+    //{
     //    for(int idx(0); idx < 1000; ++idx)
     //    {
     //        char buf[libutf8::MBS_MIN_BUFFER_LENGTH]
@@ -247,11 +266,13 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "[characters],[invalid]")
     //        }
     //        while(wc < 0x110000);
     //        CATCH_REQUIRE(libutf8::wctombs(buf, wc, sizeof(buf)) == -1);
-    //        CATCH_REQUIRE(buf[0] == '\0');
+    //        CATCH_REQUIRE(buf[0] == libutf8::NOT_A_CHARACTER);
     //    }
+    //}
     //CATCH_END_SECTION()
 
-    CATCH_START_SECTION("Test an invalid UTF-8 sequence (0x80 to 0x7FF)")
+    CATCH_START_SECTION("invalid_utf8_to_utf32: Test an invalid UTF-8 sequence (0x80 to 0x7FF)")
+    {
         for(char32_t wc(0x000080); wc < 0x000800; ++wc)
         {
             char buf[libutf8::MBS_MIN_BUFFER_LENGTH];
@@ -282,7 +303,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "[characters],[invalid]")
             buf[1] = static_cast<char>(c);
             len = 2;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == U'\0');
+            CATCH_REQUIRE(back == libutf8::NOT_A_CHARACTER);
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 1) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 1);
             buf[1] = second_byte;
@@ -294,7 +315,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "[characters],[invalid]")
             buf[0] = rand() % 64 + 0x80;
             len = 2;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == U'\0');
+            CATCH_REQUIRE(back == libutf8::NOT_A_CHARACTER);
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 2) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 0);
 
@@ -305,13 +326,15 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "[characters],[invalid]")
             buf[0] = rand() % 8 + 0xF8;
             len = 2;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == '\0');
+            CATCH_REQUIRE(back == libutf8::NOT_A_CHARACTER);
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 2) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 0);
         }
+    }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("Test an invalid UTF-8 sequence (0x800 to 0xFFFF)")
+    CATCH_START_SECTION("invalid_utf8_to_utf32: Test an invalid UTF-8 sequence (0x800 to 0xFFFF)")
+    {
         for(char32_t wc(0x000800); wc < 0x010000; ++wc)
         {
             if(wc >= 0xD800 && wc <= 0xDFFF)
@@ -351,7 +374,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "[characters],[invalid]")
             buf[1] = static_cast<char>(c);
             len = 3;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == U'\0');
+            CATCH_REQUIRE(back == libutf8::NOT_A_CHARACTER);
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 1) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 2);
             buf[1] = second_byte;
@@ -367,7 +390,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "[characters],[invalid]")
             buf[2] = static_cast<char>(c);
             len = 3;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == U'\0');
+            CATCH_REQUIRE(back == libutf8::NOT_A_CHARACTER);
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 2) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 1);
             buf[2] = third_byte;
@@ -379,7 +402,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "[characters],[invalid]")
             buf[0] = rand() % 64 + 0x80;
             len = 3;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == U'\0');
+            CATCH_REQUIRE(back == libutf8::NOT_A_CHARACTER);
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 3) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 0);
 
@@ -390,13 +413,15 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "[characters],[invalid]")
             buf[0] = rand() % 8 + 0xF8;
             len = 3;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == '\0');
+            CATCH_REQUIRE(back == libutf8::NOT_A_CHARACTER);
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 3) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 0);
         }
+    }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("Test UTF-32 to UTF-8 with characters between 0x010000 and 0x110000 inclusive")
+    CATCH_START_SECTION("invalid_utf8_to_utf32: Test UTF-32 to UTF-8 with characters between 0x010000 and 0x110000 inclusive")
+    {
         for(char32_t wc(0x010000); wc < 0x110000; ++wc)
         {
             char buf[libutf8::MBS_MIN_BUFFER_LENGTH];
@@ -430,7 +455,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "[characters],[invalid]")
             buf[1] = static_cast<char>(c);
             len = 4;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == U'\0');
+            CATCH_REQUIRE(back == libutf8::NOT_A_CHARACTER);
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 1) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 3);
             buf[1] = second_byte;
@@ -446,7 +471,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "[characters],[invalid]")
             buf[2] = static_cast<char>(c);
             len = 4;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == U'\0');
+            CATCH_REQUIRE(back == libutf8::NOT_A_CHARACTER);
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 2) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 2);
             buf[2] = third_byte;
@@ -462,7 +487,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "[characters],[invalid]")
             buf[3] = static_cast<char>(c);
             len = 4;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == U'\0');
+            CATCH_REQUIRE(back == libutf8::NOT_A_CHARACTER);
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 3) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 1);
             buf[3] = forth_byte;
@@ -474,7 +499,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "[characters],[invalid]")
             buf[0] = rand() % 64 + 0x80;
             len = 3;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == U'\0');
+            CATCH_REQUIRE(back == libutf8::NOT_A_CHARACTER);
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 3) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 0);
 
@@ -485,7 +510,7 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "[characters],[invalid]")
             s = buf;
             len = 4;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == U'\0');
+            CATCH_REQUIRE(back == libutf8::NOT_A_CHARACTER);
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 4) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 0);
 
@@ -496,13 +521,15 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "[characters],[invalid]")
             buf[0] = rand() % 8 + 0xF8;
             len = 4;
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == '\0');
+            CATCH_REQUIRE(back == libutf8::NOT_A_CHARACTER);
             CATCH_REQUIRE(reinterpret_cast<void const *>(buf + 4) == reinterpret_cast<void const *>(s));
             CATCH_REQUIRE(len == 0);
         }
+    }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("Test three random characters, destroy the second one and make sure it gets skipped properly")
+    CATCH_START_SECTION("invalid_utf8_to_utf32: Test three random characters, destroy the second one and make sure it gets skipped properly")
+    {
         for(int repeat(0); repeat < 1000; ++repeat)
         {
             char32_t wc[3]
@@ -529,11 +556,12 @@ CATCH_TEST_CASE("Invalid UTF-8 Character to UTF-32", "[characters],[invalid]")
             CATCH_REQUIRE(back == wc[0]);
 
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) == -1);
-            CATCH_REQUIRE(back == U'\0');
+            CATCH_REQUIRE(back == libutf8::NOT_A_CHARACTER);
 
             CATCH_REQUIRE(libutf8::mbstowc(back, s, len) != -1);
             CATCH_REQUIRE(back == wc[2]);
         }
+    }
     CATCH_END_SECTION()
 }
 

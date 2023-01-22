@@ -832,32 +832,21 @@ std::string to_u8string(char16_t one, char16_t two)
  *
  * \return The converted string.
  */
-std::string to_u8string(char32_t wc)
+std::string to_u8string(char32_t const wc)
 {
     // TODO: calculate resulting string size and preallocate buffer (reserve)
     //
     std::string result;
-
-    if(wc == U'\0')
+    char mb[MBS_MIN_BUFFER_LENGTH];
+    int const r(wctombs(mb, wc, sizeof(mb)));
+    if(r < 0)
     {
-        // using the `mb` string would not work for '\0'
-        //
-        result += '\0';
+        throw libutf8_exception_encoding(
+              "to_u8string(char32_t): the input wide character (\\U"
+            + snapdev::int_to_hex(wc, false, 6)
+            + ") is not a valid UTF-32 character.");
     }
-    else
-    {
-        char mb[MBS_MIN_BUFFER_LENGTH];
-        if(wctombs(mb, wc, sizeof(mb)) < 0)
-        {
-            throw libutf8_exception_encoding(
-                  "to_u8string(char32_t): the input wide character(\\U"
-                + snapdev::int_to_hex(wc, false, 6)
-                + ") is not a valid UTF-32 character.");
-        }
-        result += mb;
-    }
-
-    return result;
+    return std::string(mb, r);
 }
 
 

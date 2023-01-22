@@ -44,7 +44,7 @@
 
 CATCH_TEST_CASE("libutf8_iterator", "[iterator]")
 {
-    CATCH_START_SECTION("valid iterators tests")
+    CATCH_START_SECTION("libutf8_iterator: valid iterators tests")
     {
         char32_t p(0);
         do
@@ -244,7 +244,7 @@ CATCH_TEST_CASE("libutf8_iterator", "[iterator]")
 
 CATCH_TEST_CASE("libutf8_iterator_invalid_string", "[iterator],[invalid]")
 {
-    CATCH_START_SECTION("iterators with invalid characters (bad UTF-8)")
+    CATCH_START_SECTION("libutf8_iterator_invalid_string: iterators with invalid characters (bad UTF-8)")
     {
         for(int repeat(0); repeat < 100; ++repeat)
         {
@@ -322,7 +322,7 @@ CATCH_TEST_CASE("libutf8_iterator_invalid_string", "[iterator],[invalid]")
                 str[pos[1]] = rand() % 0x40 + 0x80;
 
                 CATCH_REQUIRE(*it++ == wstr[0]);
-                CATCH_REQUIRE(*it++ == U'\0');       // we broke this one
+                CATCH_REQUIRE(*it++ == libutf8::NOT_A_CHARACTER);       // we broke this one
                 CATCH_REQUIRE(*it++ == wstr[2]);
                 CATCH_REQUIRE(*it++ == wstr[3]);
                 CATCH_REQUIRE(*it++ == libutf8::EOS);
@@ -341,9 +341,9 @@ CATCH_TEST_CASE("libutf8_iterator_invalid_string", "[iterator],[invalid]")
                 str[pos[1]] = rand() % 0x40 + 0x80;
 
                 CATCH_REQUIRE(*it++ == wstr[0]);
-                CATCH_REQUIRE(*it++ == U'\0');
+                CATCH_REQUIRE(*it++ == libutf8::NOT_A_CHARACTER);
                 CATCH_REQUIRE(*it++ == wstr[2]);
-                CATCH_REQUIRE(*it++ == U'\0');
+                CATCH_REQUIRE(*it++ == libutf8::NOT_A_CHARACTER);
 
                 CATCH_REQUIRE_FALSE(it.good());
                 CATCH_REQUIRE(it.bad());
@@ -355,7 +355,7 @@ CATCH_TEST_CASE("libutf8_iterator_invalid_string", "[iterator],[invalid]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("iterators with invalid characters (too large)")
+    CATCH_START_SECTION("libutf8_iterator_invalid_string: iterators with invalid characters (too large)")
     {
         for(char32_t wc(0x110000); wc < 0x1FFFFF; ++wc)
         {
@@ -385,7 +385,7 @@ CATCH_TEST_CASE("libutf8_iterator_invalid_string", "[iterator],[invalid]")
                 CATCH_REQUIRE(str.end()    != it);
                 CATCH_REQUIRE(str.cend()   != it);
 
-                CATCH_REQUIRE(*it == '\0');
+                CATCH_REQUIRE(*it == libutf8::NOT_A_CHARACTER);
 
                 CATCH_REQUIRE_FALSE(it.good());
                 CATCH_REQUIRE(it.bad());

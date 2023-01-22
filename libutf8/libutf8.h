@@ -72,7 +72,7 @@ std::string         to_u8string(std::u16string const & str);
 std::string         to_u8string(std::wstring const & str);
 std::string         to_u8string(wchar_t one, wchar_t two = L'\0');
 std::string         to_u8string(char16_t one, char16_t two = u'\0');
-std::string         to_u8string(char32_t wc);
+std::string         to_u8string(char32_t const wc);
 std::u16string      to_u16string(std::string const & str);
 std::u32string      to_u32string(std::string const & str);
 size_t              u8length(std::string const & str);

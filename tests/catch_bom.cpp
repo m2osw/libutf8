@@ -42,11 +42,11 @@
 
 CATCH_TEST_CASE("bom", "[characters],[bom]")
 {
-    CATCH_START_SECTION("Verify the BOM character")
+    CATCH_START_SECTION("bom: Verify the BOM character")
         CATCH_REQUIRE(libutf8::BOM_CHAR == 0xFEFF);
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("Verify with a string that's too small")
+    CATCH_START_SECTION("bom: Verify with a string that's too small")
     {
         CATCH_REQUIRE(libutf8::start_with_bom(nullptr, rand()) == libutf8::bom_t::BOM_NONE);
         CATCH_REQUIRE(libutf8::start_with_bom("", 0) == libutf8::bom_t::BOM_NONE);
@@ -54,7 +54,8 @@ CATCH_TEST_CASE("bom", "[characters],[bom]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("Verify the five BOMs as is")
+    CATCH_START_SECTION("bom: Verify the five BOMs as is")
+    {
         char buf[4];
         char32_t const bom(libutf8::BOM_CHAR);
 
@@ -120,9 +121,11 @@ CATCH_TEST_CASE("bom", "[characters],[bom]")
         buf[2] = static_cast<char>(bom >>  8);
         buf[3] = static_cast<char>(bom >>  0);
         CATCH_REQUIRE(libutf8::start_with_bom(buf, sizeof(buf)) == libutf8::bom_t::BOM_UTF32_BE);
+    }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("Verify the five BOMs as is")
+    CATCH_START_SECTION("bom: Verify the five BOMs as is")
+    {
         char buf[4];
 
         // unknown 1 byte (well... 1 byte is never really known...)
@@ -146,9 +149,11 @@ CATCH_TEST_CASE("bom", "[characters],[bom]")
         buf[2] = 'M';
         buf[3] = '?';
         CATCH_REQUIRE(libutf8::start_with_bom(buf, 4) == libutf8::bom_t::BOM_NONE);
+    }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("Verify u32string that starts with a BOM (CPU Endianness)")
+    CATCH_START_SECTION("bom: Verify u32string that starts with a BOM (CPU Endianness)")
+    {
         std::u32string u32str;
         u32str += libutf8::BOM_CHAR;
         u32str += unittest::rand_char(true);
@@ -178,6 +183,7 @@ CATCH_TEST_CASE("bom", "[characters],[bom]")
                 CATCH_REQUIRE(libutf8::start_with_bom(reinterpret_cast<char const *>(u32str.c_str()), idx) == libutf8::bom_t::BOM_NONE);
             }
         }
+    }
     CATCH_END_SECTION()
 }
 

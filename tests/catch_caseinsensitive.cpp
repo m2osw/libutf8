@@ -79,7 +79,7 @@ std::string get_date(std::string & result)
 
 CATCH_TEST_CASE("case_insensitive", "[string],[compare],[insensitive]")
 {
-    CATCH_START_SECTION("Verify Case Insensitive String Constructors")
+    CATCH_START_SECTION("case_insensitive: Verify Case Insensitive String Constructors")
     {
         {
             libutf8::case_insensitive_string empty;
@@ -196,7 +196,7 @@ CATCH_TEST_CASE("case_insensitive", "[string],[compare],[insensitive]")
     }
     CATCH_END_SECTION()
 
-    CATCH_START_SECTION("Verify Case Insensitive String Comparators")
+    CATCH_START_SECTION("case_insensitive: Verify Case Insensitive String Comparators")
     {
         {
             libutf8::case_insensitive_string name1("Alexis");
