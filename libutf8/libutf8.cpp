@@ -886,6 +886,44 @@ std::u32string to_u32string(std::string const & str)
 }
 
 
+/** \brief Transform a UTF-32 character in a UTF-16 string.
+ *
+ * This function transforms a UTF-32 character in one UTF-16 character in
+ * a string. This takes the possibility that the character needs to use
+ * the surrogates to be transformed to UTF-16 (i.e. characters over plan 0,
+ * a.k.a. 0x10000 to 0x10FFFF).
+ *
+ * \param[in] wc  The wide character to transform to UTF-16.
+ *
+ * \return The resulting UTF-16 string.
+ */
+std::u16string to_u16string(char32_t const wc)
+{
+    if(!is_valid_unicode(wc, true))
+    {
+        throw libutf8_exception_invalid_parameter(
+              "to_u16string(): the input wide character \\u"
+            + snapdev::int_to_hex(wc, true, 4)
+            + " is not a valid Unicode character.");
+    }
+
+    std::u16string result;
+    result.reserve(3);  // avoid realloc()
+
+    if(wc >= 0x10000)
+    {
+        result += static_cast<std::u16string::value_type>((wc >> 10) + (0xD800 - (0x10000 >> 10)));
+        result += static_cast<std::u16string::value_type>(((wc & 0x03FF) + 0xDC00));
+    }
+    else
+    {
+        result += static_cast<std::u16string::value_type>(wc);
+    }
+
+    return result;
+}
+
+
 /** \brief Transform a UTF-8 string to a UTF-16 character string.
  *
  * This function transforms the specified string, \p str, from the

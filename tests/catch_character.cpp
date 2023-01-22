@@ -536,7 +536,7 @@ CATCH_TEST_CASE("invalid_utf8_to_utf32", "[characters],[invalid]")
             {
                 unittest::rand_char(true),
                 unittest::rand_char(true),
-                unittest::rand_char(true)
+                unittest::rand_char(true),
             };
             size_t sz[3] = {};
 

@@ -34,6 +34,8 @@ if(SnapCatch2_FOUND)
         catch_character.cpp
         catch_iterator.cpp
         catch_json_tokens.cpp
+        catch_length.cpp
+        catch_stream.cpp
         catch_string.cpp
         catch_version.cpp
     )

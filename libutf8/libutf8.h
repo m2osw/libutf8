@@ -73,6 +73,7 @@ std::string         to_u8string(std::wstring const & str);
 std::string         to_u8string(wchar_t one, wchar_t two = L'\0');
 std::string         to_u8string(char16_t one, char16_t two = u'\0');
 std::string         to_u8string(char32_t const wc);
+std::u16string      to_u16string(char32_t const wc);
 std::u16string      to_u16string(std::string const & str);
 std::u32string      to_u32string(std::string const & str);
 size_t              u8length(std::string const & str);
@@ -110,6 +111,36 @@ inline std::string operator + (std::string const & lhs, char32_t wc)
         v = libutf8::to_u8string(wc);
     }
     return lhs + v;
+}
+
+
+inline std::string & operator += (std::string & lhs, char32_t wc)
+{
+    if(wc != U'\0')
+    {
+        lhs += libutf8::to_u8string(wc);
+    }
+    return lhs;
+}
+
+
+inline std::string & operator += (std::string & lhs, int c)
+{
+    if(static_cast<char>(c) != '\0')
+    {
+        lhs += static_cast<char>(c);
+    }
+    return lhs;
+}
+
+
+inline std::string & operator += (std::string & lhs, unsigned int c)
+{
+    if(static_cast<char>(c) != U'\0')
+    {
+        lhs += static_cast<char>(c);
+    }
+    return lhs;
 }
 
 
