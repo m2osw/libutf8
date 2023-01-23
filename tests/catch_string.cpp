@@ -407,9 +407,9 @@ CATCH_TEST_CASE("string_validations", "[strings][valid][u8][u32]")
         {
             uint32_t wc(0);
             wc = rand() ^ (rand() << 16);
-            if(wc < 0x110000)
+            while(wc < 0x110000)
             {
-                wc += 0x110000;
+                wc = rand() ^ (rand() << 16);
             }
 
             CATCH_REQUIRE_FALSE(libutf8::is_valid_unicode(wc));
@@ -514,6 +514,14 @@ CATCH_TEST_CASE("string_concatenation", "[strings][valid][u8][u32]")
 
         ascii_add = "test";
         ascii_add += static_cast<unsigned>(ascii);
+        CATCH_REQUIRE(ascii_add == expected);
+
+        ascii_add = "test";
+        ascii_add += static_cast<long>(ascii);
+        CATCH_REQUIRE(ascii_add == expected);
+
+        ascii_add = "test";
+        ascii_add += static_cast<unsigned long>(ascii);
         CATCH_REQUIRE(ascii_add == expected);
     }
     CATCH_END_SECTION()

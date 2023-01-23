@@ -144,5 +144,25 @@ inline std::string & operator += (std::string & lhs, unsigned int c)
 }
 
 
+inline std::string & operator += (std::string & lhs, long c)
+{
+    if(static_cast<char>(c) != '\0')
+    {
+        lhs += static_cast<char>(c);
+    }
+    return lhs;
+}
+
+
+inline std::string & operator += (std::string & lhs, unsigned long c)
+{
+    if(static_cast<char>(c) != U'\0')
+    {
+        lhs += static_cast<char>(c);
+    }
+    return lhs;
+}
+
+
 
 // vim: ts=4 sw=4 et
