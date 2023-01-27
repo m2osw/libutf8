@@ -43,9 +43,9 @@ constexpr std::size_t       MBS_MIN_BUFFER_LENGTH = 5;
 constexpr char32_t const    BOM_CHAR = U'\U0000FEFF';
 constexpr char32_t const    NOT_A_CHARACTER = static_cast<char32_t>(-2);
 
+int                     wctombs(char * mb, char32_t wc, size_t len);
 int                     mbstowc(char32_t & wc, char const * & mb, size_t & len);
 int                     mbstowc(char32_t & wc, char * & mb, size_t & len);
-int                     wctombs(char * mb, char32_t wc, size_t len);
 
 
 

@@ -129,9 +129,9 @@ namespace libutf8
  *
  * \return The number of bytes in mb, not including the null terminator.
  */
-int wctombs(char * mb, char32_t wc, size_t len)
+int wctombs(char * mb, char32_t wc, std::size_t len)
 {
-    auto verify_length = [&len](size_t required_len)
+    auto verify_length = [&len](std::size_t required_len)
     {
         if(len < required_len)
         {
@@ -243,7 +243,7 @@ int wctombs(char * mb, char32_t wc, size_t len)
  *
  * \return The number of bytes read or -1 if invalid bytes were found.
  */
-int mbstowc(char32_t & wc, char const * & mb, size_t & len)
+int mbstowc(char32_t & wc, char const * & mb, std::size_t & len)
 {
     auto skip = [](char const * & skip_mb, size_t & skip_len)
     {
@@ -286,7 +286,7 @@ int mbstowc(char32_t & wc, char const * & mb, size_t & len)
     }
 
     char32_t w(U'\0');
-    size_t cnt(0);
+    std::size_t cnt(0);
 
     if(c >= 0xF0)
     {
@@ -313,7 +313,7 @@ int mbstowc(char32_t & wc, char const * & mb, size_t & len)
     }
     len -= cnt;
 
-    for(size_t l(cnt); l > 0; --l, mb++)
+    for(std::size_t l(cnt); l > 0; --l, mb++)
     {
         c = *mb;
         if(c < 0x80 || c > 0xBF)
@@ -355,7 +355,7 @@ int mbstowc(char32_t & wc, char const * & mb, size_t & len)
  *
  * \return The number of bytes read or -1 if invalid bytes were found.
  */
-int mbstowc(char32_t & wc, char * & mb, size_t & len)
+int mbstowc(char32_t & wc, char * & mb, std::size_t & len)
 {
     return mbstowc(wc, const_cast<char const * &>(mb), len);
 }

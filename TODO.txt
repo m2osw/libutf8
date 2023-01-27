@@ -2,5 +2,5 @@
 * `utf8lint` verify that a file is valid UTF-8.
 * `showutf8` show a UTF-8 character in bytes, UTF-16, UTF-32 and as a character, can use the UTF-32 or a range. Useful to also validate a character.
 * Add a reverse() function which works correctly with a UTF-8 string (opposed to std::reverse() on a std::string).
-* Add a fix() function which takes UTF-32/16/8 and removes any invalid characters.
+* Add a fix() function which takes UTF-32/16 and removes any invalid characters.
 

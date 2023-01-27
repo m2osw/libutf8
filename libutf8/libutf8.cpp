@@ -1115,6 +1115,48 @@ int u8casecmp(std::string const & lhs, std::string const & rhs)
 }
 
 
+/** \brief Make sure a string is considered valid UTF-8.
+ *
+ * This function goes through a UTF-8 string and replace any invalid bytes
+ * with the \p fix_char character.
+ *
+ * \param[in,out] str  The string to validate.
+ * \param[in] fix_char  The character used to replace invalid bytes.
+ *
+ * \return true if the input string was valid.
+ */
+bool make_u8string_valid(std::string & str, char32_t fix_char)
+{
+    bool valid(true);
+    std::string result;
+    char const * mb(str.c_str());
+    std::size_t len(str.length());
+    while(len > 0)
+    {
+        char32_t wc(U'\0');
+        int const r(mbstowc(wc, mb, len));
+        if(r == -1)
+        {
+            result += fix_char;
+            valid = false;
+        }
+        else
+        {
+            char buf[MBS_MIN_BUFFER_LENGTH];
+            int const l(wctombs(buf, wc, sizeof(buf)));
+            if(l < 1)
+            {
+                throw libutf8_logic_exception("the mbstowc() function returned what it thinks is a valid unicode character yet the wctombs() failed converting it back."); // LCOV_EXCL_LINE
+            }
+            result += std::string(buf, l);
+        }
+    }
+    str.swap(result);
+    return valid;
+}
+
+
+
 
 } // libutf8 namespace
 // vim: ts=4 sw=4 et

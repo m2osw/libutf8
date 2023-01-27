@@ -37,6 +37,7 @@ if(SnapCatch2_FOUND)
         catch_length.cpp
         catch_stream.cpp
         catch_string.cpp
+        catch_valid.cpp
         catch_version.cpp
     )
 
