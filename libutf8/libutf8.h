@@ -96,10 +96,7 @@ std::basic_ostream<CharT, Traits> & operator << (std::basic_ostream<CharT, Trait
 inline std::string operator + (char32_t wc, std::string const & rhs)
 {
     std::string v;
-    if(wc != U'\0')
-    {
-        v = libutf8::to_u8string(wc);
-    }
+    v = libutf8::to_u8string(wc);
     return v + rhs;
 }
 
@@ -107,61 +104,38 @@ inline std::string operator + (char32_t wc, std::string const & rhs)
 inline std::string operator + (std::string const & lhs, char32_t wc)
 {
     std::string v;
-    if(wc != U'\0')
-    {
-        v = libutf8::to_u8string(wc);
-    }
+    v = libutf8::to_u8string(wc);
     return lhs + v;
 }
 
 
 inline std::string & operator += (std::string & lhs, char32_t wc)
 {
-    if(wc != U'\0')
-    {
-        lhs += libutf8::to_u8string(wc);
-    }
-    return lhs;
+    return lhs += libutf8::to_u8string(wc);
 }
 
 
 inline std::string & operator += (std::string & lhs, int c)
 {
-    if(static_cast<char>(c) != '\0')
-    {
-        lhs += static_cast<char>(c);
-    }
-    return lhs;
+    return lhs += static_cast<char>(c);
 }
 
 
 inline std::string & operator += (std::string & lhs, unsigned int c)
 {
-    if(static_cast<char>(c) != U'\0')
-    {
-        lhs += static_cast<char>(c);
-    }
-    return lhs;
+    return lhs += static_cast<char>(c);
 }
 
 
 inline std::string & operator += (std::string & lhs, long c)
 {
-    if(static_cast<char>(c) != '\0')
-    {
-        lhs += static_cast<char>(c);
-    }
-    return lhs;
+    return lhs += static_cast<char>(c);
 }
 
 
 inline std::string & operator += (std::string & lhs, unsigned long c)
 {
-    if(static_cast<char>(c) != U'\0')
-    {
-        lhs += static_cast<char>(c);
-    }
-    return lhs;
+    return lhs += static_cast<char>(c);
 }
 
 

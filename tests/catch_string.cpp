@@ -491,7 +491,7 @@ CATCH_TEST_CASE("string_concatenation", "[strings][valid][u8][u32]")
         char32_t const wc(SNAP_CATCH2_NAMESPACE::random_char(SNAP_CATCH2_NAMESPACE::character_t::CHARACTER_ZUNICODE));
         std::string const sum(s + wc);
         std::string expected(s);
-        expected += libutf8::to_u8string(wc);
+        expected += wc;
         CATCH_REQUIRE(sum == expected);
 
         std::string add(s);
@@ -522,6 +522,28 @@ CATCH_TEST_CASE("string_concatenation", "[strings][valid][u8][u32]")
 
         ascii_add = "test";
         ascii_add += static_cast<unsigned long>(ascii);
+        CATCH_REQUIRE(ascii_add == expected);
+
+        char const zero('\0');
+        expected.back() = zero;
+        ascii_add = "test";
+        ascii_add += zero;
+        CATCH_REQUIRE(ascii_add == expected);
+
+        ascii_add = "test";
+        ascii_add += static_cast<int>(zero);
+        CATCH_REQUIRE(ascii_add == expected);
+
+        ascii_add = "test";
+        ascii_add += static_cast<unsigned>(zero);
+        CATCH_REQUIRE(ascii_add == expected);
+
+        ascii_add = "test";
+        ascii_add += static_cast<long>(zero);
+        CATCH_REQUIRE(ascii_add == expected);
+
+        ascii_add = "test";
+        ascii_add += static_cast<unsigned long>(zero);
         CATCH_REQUIRE(ascii_add == expected);
     }
     CATCH_END_SECTION()
