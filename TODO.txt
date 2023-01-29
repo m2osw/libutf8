@@ -1,6 +1,6 @@
 
-* `utf8lint` verify that a file is valid UTF-8 (see show-utf8, we can have a softlink instead).
-* Enhance `show-utf8`:
+* `utf8lint` verify that a file is valid UTF-8 (see show-unicode, we can have a softlink instead and if called utf8lint, assume --quiet).
+* Enhance `show-unicode`:
   - Support a range (so we can see the characters in a given range).
   - Actually do a validation step.
 * Add a reverse() function which works correctly with a UTF-8 string.

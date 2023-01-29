@@ -35,11 +35,6 @@
 #include    <libutf8/version.h>
 
 
-// libexcept
-//
-#include    <libexcept/file_inheritance.h>
-
-
 // C++
 //
 #include    <cstring>
@@ -47,12 +42,7 @@
 #include    <iomanip>
 #include    <iostream>
 #include    <string>
-
-
-// C
-//
-//#include    <stdlib.h>
-//#include    <unistd.h>
+#include    <vector>
 
 
 // last include
@@ -65,7 +55,7 @@ namespace
 {
 
 
-class show_utf8
+class show_unicode
 {
 public:
     enum class mode_t
@@ -97,7 +87,7 @@ private:
 
 
 
-int show_utf8::parse_args(int argc, char * argv[])
+int show_unicode::parse_args(int argc, char * argv[])
 {
     for(int i(1); i < argc; ++i)
     {
@@ -298,7 +288,7 @@ int show_utf8::parse_args(int argc, char * argv[])
 }
 
 
-int show_utf8::set_mode(mode_t m)
+int show_unicode::set_mode(mode_t m)
 {
     if(f_mode != mode_t::MODE_DEFAULT)
     {
@@ -311,7 +301,7 @@ int show_utf8::set_mode(mode_t m)
 }
 
 
-int show_utf8::read_file()
+int show_unicode::read_file()
 {
     std::ifstream in(f_filename);
     if(!in.is_open())
@@ -340,14 +330,14 @@ int show_utf8::read_file()
 }
 
 
-int show_utf8::verify_args()
+int show_unicode::verify_args()
 {
     // the mode already generated an error no need for that here
     return 0;
 }
 
 
-int show_utf8::process()
+int show_unicode::process()
 {
     // first show the string as is
     //
@@ -392,9 +382,9 @@ int show_utf8::process()
 }
 
 
-void show_utf8::usage()
+void show_unicode::usage()
 {
-    std::cout << "Usage: show-utf8 [-<opts>] [-s|--string] '<string>' | -C <value> | -f <filename>\n"
+    std::cout << "Usage: show-unicode [-<opts>] [-s|--string] '<string>' | -C <value> | -f <filename>\n"
                  "Where -<opts> is one or more of:\n"
                  "  -h | --help                     print this help screen.\n"
                  "  -C | --unicode <value>          use specified value.\n"
@@ -414,7 +404,7 @@ void show_utf8::usage()
 
 int main(int argc, char * argv[])
 {
-    show_utf8 show;
+    show_unicode show;
     int r(show.parse_args(argc, argv));
     if(r != 0)
     {
