@@ -18,6 +18,28 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA.
 
 ##
+## show-utf8
+##
+project(show-utf8)
+
+add_executable(${PROJECT_NAME}
+    show_utf8.cpp
+)
+
+target_link_libraries(${PROJECT_NAME}
+    utf8
+)
+
+install(
+    TARGETS
+        ${PROJECT_NAME}
+
+    RUNTIME DESTINATION
+        bin
+)
+
+
+##
 ## unicode-data-parser
 ##
 project(unicode-data-parser)
