@@ -393,7 +393,7 @@ void show_unicode::usage()
                  "  -S | --input-utf16 <filename>   input file of UTF-16 characters.\n"
                  "  -F | --input-utf32 <filename>   input file of UTF-32 characters.\n"
                  "       --valid-fffe-ffff          consider \\uFFFE and \\uFFFF as valid characters (default).\n"
-                 "  -W | --invalid-fffe-ffff        consider \\uFFFE and \\uFFFF as valid characters.\n"
+                 "  -W | --invalid-fffe-ffff        consider \\uFFFE and \\uFFFF as invalid characters.\n"
                  "  -V | --version                  print out this tool's version.\n"
                  "\n";
 }
