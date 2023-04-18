@@ -141,7 +141,7 @@ int show_unicode::parse_args(int argc, char * argv[])
                 {
                     std::cerr
                         << "error: code \"0x"
-                        << std::uppercase << std::hex << std::setfill('0') << std::setw(6) << wc
+                        << std::uppercase << std::hex << std::setfill('0') << std::setw(6) << static_cast<std::uint32_t>(wc)
                         << "\" does not represent a valid Unicode character.\n";
                     return 1;
                 }

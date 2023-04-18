@@ -49,7 +49,7 @@ CATCH_TEST_CASE("stream", "[stream][valid]")
             char32_t const wc(SNAP_CATCH2_NAMESPACE::random_char(SNAP_CATCH2_NAMESPACE::character_t::CHARACTER_ZUNICODE));
 
             std::stringstream ss;
-            ss << wc;
+            ss << libutf8::to_u8string(wc);
 
             CATCH_REQUIRE(ss.str() == libutf8::to_u8string(wc));
         }

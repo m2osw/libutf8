@@ -86,13 +86,6 @@ bool                make_u8string_valid(std::string & str, char32_t fix_char = U
 } // libutf8 namespace
 
 
-template<typename CharT, typename Traits>
-std::basic_ostream<CharT, Traits> & operator << (std::basic_ostream<CharT, Traits> & out, char32_t wc)
-{
-    return out << libutf8::to_u8string(wc);
-}
-
-
 inline std::string operator + (char32_t wc, std::string const & rhs)
 {
     std::string v;
