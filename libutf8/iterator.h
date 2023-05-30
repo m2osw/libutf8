@@ -39,12 +39,6 @@ constexpr char32_t              EOS = static_cast<char32_t>(EOF);
 
 
 class utf8_iterator
-    : public std::iterator<
-              std::bidirectional_iterator_tag
-            , char32_t
-            , ssize_t
-            , char32_t const *
-            , std::string::size_type>
 {
 public:
     // Iterator traits
