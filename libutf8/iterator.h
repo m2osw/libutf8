@@ -47,6 +47,14 @@ class utf8_iterator
             , std::string::size_type>
 {
 public:
+    // Iterator traits
+    //
+    typedef std::bidirectional_iterator_tag iterator_category;
+    typedef char32_t                        value_type;
+    typedef ssize_t                         difference_type;
+    typedef char32_t const *                pointer;
+    typedef char32_t const &                reference;
+
                                 utf8_iterator(std::string const & str, bool end = false);
 
     utf8_iterator &             operator ++ ();
