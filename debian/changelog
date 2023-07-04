@@ -1,4 +1,4 @@
-libutf8 (1.0.15.0~bionic) bionic; urgency=high
+libutf8 (1.0.15.0~jammy) jammy; urgency=high
 
   * Moved find() of doxygen in the doc/CMakeLists.txt file.
   * Changed the NOT_A_CHARACTER value to -2 to distinguish it from EOS.
