@@ -132,7 +132,7 @@ enum class Canonical_Combining_Class : uint8_t
     CCC_Above_Right = 232,
     CCC_Double_Below = 233,
     CCC_Double_Above = 234,
-    CCC_Iota_Subscript = 240
+    CCC_Iota_Subscript = 240,
 };
 
 

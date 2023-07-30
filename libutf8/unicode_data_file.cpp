@@ -34,7 +34,7 @@
  *
  * \li [0] Code
  *
- * Code value in 4-digit hexadecimal format.
+ * Hexadecimal code of the character defined with 4 to 6 digits.
  *
  * \li [1] Name
  *
@@ -47,8 +47,8 @@
  * for a full specification of those rules. Strings enclosed in
  * \<angle brackets\> in this field either provide label information used in
  * the name derivation rules, or---in the case of characters which have a null
- * string as their Name property value, such as control characters---provide
- * other information about their code point type.
+ * string as their Name property value, such as \<control\>
+ * characters---provide other information about their code point type.
  *
  * \li [2] General_Category
  *
@@ -368,11 +368,14 @@ public:
                         decomposition_t;
 
                         raw_character();
-                        raw_character(std::string const & code);
+                        raw_character(std::string const & code, std::string const & last_code = std::string());
                         raw_character(raw_character const &) = default;
     raw_character &     operator = (raw_character const &) = default;
 
+    bool                is_range() const;
     char32_t            code() const;
+    char32_t            first_code() const;
+    char32_t            last_code() const;
 
     void                set_name(std::string const & name);
     void                correct_name(std::string const & proper_name);
@@ -389,7 +392,8 @@ public:
     void                set_decomposition(std::string const & decomposition);
 
 private:
-    char32_t            f_code = NOT_A_CHARACTER;
+    char32_t            f_first_code = NOT_A_CHARACTER;
+    char32_t            f_last_code = NOT_A_CHARACTER;
     std::string         f_name = std::string();
     std::string         f_wrong_name = std::string();
     name_list_t         f_abbreviations = name_list_t();
@@ -398,10 +402,10 @@ private:
     name_list_t         f_figments = name_list_t();
     int64_t             f_nominator = 0;
     int64_t             f_denominator = 0;
-    char                f_age[2] = { 0, 0};
+    char                f_age[2] = { 0, 0 };
     General_Category    f_general_category = General_Category::GC_Unassigned;
     Canonical_Combining_Class
-                        f_canonical_combing_class = Canonical_Combining_Class::CCC_Not_Reordered;
+                        f_canonical_combining_class = Canonical_Combining_Class::CCC_Not_Reordered;
     Bidi_Class          f_bidi_class = Bidi_Class::BC_Unknown;
     Decomposition_Type  f_decomposition_type = Decomposition_Type::DT_unknown;
     decomposition_t     f_decomposition = decomposition_t();
@@ -413,15 +417,37 @@ raw_character::raw_character()
 }
 
 
-raw_character::raw_character(std::string const & code)
-    : f_code(std::stoi(code, nullptr, 16))
+raw_character::raw_character(std::string const & code, std::string const & last_code)
+    : f_first_code(std::stoi(code, nullptr, 16))
 {
+    if(!last_code.empty())
+    {
+        f_last_code = std::stoi(last_code, nullptr, 16);
+    }
+}
+
+
+bool raw_character::is_range() const
+{
+    return f_last_code != NOT_A_CHARACTER;
 }
 
 
 char32_t raw_character::code() const
 {
-    return f_code;
+    return f_first_code;
+}
+
+
+char32_t raw_character::first_code() const
+{
+    return f_first_code;
+}
+
+
+char32_t raw_character::last_code() const
+{
+    return f_last_code;
 }
 
 
@@ -734,7 +760,7 @@ void raw_character::set_combining_class(std::string const & combining)
 {
     // the numbers match one to one
     //
-    f_canonical_combing_class = static_cast<Canonical_Combining_Class>(std::stoi(combining, nullptr, 10));
+    f_canonical_combining_class = static_cast<Canonical_Combining_Class>(std::stoi(combining, nullptr, 10));
 }
 
 
@@ -948,7 +974,7 @@ void raw_character::set_decomposition(std::string const & decomposition)
         std::string::size_type const pos(decomposition.find('>'));
         if(pos == std::string::npos)
         {
-            throw libutf8_exception_invalid_parameter("a decomposition type must end with '>'.");
+            throw libutf8_exception_invalid_parameter("a decomposition type starting with '<' must end with '>'.");
         }
         std::string const type(decomposition.substr(1, pos - 1));
         if(type.empty())
@@ -962,7 +988,7 @@ void raw_character::set_decomposition(std::string const & decomposition)
             {
                 f_decomposition_type = Decomposition_Type::DT_circle;
             }
-            if(type == "compat")
+            else if(type == "compat")
             {
                 f_decomposition_type = Decomposition_Type::DT_compat;
             }
@@ -973,11 +999,11 @@ void raw_character::set_decomposition(std::string const & decomposition)
             {
                 f_decomposition_type = Decomposition_Type::DT_final;
             }
-            if(type == "font")
+            else if(type == "font")
             {
                 f_decomposition_type = Decomposition_Type::DT_font;
             }
-            if(type == "fraction")
+            else if(type == "fraction")
             {
                 f_decomposition_type = Decomposition_Type::DT_fraction;
             }
@@ -988,7 +1014,7 @@ void raw_character::set_decomposition(std::string const & decomposition)
             {
                 f_decomposition_type = Decomposition_Type::DT_initial;
             }
-            if(type == "isolated")
+            else if(type == "isolated")
             {
                 f_decomposition_type = Decomposition_Type::DT_isolated;
             }
@@ -1006,7 +1032,7 @@ void raw_character::set_decomposition(std::string const & decomposition)
             {
                 f_decomposition_type = Decomposition_Type::DT_narrow;
             }
-            if(type == "noBreak")
+            else if(type == "noBreak")
             {
                 f_decomposition_type = Decomposition_Type::DT_noBreak;
             }
@@ -1017,15 +1043,15 @@ void raw_character::set_decomposition(std::string const & decomposition)
             {
                 f_decomposition_type = Decomposition_Type::DT_small;
             }
-            if(type == "square")
+            else if(type == "square")
             {
                 f_decomposition_type = Decomposition_Type::DT_square;
             }
-            if(type == "sub")
+            else if(type == "sub")
             {
                 f_decomposition_type = Decomposition_Type::DT_sub;
             }
-            if(type == "super")
+            else if(type == "super")
             {
                 f_decomposition_type = Decomposition_Type::DT_super;
             }
@@ -1052,6 +1078,20 @@ void raw_character::set_decomposition(std::string const & decomposition)
     else
     {
         decomp = decomposition;
+    }
+
+    // the rest is a list of character codes
+    //
+    std::list<std::string> codes;
+    snapdev::tokenize_string(
+          codes
+        , decomp
+        , " "
+        , false
+        , " \t");
+    for(auto const & c : codes)
+    {
+        f_decomposition.push_back(stoi(c, nullptr, 16));
     }
 }
 
@@ -1247,9 +1287,11 @@ void parser_impl::convert_unicode_data()
         {
             // all the lines are expected to include all the fields
             //
-            std::string msg("error: found "
+            std::string const msg("error: found "
                 + std::to_string(fields.size())
-                + " fields instead of 15.");
+                + " fields instead of 15 in \""
+                + f_input_dir
+                + "UnicodeData.txt\".");
             std::cerr << msg << "\n";
             throw libutf8_exception_unsupported(msg);
         }
@@ -1287,7 +1329,28 @@ void parser_impl::convert_unicode_data()
                         std::cerr << msg << "\n";
                         throw libutf8_exception_io(msg);
                     }
-std::cerr << "TODO: range " << special_name[0] << " -> " << start_range[0] << ".." << fields[0] << " not implemented yet...\n";
+                    if(start_range[1] != fields[1]
+                    || start_range[2] != fields[2]
+                    || start_range[3] != fields[3]
+                    || start_range[4] != fields[4])
+                    {
+                        std::string const msg(
+                              "error: range fields mismatches in \""
+                            + f_input_dir
+                            + "/UnicodeData.txt\" "
+                            + l
+                            + ".");
+                        std::cerr << msg << "\n";
+                        throw libutf8_exception_io(msg);
+                    }
+                    raw_character c(start_range[0], fields[0]);
+                    c.set_name(fields[1]);
+                    c.set_category(fields[2]);
+                    c.set_combining_class(fields[3]);
+                    c.set_bidi_class(fields[4]);
+                    c.set_decomposition(fields[5]);
+                    f_characters[c.code()] = c;
+
                     start_range.clear();
                     continue;
                 }
@@ -1296,12 +1359,26 @@ std::cerr << "TODO: range " << special_name[0] << " -> " << start_range[0] << ".
             //
             std::cout << "keeping special name [" << fields[1] << "]\n";
         }
+        if(!start_range.empty())
+        {
+            // First is expected to be immediately followed by Last
+            //
+            std::string const msg(
+                  "error: found a start of range without an end in \""
+                + f_input_dir
+                + "/UnicodeData.txt\" "
+                + l
+                + ".");
+            std::cerr << msg << "\n";
+            throw libutf8_exception_io(msg);
+        }
 
         raw_character c(fields[0]);
         c.set_name(fields[1]);
         c.set_category(fields[2]);
         c.set_combining_class(fields[3]);
         c.set_bidi_class(fields[4]);
+        c.set_decomposition(fields[5]);
         f_characters[c.code()] = c;
     }
 }
