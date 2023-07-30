@@ -102,7 +102,7 @@
  * \li [3] Canonical_Combining_Class
  *
  * The classes used for the Canonical Ordering Algorithm in the Unicode
- * Standard. This property could be considered either an enumerated
+ * Standard. This property could be considered either an eumerated
  * property or a numeric property: the principal use of the property is in
  * terms of the numeric values. For the property value names associated
  * with different numeric values, see
@@ -158,6 +158,7 @@
  * L    Left_To_Right           any strong left-to-right character
  * R    Right_To_Left           any strong right-to-left (non-Arabic-type) character
  * AL   Arabic_Letter           any strong right-to-left (Arabic-type) character
+ *
  * Weak Types
  * EN   European_Number         any ASCII digit or Eastern Arabic-Indic digit
  * ES   European_Separator      plus and minus signs
@@ -166,11 +167,13 @@
  * CS   Common_Separator        commas, colons, and slashes
  * NSM  Nonspacing_Mark         any nonspacing mark
  * BN   Boundary_Neutral        most format characters, control codes, or noncharacters
+ *
  * Neutral Types
  * B    Paragraph_Separator     various newline characters
  * S    Segment_Separator       various segment-related control codes
  * WS   White_Space             spaces
  * ON   Other_Neutral           most other symbols and punctuation marks
+ *
  * Explicit Formatting Types
  * LRE  Left_To_Right_Embedding U+202A: the LR embedding control
  * LRO  Left_To_Right_Override  U+202D: the LR override control
@@ -384,11 +387,11 @@ public:
     void                add_jamo_short_name(std::string const & jamo_short_name);
     void                add_control(std::string const & control);
     void                add_figment(std::string const & figment);
-    void                set_number(std::string const & number);
+    void                set_number(std::string const & number, Numeric_Type type);
     void                set_age(int major_unicode, int minor_unicode);
     void                set_category(std::string const & category);
     void                set_combining_class(std::string const & combining);
-    void                set_bidi_class(std::string const & bidi);
+    void                set_bidi_class(std::string const & bidi, bool mirrored);
     void                set_decomposition(std::string const & decomposition);
 
 private:
@@ -400,6 +403,7 @@ private:
     name_list_t         f_alternates = name_list_t();
     name_list_t         f_jamo_short_names = name_list_t();
     name_list_t         f_figments = name_list_t();
+    Numeric_Type        f_numeric_type = Numeric_Type::NT_Unknown;
     int64_t             f_nominator = 0;
     int64_t             f_denominator = 0;
     char                f_age[2] = { 0, 0 };
@@ -407,6 +411,7 @@ private:
     Canonical_Combining_Class
                         f_canonical_combining_class = Canonical_Combining_Class::CCC_Not_Reordered;
     Bidi_Class          f_bidi_class = Bidi_Class::BC_Unknown;
+    bool                f_bidi_mirrored = false;
     Decomposition_Type  f_decomposition_type = Decomposition_Type::DT_unknown;
     decomposition_t     f_decomposition = decomposition_t();
 };
@@ -527,7 +532,7 @@ void raw_character::add_figment(std::string const & figment)
 }
 
 
-void raw_character::set_number(std::string const & number)
+void raw_character::set_number(std::string const & number, Numeric_Type type)
 {
     if(number.empty())
     {
@@ -538,6 +543,8 @@ void raw_character::set_number(std::string const & number)
     {
         throw libutf8_exception_twice("set_number() called twice");
     }
+
+    f_numeric_type = type;
 
     std::string::size_type const pos(number.find('/'));
     if(pos == std::string::npos)
@@ -764,7 +771,7 @@ void raw_character::set_combining_class(std::string const & combining)
 }
 
 
-void raw_character::set_bidi_class(std::string const & bidi)
+void raw_character::set_bidi_class(std::string const & bidi, bool bidi_mirrored)
 {
     if(bidi.empty())
     {
@@ -776,6 +783,7 @@ void raw_character::set_bidi_class(std::string const & bidi)
         throw libutf8_exception_twice("trying to set the bidi class twice.");
     }
 
+    f_bidi_mirrored = bidi_mirrored;
     switch(bidi[0])
     {
     case 'A':
@@ -1296,6 +1304,8 @@ void parser_impl::convert_unicode_data()
             throw libutf8_exception_unsupported(msg);
         }
 
+        std::string start(fields[0]);
+        std::string end;
         if(fields[1].length() >= 3
         && fields[1].front() == '<'
         && fields[1].back() == '>')
@@ -1314,52 +1324,59 @@ void parser_impl::convert_unicode_data()
                     start_range = fields;
                     continue;
                 }
-                if(special_name[1] == "Last")
+                if(special_name[1] != "Last")
                 {
-                    // got a range
-                    //
-                    if(start_range.empty())
-                    {
-                        std::string const msg(
-                              "error: found an end of range without a start in \""
-                            + f_input_dir
-                            + "/UnicodeData.txt\" "
-                            + l
-                            + ".");
-                        std::cerr << msg << "\n";
-                        throw libutf8_exception_io(msg);
-                    }
-                    if(start_range[1] != fields[1]
-                    || start_range[2] != fields[2]
-                    || start_range[3] != fields[3]
-                    || start_range[4] != fields[4])
-                    {
-                        std::string const msg(
-                              "error: range fields mismatches in \""
-                            + f_input_dir
-                            + "/UnicodeData.txt\" "
-                            + l
-                            + ".");
-                        std::cerr << msg << "\n";
-                        throw libutf8_exception_io(msg);
-                    }
-                    raw_character c(start_range[0], fields[0]);
-                    c.set_name(fields[1]);
-                    c.set_category(fields[2]);
-                    c.set_combining_class(fields[3]);
-                    c.set_bidi_class(fields[4]);
-                    c.set_decomposition(fields[5]);
-                    f_characters[c.code()] = c;
-
-                    start_range.clear();
-                    continue;
+                    std::string const msg(
+                          "error: found unknown special name \""
+                        + fields[1]
+                        + "\" in \""
+                        + f_input_dir
+                        + "/UnicodeData.txt\".");
+                    std::cerr << msg << "\n";
+                    throw libutf8_exception_io(msg);
                 }
+
+                // got a complte range
+                //
+                if(start_range.empty())
+                {
+                    std::string const msg(
+                          "error: found an end of range without a start in \""
+                        + f_input_dir
+                        + "/UnicodeData.txt\" "
+                        + l
+                        + ".");
+                    std::cerr << msg << "\n";
+                    throw libutf8_exception_io(msg);
+                }
+
+                // make sure the start/end common fields are equal
+                //
+                // TBD: I think we need to test them all excet [1]
+                //
+                if(start_range[2] != fields[2]
+                || start_range[3] != fields[3]
+                || start_range[4] != fields[4]
+                || start_range[1] != fields[5])
+                {
+                    std::string const msg(
+                          "error: range fields mismatches in \""
+                        + f_input_dir
+                        + "/UnicodeData.txt\" "
+                        + l
+                        + ".");
+                    std::cerr << msg << "\n";
+                    throw libutf8_exception_io(msg);
+                }
+                end = start;
+                start = start_range[0];
+                start_range.clear();
             }
             // others go through (as far as I know, only "<control>")
             //
-            std::cout << "keeping special name [" << fields[1] << "]\n";
+            //std::cout << "keeping special name [" << fields[1] << "]\n";
         }
-        if(!start_range.empty())
+        else if(!start_range.empty())
         {
             // First is expected to be immediately followed by Last
             //
@@ -1373,12 +1390,26 @@ void parser_impl::convert_unicode_data()
             throw libutf8_exception_io(msg);
         }
 
-        raw_character c(fields[0]);
+        raw_character c(start, end);
         c.set_name(fields[1]);
         c.set_category(fields[2]);
         c.set_combining_class(fields[3]);
-        c.set_bidi_class(fields[4]);
+        c.set_bidi_class(fields[4], fields[9] == "Y");
         c.set_decomposition(fields[5]);
+
+        if(!fields[6].empty())
+        {
+            c.set_number(fields[6], Numeric_Type::NT_Decimal);
+        }
+        else if(!fields[7].empty())
+        {
+            c.set_number(fields[7], Numeric_Type::NT_Digit);
+        }
+        else if(!fields[8].empty())
+        {
+            c.set_number(fields[8], Numeric_Type::NT_Numeric);
+        }
+
         f_characters[c.code()] = c;
     }
 }

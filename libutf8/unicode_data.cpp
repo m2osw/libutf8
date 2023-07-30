@@ -41,7 +41,7 @@
 #include    "libutf8/unicode_data.h"
 
 #include    "libutf8/exception.h"
-#include    <libutf8/libutf8.h>
+#include    "libutf8/libutf8.h"
 #include    "libutf8/unicode_data_file.h"
 
 
@@ -238,6 +238,12 @@ Canonical_Combining_Class unicode_character::combining_class()
 Bidi_Class unicode_character::bidi_class() const
 {
     return f_character->f_bidi_class;
+}
+
+
+bool unicode_character::is_bidi_mirrored() const
+{
+    return (f_character->f_flags & detail::UCD_FLAG_BIDI_MIRROR) != 0;
 }
 
 

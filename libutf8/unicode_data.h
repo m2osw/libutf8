@@ -52,7 +52,7 @@ enum class Name_Type : std::uint8_t;
 
 
 
-enum class General_Category : uint8_t
+enum class General_Category : std::uint8_t
 {
     GC_Unknown_Category = 0,
 
@@ -103,7 +103,7 @@ enum class General_Category : uint8_t
 };
 
 
-enum class Canonical_Combining_Class : uint8_t
+enum class Canonical_Combining_Class : std::uint8_t
 {
     CCC_Not_Reordered = 0,
 
@@ -136,7 +136,7 @@ enum class Canonical_Combining_Class : uint8_t
 };
 
 
-enum class Bidi_Class : uint8_t
+enum class Bidi_Class : std::uint8_t
 {
     BC_Unknown = 0,
 
@@ -173,7 +173,7 @@ enum class Bidi_Class : uint8_t
 };
 
 
-enum class Decomposition_Type : uint8_t
+enum class Decomposition_Type : std::uint8_t
 {
     DT_unknown = 0,
     DT_none = 1,
@@ -198,7 +198,7 @@ enum class Decomposition_Type : uint8_t
 };
 
 
-enum class Numeric_Type : uint8_t
+enum class Numeric_Type : std::uint8_t
 {
     NT_Unknown = 0, // a.k.a. this is not marked as a number
 
@@ -241,6 +241,7 @@ public:
     Canonical_Combining_Class
                         combining_class();
     Bidi_Class          bidi_class() const;
+    bool                is_bidi_mirrored() const;
     Decomposition_Type  decomposition_type() const;
 
     Numeric_Type        numeric() const;

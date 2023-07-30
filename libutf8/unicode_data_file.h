@@ -83,31 +83,44 @@ constexpr flags_t           UCD_FLAG_DIGIT              = 0x01; // represents a 
 constexpr flags_t           UCD_FLAG_DECIMAL            = 0x02; // represents a number
 constexpr flags_t           UCD_FLAG_NUMERIC            = 0x04; // represents a number
 constexpr flags_t           UCD_FLAG_BIDI_MIRROR        = 0x08; // mirror of another letter left to right vs. right to left
-constexpr std::uint8_t      UCD_FLAG_CONTROL            = 0x10;
-constexpr std::uint8_t      UCD_FLAG_PRIVATE            = 0x20;
+constexpr flags_t           UCD_FLAG_CONTROL            = 0x10;
+constexpr flags_t           UCD_FLAG_PRIVATE            = 0x20;
 
 
 
 struct ucd_character
 {
-    constexpr ucd_character()
-        : f_decomposition_type(static_cast<int>(Decomposition_Type::DT_unknown))
-        , f_decomposition_length(0)
-        , f_decomposition_mapping(0)
+    // initialization happens in a non-virtual function, otherwise it
+    // would break the binary use of the structure
+    //
+    void initialize_ucd_character()
     {
+        f_code = NOT_A_CHARACTER;
+        f_names = 0;
+        f_flags = 0;
+
+        f_general_category = General_Category::GC_Unknown_Category;
+        f_canonical_combining_class = Canonical_Combining_Class::CCC_Not_Reordered;
+        f_bidi_class = Bidi_Class::BC_Unknown; // see flags for mirror info
+        f_decomposition_type = static_cast<int>(Decomposition_Type::DT_unknown);
+        f_decomposition_length = 0;
+        f_decomposition_mapping = 0;
+        f_age[0] = 1;
+        f_age[1] = 1;
     }
 
-    /* 32 */    char32_t                    f_code = NOT_A_CHARACTER;
-    /* 32 */    std::uint32_t               f_names = 0;        // offset to string table
-    /*  8 */    flags_t                     f_flags = 0;
-    /*  8 */    General_Category            f_general_category = General_Category::GC_Unknown_Category;
-    /*  8 */    Canonical_Combining_Class   f_canonical_combining_class = Canonical_Combining_Class::CCC_Not_Reordered;
-    /*  8 */    Bidi_Class                  f_bidi_class = Bidi_Class::BC_Unknown;
+    /* 32 */    char32_t                    f_code;
+    /* 32 */    std::uint32_t               f_names;        // offset to string table
+    /*  8 */    flags_t                     f_flags;
+    /*  8 */    General_Category            f_general_category;
+    /*  8 */    Canonical_Combining_Class   f_canonical_combining_class;
+    /*  8 */    Bidi_Class                  f_bidi_class;
     /*  5 */    std::uint32_t               f_decomposition_type : 5;
     /*  5 */    std::uint32_t               f_decomposition_length : 5;
     /* 22 */    std::uint32_t               f_decomposition_mapping : 22;
-    /* 16 */    std::uint8_t                f_age[2] = { 1, 1 };
+    /* 16 */    std::uint8_t                f_age[2];
 };
+
 
 // The f_names is an offset in the string table.
 //
