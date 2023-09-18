@@ -45,7 +45,7 @@ namespace
 
 libutf8::case_insensitive_string get_time(std::string & result)
 {
-    time_t const now(time(NULL));
+    time_t const now(time(nullptr));
     struct tm t;
     localtime_r(&now, &t);
     char buf[256];
@@ -59,7 +59,7 @@ libutf8::case_insensitive_string get_time(std::string & result)
 
 std::string get_date(std::string & result)
 {
-    time_t const now(time(NULL));
+    time_t const now(time(nullptr));
     struct tm t;
     localtime_r(&now, &t);
     char buf[256];
