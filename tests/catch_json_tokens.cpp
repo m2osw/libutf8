@@ -621,7 +621,14 @@ CATCH_TEST_CASE("json_tokens_invalid", "[json][iterator][invalid]")
             ss << "\\u" << std::hex << std::setw(4)
                 << std::setfill('0') << static_cast<int>(c);
 
-            libutf8::json_tokens jt("\"" + ss.str() + "\"");
+            // breaking up line so it compiles on lunar
+            //
+            //libutf8::json_tokens jt("\"" + ss.str() + "\"");
+            std::string str("\"");
+            str += ss.str();
+            str += "\"";
+            libutf8::json_tokens jt(str);
+
             CATCH_REQUIRE(jt.line() == 0);
             CATCH_REQUIRE(jt.column() == 0);
             CATCH_REQUIRE(jt.next_token() == libutf8::token_t::TOKEN_ERROR);
