@@ -37,6 +37,7 @@
 
 // C++
 //
+#include    <cstdint>
 #include    <cstring>
 #include    <fstream>
 #include    <iomanip>
