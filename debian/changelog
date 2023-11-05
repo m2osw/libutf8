@@ -3,10 +3,20 @@ libutf8 (1.0.15.0~jammy) jammy; urgency=high
   * Moved find() of doxygen in the doc/CMakeLists.txt file.
   * Changed the NOT_A_CHARACTER value to -2 to distinguish it from EOS.
   * Made utf8_iterator::operator * return NOT_A_CHARACTER on an error.
-  * Updated the tests accordingly.
-  * Added a test for the UTF-16 length and validation.
+  * Define the traits in-place for std::iterator is deprecated.
+  * Removed overload of ostream char32_t characters.
+  * Added a show-unicode tool to display codes from character.
+  * Added function to fix UTF-8 strings by replacing invalid characters.
+  * Allow for += of the '\0' character.
+  * Added UTF-16 functions & tests.
+  * Updated the tests accordingly and added more for better coverage.
+  * Added missing #include <cstdint>.
+  * Applied hack so tests compiles under lunar.
+  * Updated compat to the latest (v15)
+  * Did some work on the UCD data (parse decomposition, read file properly...)
+  * Removed boost-dev as a dependency.
 
- -- Alexis Wilke <alexis@m2osw.com>  Sun, 20 Nov 2022 09:00:37 -0800
+ -- Alexis Wilke <alexis@m2osw.com>  Sun, 05 Nov 2023 08:05:54 -0800
 
 libutf8 (1.0.14.0~bionic) bionic; urgency=high
 
