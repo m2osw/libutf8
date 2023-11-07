@@ -1,3 +1,9 @@
+libutf8 (1.0.15.1~bionic) bionic; urgency=high
+
+  * Bumped build version to rebuild on Launchpad.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Tue, 07 Nov 2023 06:03:57 -0800
+
 libutf8 (1.0.15.0~jammy) jammy; urgency=high
 
   * Moved find() of doxygen in the doc/CMakeLists.txt file.
