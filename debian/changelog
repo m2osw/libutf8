@@ -1,3 +1,9 @@
+libutf8 (1.0.15.2~bionic) bionic; urgency=high
+
+  * Bumped build version to rebuild on Launchpad.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Fri, 10 Nov 2023 15:24:41 -0800
+
 libutf8 (1.0.15.1~bionic) bionic; urgency=high
 
   * Bumped build version to rebuild on Launchpad.
