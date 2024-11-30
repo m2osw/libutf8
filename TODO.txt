@@ -6,4 +6,8 @@
 * Add a reverse() function which works correctly with a UTF-8 string.
 * Add a reverse() function which works correctly with a UTF-16 string.
 * Add a fix() function which takes UTF-32/16 and removes any invalid characters (UTF-8 is done).
+* Add a "lexer base" which is to read an input file one character at a time
+  like a lexer getc() generally does and return char32_t characters
+  (see basic-xml for an example on how this is done and convert that one to
+  using this new "lexer base")
 
