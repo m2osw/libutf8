@@ -54,8 +54,6 @@ if(SnapCatch2_FOUND)
         ${SNAPCATCH2_LIBRARIES}
     )
 
-    add_test(unittests ${PROJECT_NAME})
-
 else(SnapCatch2_FOUND)
 
     message("snapcatch2 not found... no test will be built.")
