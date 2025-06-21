@@ -21,8 +21,9 @@ cmake_minimum_required(VERSION 3.10.2)
 
 project(utf8_library)
 
-find_package(SnapCMakeModules REQUIRED)
+find_package(ICU              REQUIRED COMPONENTS i18n uc)
 find_package(LibExcept        REQUIRED)
+find_package(SnapCMakeModules REQUIRED)
 find_package(SnapDev          REQUIRED)
 
 SnapGetVersion(LIBUTF8 ${CMAKE_CURRENT_SOURCE_DIR})

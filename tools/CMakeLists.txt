@@ -50,13 +50,40 @@ add_executable(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
-        ${ADVGETOPT_INCLUDE_DIRS}
         ${LIBEXCEPT_INCLUDE_DIRS}
+        ${SNAPDEV_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT_NAME}
     utf8
-    ${LIBEXCEPT_LIBRARIES}
+)
+
+install(
+    TARGETS
+        ${PROJECT_NAME}
+
+    RUNTIME DESTINATION
+        bin
+)
+
+
+##
+## list-locales
+##
+project(list-locales)
+
+add_executable(${PROJECT_NAME}
+    list_locales.cpp
+)
+
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        ${LIBEXCEPT_INCLUDE_DIRS}
+        ${SNAPDEV_INCLUDE_DIRS}
+)
+
+target_link_libraries(${PROJECT_NAME}
+    utf8
 )
 
 install(

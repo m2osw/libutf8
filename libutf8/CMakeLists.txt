@@ -33,6 +33,7 @@ add_library(${PROJECT_NAME} SHARED
     iterator.cpp
     json_tokens.cpp
     libutf8.cpp
+    locale.cpp
     unicode_data.cpp
     unicode_data_file.cpp
     version.cpp
@@ -40,11 +41,14 @@ add_library(${PROJECT_NAME} SHARED
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
+        ${ICU_INCLUDE_DIRS}
         ${LIBEXCEPT_INCLUDE_DIRS}
         ${SNAPDEV_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT_NAME}
+    ${ICU_LIBRARIES}
+    ${ICU_I18N_LIBRARIES}
     ${LIBEXCEPT_LIBRARIES}
 )
 

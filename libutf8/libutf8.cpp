@@ -155,7 +155,7 @@ bool is_valid_ascii(std::string const & str, bool ctrl)
  * This function is much faster than running a full conversion if you
  * do not need the result since it does not write anything to memory.
  * Note also that this function does not throw on invalid characters
- * whereas the convertion functions do.
+ * whereas the conversion functions do.
  *
  * \note
  * This test is done on data received from clients to make sure that
@@ -280,7 +280,7 @@ bool is_valid_utf8(char const * str)
  * This function is much faster than running a full conversion if you
  * do not need the result since it does not write anything to memory.
  * Note also that this function does not throw on invalid characters
- * whereas the convertion functions do.
+ * whereas the conversion functions do.
  *
  * The function verifies that when large characters are used, that
  * they properly use a high and then a low surrogates. If the function
