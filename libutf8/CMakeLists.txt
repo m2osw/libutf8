@@ -82,6 +82,7 @@ install(
         iterator.h
         json_tokens.h
         libutf8.h
+        locale.h
         unicode_data.h
         ${CMAKE_CURRENT_BINARY_DIR}/version.h
 
