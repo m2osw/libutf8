@@ -116,7 +116,7 @@ locales_t const & system_locales()
         FILE * f(popen("locale -a", "r"));
         if(f == nullptr)
         {
-            return g_system_locales;
+            return g_system_locales; // LCOV_EXCL_LINE
         }
         snapdev::raii_file_t auto_close(f);
 
@@ -171,11 +171,11 @@ locales_t const & icu_locales()
         // the default function should return all the locales, whether they
         // include NumberFormat definitions or not
         //
-        icu::StringEnumeration * available_locales(icu::NumberFormat::getAvailableLocales());
+        std::unique_ptr<icu::StringEnumeration> available_locales(icu::NumberFormat::getAvailableLocales());
         if(available_locales == nullptr)
         {
-            errno = ENOENT;
-            return g_icu_locales;
+            errno = ENOENT;             // LCOV_EXCL_LINE
+            return g_icu_locales;       // LCOV_EXCL_LINE
         }
 
         for(;;)
