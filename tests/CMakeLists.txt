@@ -35,6 +35,7 @@ if(SnapCatch2_FOUND)
         catch_iterator.cpp
         catch_json_tokens.cpp
         catch_length.cpp
+        catch_locale.cpp
         catch_stream.cpp
         catch_string.cpp
         catch_valid.cpp
