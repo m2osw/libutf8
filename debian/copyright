@@ -3,9 +3,9 @@ Upstream-Name: libutf8
 Source: https://github.com/m2osw/libutf8
 
 Files: *
-Copyright: 2006-2019 Made to Order Software <contact@m2osw.com>
-           2006-2019 Alexis Wilke <alexis@m2osw.com>
-           2006-2019 R. Douglas Barbieri <doug@m2osw.com>
+Copyright: 2006-2025  Made to Order Software <contact@m2osw.com>
+           2006-2025  Alexis Wilke <alexis@m2osw.com>
+           2006-2025  R. Douglas Barbieri <doug@m2osw.com>
 License: GPL-2+
  This package is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
