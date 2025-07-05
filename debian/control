@@ -6,6 +6,7 @@ Build-Depends: cmake,
     doxygen,
     graphviz,
     libexcept-dev (>= 1.1.0.0~jammy),
+    libicu-dev,
     snapcatch2 (>= 2.7.2.10~jammy),
     snapcmakemodules (>= 1.0.35.3~jammy),
     snapdev (>= 1.1.16.0~jammy)
