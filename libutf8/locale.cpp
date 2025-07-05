@@ -118,7 +118,7 @@ locales_t const & system_locales()
         {
             return g_system_locales; // LCOV_EXCL_LINE
         }
-        snapdev::raii_file_t auto_close(f);
+        snapdev::raii_pipe_t auto_close(f);
 
         // the longest locale name is much less than 128 characters
         //
