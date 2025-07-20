@@ -2,7 +2,7 @@ Source: libutf8
 Priority: extra
 Maintainer: R. Douglas Barbieri <doug@dooglio.net>
 Build-Depends: cmake,
-    debhelper,
+    debhelper-compat (= 13),
     doxygen,
     graphviz,
     libexcept-dev (>= 1.1.0.0~jammy),

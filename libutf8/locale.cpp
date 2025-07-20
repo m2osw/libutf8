@@ -123,7 +123,8 @@ locales_t const & system_locales()
         // the longest locale name is much less than 128 characters
         //
         char buf[128];
-        while(fgets(buf, sizeof(buf), f) != nullptr)
+        buf[sizeof(buf) - 1] = '\0';
+        while(fgets(buf, sizeof(buf) - 1, f) != nullptr)
         {
             std::size_t const l(std::strlen(buf));
             if(l == 0)
