@@ -1,4 +1,4 @@
-libutf8 (1.0.16.0~bionic) bionic; urgency=high
+libutf8 (1.0.16.0~noble) noble; urgency=high
 
   * Added functions to get locale lists.
   * Added ICU as a dependency (required for the build).
