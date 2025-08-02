@@ -204,8 +204,10 @@ http://www.unicode.org/L2/L1999/UnicodeData.html
 
 # License
 
-The source is covered by the MIT license. The debian folder is covered
-by the GPL 2.0.
+This library is covered by the GPL 3.0.
+
+The project includes some Unicode files which are covered by the Unicode
+license.
 
 
 # Bugs

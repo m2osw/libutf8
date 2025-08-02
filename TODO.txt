@@ -10,4 +10,5 @@
   like a lexer getc() generally does and return char32_t characters
   (see basic-xml for an example on how this is done and convert that one to
   using this new "lexer base")
+* Finish up the work on converting the Unicode files in tables we can use in libutf8
 

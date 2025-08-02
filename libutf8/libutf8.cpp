@@ -3,9 +3,9 @@
 // https://snapwebsites.org/project/libutf8
 // contact@m2osw.com
 //
-// This program is free software; you can redistribute it and/or modify
+// This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
+// the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
@@ -13,9 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License along
-// with this program; if not, write to the Free Software Foundation, Inc.,
-// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA.
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /** \file
  * \brief Implementation of the UTF-8 functions.
@@ -195,7 +194,7 @@ bool is_valid_ascii(std::string const & str, bool ctrl)
  * for the UTF-8 representation of a QString should always be considered
  * valid UTF-8 (although some surrogates, etc. may be wrong!)
  *
- * \param[in] string  The NUL terminated string to scan.
+ * \param[in] str  The NUL terminated string to scan.
  *
  * \return true if the string is valid UTF-8
  */
@@ -287,7 +286,7 @@ bool is_valid_utf8(char const * str)
  * finds a low surrogate without a high first, or if a high surrogate
  * is not followed by a low surrogate, then the function fails.
  *
- * \param[in] string  The UTF-16 string to scan.
+ * \param[in] str  The UTF-16 string to scan.
  *
  * \return true if the string is valid UTF-16.
  */

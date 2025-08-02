@@ -3,9 +3,9 @@
 // https://snapwebsites.org/project/libutf8
 // contact@m2osw.com
 //
-// This program is free software; you can redistribute it and/or modify
+// This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
+// the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
@@ -13,9 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License along
-// with this program; if not, write to the Free Software Foundation, Inc.,
-// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA.
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /** \file
  * \brief Tool used to convert the UnicodeData.txt file to C structures.
@@ -38,7 +37,7 @@
  *
  * \li [1] Name
  *
- * When a string value not enclosed in <angle brackets> occurs in this
+ * When a string value not enclosed in \<angle brackets> occurs in this
  * field, it specifies the character's Name property value, which matches
  * exactly the name published in the code charts. The Name property value
  * for most ideographic characters and for Hangul syllables is derived
@@ -102,14 +101,14 @@
  * \li [3] Canonical_Combining_Class
  *
  * The classes used for the Canonical Ordering Algorithm in the Unicode
- * Standard. This property could be considered either an eumerated
+ * Standard. This property could be considered either an enumerated
  * property or a numeric property: the principal use of the property is in
  * terms of the numeric values. For the property value names associated
  * with different numeric values, see
  * [DerivedCombiningClass.txt](https://www.unicode.org/reports/tr44/#DerivedCombiningClass.txt)
  * and [Canonical Combining Class Values](https://www.unicode.org/reports/tr44/#Canonical_Combining_Class_Values).
  *
- * The following are some explaination of the combining class numbers:
+ * The following are some explanation of the combining class numbers:
  *
  * \code
  * 0    Not_Reordered           Spacing and enclosing marks; also many vowel
