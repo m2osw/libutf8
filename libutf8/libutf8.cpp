@@ -225,7 +225,7 @@ bool is_valid_utf8(char const * str)
         {
             s += 3;
         }
-        else if(((0xE1 <= s[0] && s[0] <= 0xEC) || s[0] == 0xEE || s[0] == 0xEF) // straight 3-byte
+        else if(((s[0] >= 0xE1 && s[0] <= 0xEC) || s[0] == 0xEE || s[0] == 0xEF) // straight 3-byte
              && s[1] >= 0x80 && s[1] <= 0xBF
              && s[2] >= 0x80 && s[2] <= 0xBF)
         {
@@ -261,6 +261,7 @@ bool is_valid_utf8(char const * str)
         else
         {
             // not a supported character
+            //
             return false;
         }
     }
@@ -976,9 +977,9 @@ std::u16string to_u16string(std::string const & str)
  *
  * \return The number of characters in the UTF-8 string.
  */
-size_t u8length(std::string const & str)
+std::size_t u8length(std::string const & str)
 {
-    size_t result(0);
+    std::size_t result(0);
     for(std::string::value_type const *s(str.c_str()); *s != '\0'; ++s)
     {
         unsigned char c(*s);

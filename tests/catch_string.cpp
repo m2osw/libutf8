@@ -157,6 +157,8 @@ CATCH_TEST_CASE("string_validations", "[strings][valid][u8][u32]")
 
         for(char32_t wc(1); wc < 0x110000; ++wc)
         {
+            // skip the surrogates
+            //
             if(wc >= 0xD800 && wc <= 0xDFFF)
             {
                 wc = 0xE000;
@@ -192,7 +194,7 @@ CATCH_TEST_CASE("string_validations", "[strings][valid][u8][u32]")
     {
         for(int count(0); count < 1000; ++count)
         {
-            uint32_t wc(0);
+            std::uint32_t wc(0);
             wc = rand() ^ (rand() << 16);
             if(wc < 0x110000)
             {
