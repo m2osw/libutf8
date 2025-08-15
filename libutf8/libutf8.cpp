@@ -870,7 +870,7 @@ std::u32string to_u32string(std::string const & str)
     std::u32string result;
     result.reserve(u8length(str));  // avoid realloc(), in some cases this ends up being a little slower, with larger strings, much faster
 
-    size_t len(str.length());
+    std::size_t len(str.length());
     for(std::string::value_type const * mb(str.c_str()); len > 0; )
     {
         char32_t wc;
