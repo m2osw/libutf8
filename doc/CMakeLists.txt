@@ -20,8 +20,11 @@
 ##
 ## Documentation
 ##
+project(libutf8-documentation)
+
 find_package(SnapDoxygen)
-AddDoxygenTarget(libutf8
+AddDoxygenTarget(
+    libutf8
     ${LIBUTF8_VERSION_MAJOR}
     ${LIBUTF8_VERSION_MINOR}
     ${LIBUTF8_VERSION_PATCH}
