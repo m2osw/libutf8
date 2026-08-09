@@ -1,3 +1,9 @@
+libutf8 (1.0.16.1~noble) noble; urgency=high
+
+  * Small fixes to documentation/tests.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Sun, 09 Aug 2026 10:11:29 -0700
+
 libutf8 (1.0.16.0~noble) noble; urgency=high
 
   * Added functions to get locale lists.
