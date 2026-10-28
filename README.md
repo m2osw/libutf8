@@ -1,6 +1,6 @@
 
 <p align="center">
-<img alt="advgetopt" title="Advance getopt, a C++ library to handle your command line options and configuration files seamlessly."
+<img alt="libutf8" title="C++ helper library to handle UTF-8 strings."
 src="https://snapwebsites.org/sites/snapwebsites.org/files/images/libutf8.png" width="277" height="277"/>
 </p>
 
