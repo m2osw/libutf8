@@ -79,6 +79,7 @@ std::size_t         u8length(std::string const & str);
 ssize_t             u16length(std::u16string const & str);
 int                 u8casecmp(std::string const & lhs, std::string const & rhs);
 bool                make_u8string_valid(std::string & str, char32_t fix_char = U'?');
+std::string         to_visible_ascii(std::string const & str);
 
 
 

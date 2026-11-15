@@ -1156,6 +1156,52 @@ bool make_u8string_valid(std::string & str, char32_t fix_char)
 }
 
 
+/** \brief Transform a string to only visible ASCII codes.
+ *
+ * Often I want to print a string which could have invalid characters
+ * to the logs or the console. I often re-implement the transformation
+ * of characters such as controls to something like `^C` for `\003`
+ * and `@Z` for `\232` (graphic control).
+ *
+ * This totally ignores UTF-8. It assumes the input is ASCII and
+ * thus only accepts characters from 0x20 (space) to 0x7E (~).
+ *
+ * \param[in] str  The string to convert to visible ASCII.
+ *
+ * \return The converted string, if any conversion was necessary,
+ *         otherwise a copy of the input string.
+ */
+std::string to_visible_ascii(std::string const & str)
+{
+    std::string result;
+    result.reserve(str.length() + 32);
+
+    for(std::uint8_t const c : str)
+    {
+        if(c < 0x20)
+        {
+            result += '^';
+            result += c + 0x40;
+        }
+        else if(c >= 0x80 && c <= 0xA0)
+        {
+            result += '@';
+            result += c - 0x40;
+        }
+        else if(c > '~')
+        {
+            result += "\\x";
+            result += snapdev::int_to_hex(c, true, 2);
+        }
+        else
+        {
+            result += static_cast<char>(c);
+        }
+    }
+
+    return result;
+}
+
 
 
 } // libutf8 namespace
