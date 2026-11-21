@@ -51,6 +51,7 @@
 // C++
 //
 #include    <cwctype>
+#include    <iostream>
 
 
 // last include
@@ -194,69 +195,134 @@ bool is_valid_ascii(std::string const & str, bool ctrl)
  * for the UTF-8 representation of a QString should always be considered
  * valid UTF-8 (although some surrogates, etc. may be wrong!)
  *
- * \param[in] str  The NUL terminated string to scan.
+ * \param[in] str  The NUL terminated or length bounded string to scan.
+ * \param[in] len  The number of characters to check or -1 to check up to
+ *                 the NUL terminator.
+ * \param[in] ctrl  Set to true to also accept controls.
  *
  * \return true if the string is valid UTF-8
  */
-bool is_valid_utf8(char const * str)
+bool is_valid_utf8(char const * str, ssize_t len, bool ctrl)
 {
+    if(len < -1)
+    {
+        throw invalid_parameter("the len parameter of is_valid_utf8() cannot be less than -1.");
+    }
+
     if(str == nullptr)
     {
-        // empty strings are considered valid
+        // null strings are considered valid
+        //
         return true;
     }
 
     // use unsigned characters so it works even if char is signed
-    unsigned char const *s(reinterpret_cast<unsigned char const *>(str));
-    while(*s != '\0')
+    //
+    for(unsigned char const *s(reinterpret_cast<unsigned char const *>(str));
+        (*s != '\0' && len == -1) || len > 0;
+        )
     {
         if(s[0] <= 0x7F)
         {
+            if(!ctrl
+            && (s[0] < 0x20 || s[0] == 0x7F))
+            {
+                // prevent C0 and DEL control characters (including NUL)
+                //
+                return false;
+            }
             ++s;
+            if(len > 0)
+            {
+                --len;
+            }
         }
-        else if(s[0] >= 0xC2 && s[0] <= 0xDF // non-overlong 2-byte
+        else if((len == -1 || len >= 2)
+             && s[0] >= 0xC2 && s[0] <= 0xDF // non-overlong 2-byte
              && s[1] >= 0x80 && s[1] <= 0xBF)
         {
+            if(!ctrl
+            && s[0] == 0xC2
+            && s[1] >= 0x80 && s[1] <= 0x9F)
+            {
+                // prevent C1 control characters
+                //
+                return false;
+            }
             s += 2;
+            if(len > 0)
+            {
+                len -= 2;
+            }
         }
-        else if(s[0] == 0xE0 // excluding overlongs
+        else if((len == -1 || len >= 3)
+             && s[0] == 0xE0 // excluding overlongs
              && s[1] >= 0xA0 && s[1] <= 0xBF
              && s[2] >= 0x80 && s[2] <= 0xBF)
         {
             s += 3;
+            if(len > 0)
+            {
+                len -= 3;
+            }
         }
-        else if(((s[0] >= 0xE1 && s[0] <= 0xEC) || s[0] == 0xEE || s[0] == 0xEF) // straight 3-byte
+        else if((len == -1 || len >= 3)
+             && ((s[0] >= 0xE1 && s[0] <= 0xEC) || s[0] == 0xEE || s[0] == 0xEF) // straight 3-byte
              && s[1] >= 0x80 && s[1] <= 0xBF
              && s[2] >= 0x80 && s[2] <= 0xBF)
         {
             s += 3;
+            if(len > 0)
+            {
+                len -= 3;
+            }
         }
-        else if(s[0] == 0xED // excluding surrogates
+        else if((len == -1 || len >= 3)
+             && s[0] == 0xED // excluding surrogates
              && s[1] >= 0x80 && s[1] <= 0x9F
              && s[2] >= 0x80 && s[2] <= 0xBF)
         {
             s += 3;
+            if(len > 0)
+            {
+                len -= 3;
+            }
         }
-        else if(s[0] == 0xF0 // planes 1-3
+        else if((len == -1 || len >= 4)
+             && s[0] == 0xF0 // planes 1-3
              && s[1] >= 0x90 && s[1] <= 0xBF
              && s[2] >= 0x80 && s[2] <= 0xBF
              && s[3] >= 0x80 && s[3] <= 0xBF)
         {
             s += 4;
+            if(len > 0)
+            {
+                len -= 4;
+            }
         }
-        else if(s[0] >= 0xF1 && s[0] <= 0xF3 // planes 4-15
+        else if((len == -1 || len >= 4)
+             && s[0] >= 0xF1 && s[0] <= 0xF3 // planes 4-15
              && s[1] >= 0x80 && s[1] <= 0xBF
              && s[2] >= 0x80 && s[2] <= 0xBF
              && s[3] >= 0x80 && s[3] <= 0xBF)
         {
             s += 4;
+            if(len > 0)
+            {
+                len -= 4;
+            }
         }
-        else if(s[0] == 0xF4 // plane 16
+        else if((len == -1 || len >= 4)
+             && s[0] == 0xF4 // plane 16
              && s[1] >= 0x80 && s[1] <= 0x8F
              && s[2] >= 0x80 && s[2] <= 0xBF
              && s[3] >= 0x80 && s[3] <= 0xBF)
         {
             s += 4;
+            if(len > 0)
+            {
+                len -= 4;
+            }
         }
         else
         {
@@ -332,12 +398,13 @@ bool is_valid_utf16(std::u16string const & str)
  * an std::string.
  *
  * \param[in] str  The std::string to scan.
+ * \param[in] ctrl  Set to true to also accept controls.
  *
  * \return true if the string is valid UTF-8
  */
-bool is_valid_utf8(std::string const & str)
+bool is_valid_utf8(std::string const & str, bool ctrl)
 {
-    return is_valid_utf8(str.c_str());
+    return is_valid_utf8(str.c_str(), str.length(), ctrl);
 }
 
 
@@ -589,7 +656,7 @@ std::string to_u8string(std::u32string const & str)
         {
             if(wctombs(mb, wc, sizeof(mb)) < 0)
             {
-                throw libutf8_exception_encoding(
+                throw encoding(
                           "to_u8string(u32string): the input wide character with code "
                         + std::to_string(static_cast<std::uint32_t>(wc))
                         + " is not a valid UTF-32 character.");
@@ -656,25 +723,25 @@ std::string to_u8string(std::u16string const & str)
                 {
                     // 0xDC00 to 0xDFFF; introducer missing
                     //
-                    throw libutf8_exception_decoding("to_u8string(): found a high UTF-16 surrogate without the low surrogate.");
+                    throw decoding("to_u8string(): found a high UTF-16 surrogate without the low surrogate.");
                 }
                 ++idx;
                 if(idx >= max)
                 {
                     // must be followed by a code between 0xDC00 and 0xDFFF
                     //
-                    throw libutf8_exception_decoding("to_u8string(): the high UTF-16 surrogate is not followed by the low surrogate.");
+                    throw decoding("to_u8string(): the high UTF-16 surrogate is not followed by the low surrogate.");
                 }
                 surrogate_t const low_surrogate(is_surrogate(s[idx]));
                 if(low_surrogate != surrogate_t::SURROGATE_LOW)
                 {
                     if(low_surrogate == surrogate_t::SURROGATE_HIGH)
                     {
-                        throw libutf8_exception_decoding("to_u8string(): found two high UTF-16 surrogates in a row.");
+                        throw decoding("to_u8string(): found two high UTF-16 surrogates in a row.");
                     }
                     else
                     {
-                        throw libutf8_exception_decoding("to_u8string(): found a high UTF-16 surrogate without a low surrogate afterward.");
+                        throw decoding("to_u8string(): found a high UTF-16 surrogate without a low surrogate afterward.");
                     }
                 }
 
@@ -690,7 +757,7 @@ std::string to_u8string(std::u16string const & str)
                 // this should not happen since all UTF-16 characters are
                 // considered valid when surrogates are valid
                 //
-                throw libutf8_exception_encoding("to_u8string(u16string): the input wide character is not a valid UTF-32 character."); // LCOV_EXCL_LINE
+                throw encoding("to_u8string(u16string): the input wide character is not a valid UTF-32 character."); // LCOV_EXCL_LINE
             }
             result += mb;
         }
@@ -712,17 +779,18 @@ std::string to_u8string(std::u16string const & str)
  */
 std::string to_u8string(std::wstring const & str)
 {
-    switch(sizeof(wchar_t))
+    if constexpr (sizeof(wchar_t) == 2)
     {
-    case 2:
         return to_u8string(std::u16string(str.begin(), str.end()));
-
-    case 4:
-        return to_u8string(std::u32string(str.begin(), str.end()));
-
     }
-
-    throw libutf8_exception_unsupported("wchar_t has an unsupported size.");
+    else if constexpr (sizeof(wchar_t) == 4)
+    {
+        return to_u8string(std::u32string(str.begin(), str.end()));
+    }
+    else
+    {
+        throw unsupported("wchar_t has an unsupported size.");
+    }
 }
 
 
@@ -747,17 +815,18 @@ std::string to_u8string(std::wstring const & str)
  */
 std::string to_u8string(wchar_t one, wchar_t two)
 {
-    switch(sizeof(wchar_t))
+    if constexpr (sizeof(wchar_t) == 2)
     {
-    case 2:
         return to_u8string(static_cast<char16_t>(one), static_cast<char16_t>(two));
-
-    case 4:
-        return to_u8string(static_cast<char32_t>(one));
-
     }
-
-    throw libutf8_exception_unsupported("wchar_t has an unsupported size.");
+    else if constexpr (sizeof(wchar_t) == 4)
+    {
+        return to_u8string(static_cast<char32_t>(one));
+    }
+    else
+    {
+        throw unsupported("wchar_t has an unsupported size.");
+    }
 }
 
 
@@ -811,7 +880,7 @@ std::string to_u8string(char16_t one, char16_t two)
         }
     }
 
-    throw libutf8_exception_decoding("to_u8string(char16_t, char16_t): the input did not represent a valid surrogate sequence.");
+    throw decoding("to_u8string(char16_t, char16_t): the input did not represent a valid surrogate sequence.");
 }
 
 
@@ -841,7 +910,7 @@ std::string to_u8string(char32_t const wc)
     int const r(wctombs(mb, wc, sizeof(mb)));
     if(r < 0)
     {
-        throw libutf8_exception_encoding(
+        throw encoding(
               "to_u8string(char32_t): the input wide character (\\U"
             + snapdev::int_to_hex(wc, false, 6)
             + ") is not a valid UTF-32 character.");
@@ -876,7 +945,7 @@ std::u32string to_u32string(std::string const & str)
         char32_t wc;
         if(mbstowc(wc, mb, len) < 0)
         {
-            throw libutf8_exception_decoding("to_u32string(): a UTF-8 character could not be extracted.");
+            throw decoding("to_u32string(): a UTF-8 character could not be extracted.");
         }
 
         result += wc;
@@ -901,7 +970,7 @@ std::u16string to_u16string(char32_t const wc)
 {
     if(!is_valid_unicode(wc, true))
     {
-        throw libutf8_exception_invalid_parameter(
+        throw invalid_parameter(
               "to_u16string(): the input wide character \\u"
             + snapdev::int_to_hex(wc, true, 4)
             + " is not a valid Unicode character.");
@@ -944,7 +1013,7 @@ std::u16string to_u16string(std::string const & str)
         char32_t wc;
         if(mbstowc(wc, mb, len) < 0)
         {
-            throw libutf8_exception_decoding("to_u16string(): a UTF-8 character could not be extracted.");
+            throw decoding("to_u16string(): a UTF-8 character could not be extracted.");
         }
 
         if(wc >= 0x10000)
@@ -1083,13 +1152,13 @@ int u8casecmp(std::string const & lhs, std::string const & rhs)
         char32_t lwc;
         if(mbstowc(lwc, lmb, llen) < 0)
         {
-            throw libutf8_exception_decoding("u8casecmp(): the lhs string includes invalid UTF-8 bytes");
+            throw decoding("u8casecmp(): the lhs string includes invalid UTF-8 bytes");
         }
 
         char32_t rwc;
         if(mbstowc(rwc, rmb, rlen) < 0)
         {
-            throw libutf8_exception_decoding("u8casecmp(): the rhs string includes invalid UTF-8 bytes");
+            throw decoding("u8casecmp(): the rhs string includes invalid UTF-8 bytes");
         }
 
         // if equal as is, avoid the lowercase test
@@ -1146,7 +1215,7 @@ bool make_u8string_valid(std::string & str, char32_t fix_char)
             int const l(wctombs(buf, wc, sizeof(buf)));
             if(l < 1)
             {
-                throw libutf8_logic_exception("the mbstowc() function returned what it thinks is a valid unicode character yet the wctombs() failed converting it back."); // LCOV_EXCL_LINE
+                throw logic_exception("the mbstowc() function returned what it thinks is a valid unicode character yet the wctombs() failed converting it back."); // LCOV_EXCL_LINE
             }
             result += std::string(buf, l);
         }

@@ -67,11 +67,11 @@ namespace libutf8
 
 
 /** \var constexpr std::size_t MBS_MIN_BUFFER_LENGTH
- * \brief Minimum buffer length to support any UTF-8 characters.
+ * \brief Minimum buffer length to support any UTF-8 character.
  *
  * When converting a UTF-32 character to UTF-8, it makes use of an output
  * buffer. The size of that output buffer should be at least
- * MBS_MIN_BUFFER_LENGTH to accomodate any UTF-32 character.
+ * MBS_MIN_BUFFER_LENGTH to accommodate any UTF-32 character.
  *
  * Note that the size includes space for a null terminator (`'\0'`).
  *
@@ -116,7 +116,7 @@ namespace libutf8
  * is considered invalid (a UTF-16 surrogate or larger than 0x10FFFF.)
  * Instead it returns 0 and sets the \p mb string to the empty string.
  *
- * \exception libutf8_logic_exception
+ * \exception logic_exception
  * The function raises this exception if the destination buffer is too
  * small for the conversion. Don't forget that we add a null terminator
  * so if the character needs 3 UTF-8 bytes, we will check for a buffer
@@ -134,7 +134,7 @@ int wctombs(char * mb, char32_t wc, std::size_t len)
     {
         if(len < required_len)
         {
-            throw libutf8_logic_exception("wctombs() called with an output buffer which is too small.");
+            throw logic_exception("wctombs() called with an output buffer which is too small.");
         }
     };
 
@@ -142,7 +142,8 @@ int wctombs(char * mb, char32_t wc, std::size_t len)
     {
         verify_length(2);
 
-        /* this will also encode '\0'... */
+        // this will also encode '\0'
+        //
         mb[0] = static_cast<char>(wc);
         mb[1] = '\0';
         return 1;
@@ -187,7 +188,8 @@ int wctombs(char * mb, char32_t wc, std::size_t len)
 
     verify_length(1);
 
-    /* an invalid wide character */
+    // an invalid wide character
+    //
     mb[0] = '\0';
     return -1;
 }

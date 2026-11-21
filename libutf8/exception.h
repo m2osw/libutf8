@@ -19,10 +19,9 @@
 #pragma once
 
 /** \file
- * \brief The declarations of the UTF-8 library.
+ * \brief The declarations of the UTF-8 exceptions.
  *
- * This file is the declarations of the UTF-8 library which are just a few
- * functions used to convert a string from one format to another.
+ * This file is the declarations of the exceptions used by the UTF-8 library.
  */
 
 // libexcept
@@ -36,18 +35,18 @@ namespace libutf8
 
 
 
-DECLARE_LOGIC_ERROR(libutf8_logic_exception);
+DECLARE_LOGIC_ERROR(logic_exception);
 
 DECLARE_MAIN_EXCEPTION(libutf8_exception);
 
-DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_decoding);
-DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_encoding);
-DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_invalid_parameter);
-DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_io);
-DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_missing);
-DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_overflow);
-DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_twice);
-DECLARE_EXCEPTION(libutf8_exception, libutf8_exception_unsupported);
+DECLARE_EXCEPTION(libutf8_exception, decoding);
+DECLARE_EXCEPTION(libutf8_exception, encoding);
+DECLARE_EXCEPTION(libutf8_exception, invalid_parameter);
+DECLARE_EXCEPTION(libutf8_exception, io);
+DECLARE_EXCEPTION(libutf8_exception, missing);
+DECLARE_EXCEPTION(libutf8_exception, overflow);
+DECLARE_EXCEPTION(libutf8_exception, twice);
+DECLARE_EXCEPTION(libutf8_exception, unsupported);
 
 
 

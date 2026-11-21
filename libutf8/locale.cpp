@@ -130,7 +130,7 @@ locales_t const & system_locales()
             {
                 // this should never happen
                 //
-                throw libutf8_logic_exception("somehow the fgets() call returned an empty string."); // LCOV_EXCL_LINE
+                throw logic_exception("somehow the fgets() call returned an empty string."); // LCOV_EXCL_LINE
             }
             if(buf[l - 1] == '\n')
             {

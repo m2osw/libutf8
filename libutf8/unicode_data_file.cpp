@@ -459,7 +459,7 @@ void raw_character::set_name(std::string const & name)
 {
     if(!f_name.empty())
     {
-        throw libutf8_logic_exception("attempting to redefine the character name");
+        throw logic_exception("attempting to redefine the character name");
     }
     f_name = name;
 }
@@ -471,7 +471,7 @@ void raw_character::correct_name(std::string const & proper_name)
     {
         if(f_name.empty())
         {
-            throw libutf8_logic_exception("attempting to correct an empty character name");
+            throw logic_exception("attempting to correct an empty character name");
         }
         f_wrong_name = f_name;
         f_name = proper_name;
@@ -540,7 +540,7 @@ void raw_character::set_number(std::string const & number, Numeric_Type type)
 
     if(f_denominator != 0)
     {
-        throw libutf8_exception_twice("set_number() called twice");
+        throw twice("set_number() called twice");
     }
 
     f_numeric_type = type;
@@ -563,7 +563,7 @@ void raw_character::set_age(int major_unicode, int minor_unicode)
 {
     if(f_age[0] != 0 || f_age[1] != 0)
     {
-        throw libutf8_exception_twice("age defined twice");
+        throw twice("age defined twice");
     }
     f_age[0] = major_unicode;
     f_age[1] = minor_unicode;
@@ -574,12 +574,12 @@ void raw_character::set_category(std::string const & category)
 {
     if(category.length() != 2)
     {
-        throw libutf8_exception_invalid_parameter("category name is expected to be exactly two letters.");
+        throw invalid_parameter("category name is expected to be exactly two letters.");
     }
 
     if(f_general_category != General_Category::GC_Unassigned)
     {
-        throw libutf8_exception_twice("trying to set the general category twice.");
+        throw twice("trying to set the general category twice.");
     }
 
     switch(category[0])
@@ -754,7 +754,7 @@ void raw_character::set_category(std::string const & category)
 
     if(f_general_category == General_Category::GC_Unassigned)
     {
-        throw libutf8_exception_unsupported(
+        throw unsupported(
               "unknown general category \""
             + category
             + "\".");
@@ -774,12 +774,12 @@ void raw_character::set_bidi_class(std::string const & bidi, bool bidi_mirrored)
 {
     if(bidi.empty())
     {
-        throw libutf8_exception_invalid_parameter("bidi class name is expected to be at least one letter.");
+        throw invalid_parameter("bidi class name is expected to be at least one letter.");
     }
 
     if(f_bidi_class != Bidi_Class::BC_Unknown)
     {
-        throw libutf8_exception_twice("trying to set the bidi class twice.");
+        throw twice("trying to set the bidi class twice.");
     }
 
     f_bidi_mirrored = bidi_mirrored;
@@ -954,7 +954,7 @@ void raw_character::set_bidi_class(std::string const & bidi, bool bidi_mirrored)
 
     if(f_bidi_class == Bidi_Class::BC_Unknown)
     {
-        throw libutf8_exception_unsupported(
+        throw unsupported(
               "unknown general bidi \""
             + bidi
             + "\".");
@@ -966,7 +966,7 @@ void raw_character::set_decomposition(std::string const & decomposition)
 {
     if(f_decomposition_type != Decomposition_Type::DT_none)
     {
-        throw libutf8_exception_twice("set_decomposition() called twice");
+        throw twice("set_decomposition() called twice");
     }
 
     if(decomposition.empty())
@@ -981,12 +981,12 @@ void raw_character::set_decomposition(std::string const & decomposition)
         std::string::size_type const pos(decomposition.find('>'));
         if(pos == std::string::npos)
         {
-            throw libutf8_exception_invalid_parameter("a decomposition type starting with '<' must end with '>'.");
+            throw invalid_parameter("a decomposition type starting with '<' must end with '>'.");
         }
         std::string const type(decomposition.substr(1, pos - 1));
         if(type.empty())
         {
-            throw libutf8_exception_invalid_parameter("a decomposition type cannot be empty '<>'.");
+            throw invalid_parameter("a decomposition type cannot be empty '<>'.");
         }
         switch(type[0])
         {
@@ -1268,7 +1268,7 @@ void parser_impl::read_file(std::string const & filename)
             + input.filename()
             + "\".");
         std::cerr << msg << "\n";
-        throw libutf8_exception_io(msg);
+        throw io(msg);
     }
 
     f_lines.clear();
@@ -1300,7 +1300,7 @@ void parser_impl::convert_unicode_data()
                 + f_input_dir
                 + "UnicodeData.txt\".");
             std::cerr << msg << "\n";
-            throw libutf8_exception_unsupported(msg);
+            throw unsupported(msg);
         }
 
         std::string start(fields[0]);
@@ -1332,7 +1332,7 @@ void parser_impl::convert_unicode_data()
                         + f_input_dir
                         + "/UnicodeData.txt\".");
                     std::cerr << msg << "\n";
-                    throw libutf8_exception_io(msg);
+                    throw io(msg);
                 }
 
                 // got a complte range
@@ -1346,7 +1346,7 @@ void parser_impl::convert_unicode_data()
                         + l
                         + ".");
                     std::cerr << msg << "\n";
-                    throw libutf8_exception_io(msg);
+                    throw io(msg);
                 }
 
                 // make sure the start/end common fields are equal
@@ -1365,7 +1365,7 @@ void parser_impl::convert_unicode_data()
                         + l
                         + ".");
                     std::cerr << msg << "\n";
-                    throw libutf8_exception_io(msg);
+                    throw io(msg);
                 }
                 end = start;
                 start = start_range[0];
@@ -1386,7 +1386,7 @@ void parser_impl::convert_unicode_data()
                 + l
                 + ".");
             std::cerr << msg << "\n";
-            throw libutf8_exception_io(msg);
+            throw io(msg);
         }
 
         raw_character c(start, end);
@@ -1432,7 +1432,7 @@ void parser_impl::convert_name_aliases()
             std::string msg("error: found "
                 + std::to_string(fields.size())
                 + " fields instead of 3 in NameAliases.txt file.");
-            throw libutf8_exception_unsupported(msg);
+            throw unsupported(msg);
         }
 
         char32_t const code(std::stoi(fields[0], nullptr, 16));
@@ -1446,7 +1446,7 @@ void parser_impl::convert_name_aliases()
                << " referenced in NameAliases.txt missing in UnicodeData.txt (line: "
                << l
                << ").";
-            throw libutf8_exception_missing(ss.str());
+            throw missing(ss.str());
         }
 
         if(fields[2] == "correction")
@@ -1471,7 +1471,7 @@ void parser_impl::convert_name_aliases()
         }
         else
         {
-            throw libutf8_exception_unsupported(
+            throw unsupported(
                   "unsupport alias type \""
                 + fields[2]
                 + "\".");
@@ -1498,7 +1498,7 @@ void parser_impl::convert_jamo()
             std::string msg("error: found "
                 + std::to_string(fields.size())
                 + " fields instead of 3 in Jamo.txt file.");
-            throw libutf8_exception_unsupported(msg);
+            throw unsupported(msg);
         }
 
         char32_t const code(std::stoi(fields[0], nullptr, 16));
@@ -1510,7 +1510,7 @@ void parser_impl::convert_jamo()
             ss << "character U+"
                << std::hex << std::uppercase << static_cast<int32_t>(code)
                << " referenced in Jamo.txt missing in UnicodeData.txt";
-            throw libutf8_exception_missing(ss.str());
+            throw missing(ss.str());
         }
 
         it->second.add_jamo_short_name(fields[1]);
@@ -1536,13 +1536,13 @@ void parser_impl::convert_derived_age()
             std::string msg("error: found "
                 + std::to_string(fields.size())
                 + " fields instead of 2 in Age file.");
-            throw libutf8_exception_unsupported(msg);
+            throw unsupported(msg);
         }
 
         std::string::size_type pos(fields[1].find('.'));
         if(pos == std::string::npos)
         {
-            throw libutf8_exception_unsupported("age is expected to be two numbers separated by a period");
+            throw unsupported("age is expected to be two numbers separated by a period");
         }
 
         std::string const major_str(fields[1].substr(0, pos));
@@ -1560,7 +1560,7 @@ void parser_impl::convert_derived_age()
                 ss << "character U+"
                    << std::hex << std::uppercase << static_cast<int32_t>(code)
                    << " referenced in DerivedAge.txt missing in UnicodeData.txt";
-                throw libutf8_exception_missing(ss.str());
+                throw missing(ss.str());
             }
             it->second.set_age(major_unicode, minor_unicode);
         }

@@ -52,7 +52,7 @@ CATCH_TEST_CASE("character_conversions", "[characters]")
         for(char32_t wc(0); wc < 0x000080; ++wc)
         {
             char buf[libutf8::MBS_MIN_BUFFER_LENGTH];
-            CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 0), libutf8::libutf8_logic_exception);
+            CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 0), libutf8::logic_exception);
             CATCH_REQUIRE(libutf8::wctombs(buf, wc, sizeof(buf)) == 1);
 
             CATCH_REQUIRE(static_cast<char32_t>(buf[0]) == wc);
@@ -72,8 +72,8 @@ CATCH_TEST_CASE("character_conversions", "[characters]")
         for(char32_t wc(0x000080); wc < 0x000800; ++wc)
         {
             char buf[libutf8::MBS_MIN_BUFFER_LENGTH];
-            CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 0), libutf8::libutf8_logic_exception);
-            CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 1), libutf8::libutf8_logic_exception);
+            CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 0), libutf8::logic_exception);
+            CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 1), libutf8::logic_exception);
             CATCH_REQUIRE(libutf8::wctombs(buf, wc, sizeof(buf)) == 2);
 
             char32_t const found(((static_cast<char32_t>(buf[0]) & 0x1F) << 6)
@@ -105,9 +105,9 @@ CATCH_TEST_CASE("character_conversions", "[characters]")
             char buf[libutf8::MBS_MIN_BUFFER_LENGTH];
             if(rand() % 10 == 0)
             {
-                CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 0), libutf8::libutf8_logic_exception);
-                CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 1), libutf8::libutf8_logic_exception);
-                CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 2), libutf8::libutf8_logic_exception);
+                CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 0), libutf8::logic_exception);
+                CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 1), libutf8::logic_exception);
+                CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 2), libutf8::logic_exception);
             }
             CATCH_REQUIRE(libutf8::wctombs(buf, wc, sizeof(buf)) == 3);
 
@@ -133,10 +133,10 @@ CATCH_TEST_CASE("character_conversions", "[characters]")
             char buf[libutf8::MBS_MIN_BUFFER_LENGTH];
             if(rand() % 100 == 0)
             {
-                CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 0), libutf8::libutf8_logic_exception);
-                CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 1), libutf8::libutf8_logic_exception);
-                CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 2), libutf8::libutf8_logic_exception);
-                CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 3), libutf8::libutf8_logic_exception);
+                CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 0), libutf8::logic_exception);
+                CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 1), libutf8::logic_exception);
+                CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 2), libutf8::logic_exception);
+                CATCH_REQUIRE_THROWS_AS(libutf8::wctombs(buf, wc, 3), libutf8::logic_exception);
             }
             CATCH_REQUIRE(libutf8::wctombs(buf, wc, sizeof(buf)) == 4);
 

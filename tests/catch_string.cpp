@@ -154,8 +154,9 @@ CATCH_TEST_CASE("string_validations", "[strings][valid][u8][u32]")
         //
         CATCH_REQUIRE(libutf8::is_valid_utf8(nullptr));
         CATCH_REQUIRE(libutf8::is_valid_utf8(""));
+        CATCH_REQUIRE(libutf8::is_valid_utf8(std::string()));
 
-        for(char32_t wc(1); wc < 0x110000; ++wc)
+        for(char32_t wc(0); wc < 0x110000; ++wc)
         {
             // skip the surrogates
             //
@@ -165,9 +166,36 @@ CATCH_TEST_CASE("string_validations", "[strings][valid][u8][u32]")
             }
 
             std::string const ws(libutf8::to_u8string(wc));
-            CATCH_REQUIRE(libutf8::is_valid_utf8(ws.c_str()));
-
+            CATCH_REQUIRE(libutf8::is_valid_utf8(ws.c_str(), ws.length()));
+            CATCH_REQUIRE(libutf8::is_valid_utf8(ws.c_str(), ws.length(), true));
             CATCH_REQUIRE(libutf8::is_valid_utf8(ws));
+            CATCH_REQUIRE(libutf8::is_valid_utf8(ws, true));
+
+            // by default control characters are accepted, try when
+            // not accepted
+            //
+            if(wc <= 0x1F
+            || wc == 0x7F
+            || (wc >= 0x80 && wc <= 0x9F))
+            {
+                CATCH_REQUIRE_FALSE(libutf8::is_valid_utf8(ws.c_str(), ws.length(), false));
+                CATCH_REQUIRE_FALSE(libutf8::is_valid_utf8(ws, false));
+            }
+            else
+            {
+                CATCH_REQUIRE(libutf8::is_valid_utf8(ws.c_str(), ws.length(), false));
+                CATCH_REQUIRE(libutf8::is_valid_utf8(ws, false));
+            }
+
+            for(std::size_t idx(1); idx < ws.length() - 1; ++idx)
+            {
+                CATCH_REQUIRE_FALSE(libutf8::is_valid_utf8(ws.c_str(), idx));
+                CATCH_REQUIRE_FALSE(libutf8::is_valid_utf8(ws.c_str(), idx, false));
+
+                std::string const shorten(ws.data(), idx);
+                CATCH_REQUIRE_FALSE(libutf8::is_valid_utf8(shorten));
+                CATCH_REQUIRE_FALSE(libutf8::is_valid_utf8(shorten, false));
+            }
         }
     }
     CATCH_END_SECTION()
@@ -439,7 +467,7 @@ CATCH_TEST_CASE("invalid_string_validations", "[strings][invalid][u8][u32]")
         {
             CATCH_REQUIRE_THROWS_MATCHES(
                       libutf8::to_u16string(wc)
-                    , libutf8::libutf8_exception_invalid_parameter
+                    , libutf8::invalid_parameter
                     , Catch::Matchers::ExceptionMessage(
                               "libutf8_exception: to_u16string(): the input wide character \\u"
                             + snapdev::int_to_hex(wc, true, 4)
@@ -457,7 +485,7 @@ CATCH_TEST_CASE("invalid_string_validations", "[strings][invalid][u8][u32]")
             char16_t const wc2(rand());
             CATCH_REQUIRE_THROWS_MATCHES(
                       libutf8::to_u8string(wc1, wc2)
-                    , libutf8::libutf8_exception_decoding
+                    , libutf8::decoding
                     , Catch::Matchers::ExceptionMessage(
                                   "libutf8_exception: to_u8string(char16_t, char16_t): the input did not represent a valid surrogate sequence."));
         }
@@ -473,7 +501,7 @@ CATCH_TEST_CASE("invalid_string_validations", "[strings][invalid][u8][u32]")
             char16_t const wc1((rand() & 0x3FF) + 0xD800);
             CATCH_REQUIRE_THROWS_MATCHES(
                       libutf8::to_u8string(wc1, wc2)
-                    , libutf8::libutf8_exception_decoding
+                    , libutf8::decoding
                     , Catch::Matchers::ExceptionMessage(
                                   "libutf8_exception: to_u8string(char16_t, char16_t): the input did not represent a valid surrogate sequence."));
         }
@@ -687,8 +715,8 @@ CATCH_TEST_CASE("invalid_string_conversions", "[strings][invalid][u8][u32]")
             str += ((wc >> 12) & 0x0F) | 0xE0;
             str += ((wc >>  6) & 0x3F) | 0x80;
             str += ((wc >>  9) & 0x3F) | 0x80;
-            CATCH_REQUIRE_THROWS_AS(libutf8::to_u32string(str), libutf8::libutf8_exception_decoding);
-            CATCH_REQUIRE_THROWS_AS(libutf8::to_u16string(str), libutf8::libutf8_exception_decoding);
+            CATCH_REQUIRE_THROWS_AS(libutf8::to_u32string(str), libutf8::decoding);
+            CATCH_REQUIRE_THROWS_AS(libutf8::to_u16string(str), libutf8::decoding);
         }
     }
     CATCH_END_SECTION()
@@ -702,7 +730,7 @@ CATCH_TEST_CASE("invalid_string_conversions", "[strings][invalid][u8][u32]")
             //
             std::u32string u32str;
             u32str += wc;
-            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(u32str), libutf8::libutf8_exception_encoding);
+            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(u32str), libutf8::encoding);
         }
     }
     CATCH_END_SECTION()
@@ -713,7 +741,7 @@ CATCH_TEST_CASE("invalid_string_conversions", "[strings][invalid][u8][u32]")
         {
             std::u32string u32str;
             u32str += wc;
-            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(u32str), libutf8::libutf8_exception_encoding);
+            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(u32str), libutf8::encoding);
         }
 
         // make sure the last few fail
@@ -722,7 +750,7 @@ CATCH_TEST_CASE("invalid_string_conversions", "[strings][invalid][u8][u32]")
         {
             std::u32string u32str;
             u32str += wc;
-            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(u32str), libutf8::libutf8_exception_encoding);
+            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(u32str), libutf8::encoding);
         }
     }
     CATCH_END_SECTION()
@@ -733,14 +761,14 @@ CATCH_TEST_CASE("invalid_string_conversions", "[strings][invalid][u8][u32]")
         {
             std::u16string u16str;
             u16str += 0xDC00 + (rand() & 0x3FF);
-            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(u16str), libutf8::libutf8_exception_decoding);
+            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(u16str), libutf8::decoding);
         }
 
         // input ends before low surrogate
         {
             std::u16string u16str;
             u16str += 0xD800 + (rand() & 0x3FF);
-            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(u16str), libutf8::libutf8_exception_decoding);
+            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(u16str), libutf8::decoding);
         }
 
         // two high surrogates in a row
@@ -748,7 +776,7 @@ CATCH_TEST_CASE("invalid_string_conversions", "[strings][invalid][u8][u32]")
             std::u16string u16str;
             u16str += 0xD800 + (rand() & 0x3FF);
             u16str += 0xD800 + (rand() & 0x3FF);
-            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(u16str), libutf8::libutf8_exception_decoding);
+            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(u16str), libutf8::decoding);
         }
 
         // high surrogate, no low surrogate
@@ -756,7 +784,7 @@ CATCH_TEST_CASE("invalid_string_conversions", "[strings][invalid][u8][u32]")
             std::u16string u16str;
             u16str += 0xD800 + (rand() & 0x3FF);
             u16str += 0xE000 + (rand() & 0x1FFF);
-            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(u16str), libutf8::libutf8_exception_decoding);
+            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(u16str), libutf8::decoding);
         }
     }
     CATCH_END_SECTION()
@@ -832,7 +860,7 @@ CATCH_TEST_CASE("invalid_wc_to_string", "[wc][strings][invalid][u8]")
     {
         for(char32_t wc(0xD800); wc < 0xDFFF; ++wc)
         {
-            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(wc), libutf8::libutf8_exception_encoding);
+            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(wc), libutf8::encoding);
         }
     }
     CATCH_END_SECTION()
@@ -841,14 +869,14 @@ CATCH_TEST_CASE("invalid_wc_to_string", "[wc][strings][invalid][u8]")
     {
         for(char32_t wc(0x110000); wc < 0xFFFFFFFF - 50000; wc += rand() % 50000)
         {
-            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(wc), libutf8::libutf8_exception_encoding);
+            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(wc), libutf8::encoding);
         }
 
         // make sure the last few fail
         //
         for(char32_t wc(0xFFFFFFFF); wc > 0xFFFFFFFF - 100; --wc)
         {
-            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(wc), libutf8::libutf8_exception_encoding);
+            CATCH_REQUIRE_THROWS_AS(libutf8::to_u8string(wc), libutf8::encoding);
         }
     }
     CATCH_END_SECTION()
@@ -904,8 +932,8 @@ CATCH_TEST_CASE("compare_strings", "[compare][strings][valid][invalid][u8]")
                 if(rwc >= 0x80 && rand() % 100 == 0)
                 {
                     rmb.resize(rmb.length() - 1);
-                    CATCH_REQUIRE_THROWS_AS(libutf8::u8casecmp(rmb, rlmb) == 0, libutf8::libutf8_exception_decoding);
-                    CATCH_REQUIRE_THROWS_AS(libutf8::u8casecmp(rlmb, rmb) == 0, libutf8::libutf8_exception_decoding);
+                    CATCH_REQUIRE_THROWS_AS(libutf8::u8casecmp(rmb, rlmb) == 0, libutf8::decoding);
+                    CATCH_REQUIRE_THROWS_AS(libutf8::u8casecmp(rlmb, rmb) == 0, libutf8::decoding);
                 }
             }
 

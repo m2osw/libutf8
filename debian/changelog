@@ -1,3 +1,13 @@
+libutf8 (1.0.17.0~noble) noble; urgency=high
+
+  * Added the to_visible_ascii() function.
+  * Made it possible to test a UTF-8 string that includes '\0' characters.
+  * Added support to refuse control characters in UTF-8 strings.
+  * Fixed exception names to match other project convention.
+  * Optimized a couple of functions using constexpr instead of a switch.
+
+ -- Alexis Wilke <alexis@m2osw.com>  Fri, 20 Nov 2026 19:44:18 -0800
+
 libutf8 (1.0.16.1~noble) noble; urgency=high
 
   * Small fixes to documentation/tests.

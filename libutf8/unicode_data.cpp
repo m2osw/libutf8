@@ -285,7 +285,7 @@ std::int64_t unicode_character::get_number(int index) const
     {
         // someone tempered with the database?
         //
-        throw libutf8_logic_exception("invalid \"name\" size for a number");
+        throw logic_exception("invalid \"name\" size for a number");
     }
     std::int64_t const * number(reinterpret_cast<std::int64_t const *>(name));
     return number[index];
@@ -308,7 +308,7 @@ char const * unicode_character::find_name(detail::Name_Type type, std::size_t & 
 {
     if(f_character->f_names == 0)
     {
-        throw libutf8_logic_exception("character is missing a name");
+        throw logic_exception("character is missing a name");
     }
 
     char const * name(reinterpret_cast<char const *>(f_header)

@@ -135,7 +135,7 @@ void json_tokens::ungetc(char32_t c)
 {
     if(f_unget_pos >= std::size(f_unget))
     {
-        throw libutf8_exception_overflow("too many ungetc() calls, f_unget buffer is full.");  // LCOV_EXCL_LINE
+        throw overflow("too many ungetc() calls, f_unget buffer is full.");  // LCOV_EXCL_LINE
     }
 
     f_unget[f_unget_pos] = c;
@@ -257,7 +257,7 @@ token_t json_tokens::next_token()
                 }
                 else if(c != U'0')
                 {
-                    throw libutf8_logic_exception("somehow c is U'0' when it should not be possible here.");  // LCOV_EXCL_LINE
+                    throw logic_exception("somehow c is U'0' when it should not be possible here.");  // LCOV_EXCL_LINE
                 }
                 else
                 {

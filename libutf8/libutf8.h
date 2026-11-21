@@ -58,8 +58,8 @@ enum class surrogate_t
 bool                is_valid_ascii(char c, bool ctrl = true);
 bool                is_valid_ascii(char const * str, bool ctrl = true);
 bool                is_valid_ascii(std::string const & str, bool ctrl = true);
-bool                is_valid_utf8(char const * str);
-bool                is_valid_utf8(std::string const & str);
+bool                is_valid_utf8(char const * str, ssize_t len = -1, bool ctrl = true);
+bool                is_valid_utf8(std::string const & str, bool ctrl = true);
 bool                is_valid_utf16(std::u16string const & str);
 bool                is_valid_unicode(char32_t const wc, bool ctrl = true);
 bool                is_valid_unicode(char32_t const * str, bool ctrl = true);
